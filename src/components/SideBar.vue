@@ -17,6 +17,10 @@
                 <i class="el-icon-delete"/>
                 <span slot="title">回收中心</span>
             </el-menu-item>
+            <el-menu-item index="/create" width="200px">
+                <i class="el-icon-delete"/>
+                <span slot="title">新建问卷</span>
+            </el-menu-item>
         </el-menu>
     </div>
 </template>
