@@ -21,6 +21,10 @@
                 <i class="el-icon-delete"/>
                 <span slot="title">新建问卷</span>
             </el-menu-item>
+            <el-menu-item index="/register" width="200px">
+                <i class="el-icon-delete"/>
+                <span slot="title">注册账号</span>
+            </el-menu-item>
         </el-menu>
     </div>
 </template>

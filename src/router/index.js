@@ -4,6 +4,7 @@ import MainLayout from '../layout/MainLayout.vue'
 import QuestionnareList from '../views/QuestionnareList.vue'
 import Waste from '../views/Waste.vue'
 import CreateQuestionnare from '../views/Createquestionnare.vue'
+import Register from '../views/Register.vue'
 Vue.use(VueRouter)
 
 const MainChildRoutes = [{
@@ -21,6 +22,11 @@ const MainChildRoutes = [{
     name: 'create',
     component: CreateQuestionnare
   },
+    {
+      path: 'register',
+      name: 'register',
+      component: Register
+    },
 ]
 
 const routes = [{
