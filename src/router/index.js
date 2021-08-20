@@ -1,14 +1,30 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import MainLayout from '../layout/MainLayout.vue'
+import QuestionnareList from '../views/QuestionnareList.vue'
+import Waste from '../views/Waste.vue'
 
 Vue.use(VueRouter)
+
+const MainChildRoutes = [
+  {
+    path: 'list',
+    name: 'list',
+    component: QuestionnareList
+  },
+  {
+    path: 'waste',
+    name: 'waste',
+    component: Waste
+  }
+]
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'MainLayout',
+    component: MainLayout,
+    children: MainChildRoutes
   },
   {
     path: '/about',
