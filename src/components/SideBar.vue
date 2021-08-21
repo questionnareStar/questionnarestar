@@ -1,6 +1,5 @@
 <template>
     <div>
-        <el-button round type="primary">新建问卷</el-button>
         <el-menu
             class="el-menu-vertical-demo"
             :default-active="this.$route.path"
@@ -13,17 +12,13 @@
                 <i class="el-icon-document"/>
                 <span slot="title">个人问卷</span>
             </el-menu-item>
+            <el-menu-item index="/create" width="200px">
+                <i class="el-icon-edit"/>
+                <span slot="title">编辑问卷</span>
+            </el-menu-item>
             <el-menu-item index="/waste" width="200px">
                 <i class="el-icon-delete"/>
                 <span slot="title">回收中心</span>
-            </el-menu-item>
-            <el-menu-item index="/create" width="200px">
-                <i class="el-icon-delete"/>
-                <span slot="title">新建问卷</span>
-            </el-menu-item>
-            <el-menu-item index="/register" width="200px">
-                <i class="el-icon-delete"/>
-                <span slot="title">注册账号</span>
             </el-menu-item>
         </el-menu>
     </div>
