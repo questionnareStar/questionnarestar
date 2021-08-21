@@ -1,9 +1,21 @@
-
 <template>
   <div class="hello">
-    <el-form ref="modelForm" :rule="rules" :model="modelForm" label-position="right" label-width="100px">
-      <vuedraggable v-model="modelForm.topic" class="wrapper" @end="end">
-        <div v-for="(item, index) in modelForm.topic" :key="index">
+    <el-form
+      ref="modelForm"
+      :rule="rules"
+      :model="modelForm"
+      label-position="right"
+      label-width="100px"
+    >
+      <vuedraggable
+        v-model="modelForm.topic"
+        class="wrapper"
+        @end="end"
+      >
+        <div
+          v-for="(item, index) in modelForm.topic"
+          :key="index"
+        >
           <el-collapse>
             <el-collapse-item>
               <template slot="title">
@@ -19,6 +31,7 @@
                   <el-radio :label="0">单选题</el-radio>
                   <el-radio :label="1">多选题</el-radio>
                   <el-radio :label="2">填空题</el-radio>
+                  <el-radio :label="3">评分题</el-radio>
                 </el-radio-group>
               </el-form-item>
               <!--              //问题-->
@@ -27,12 +40,17 @@
                 label="问题"
                 :rules="{ required: true, message: '请填写问题', trigger: 'change' }"
               >
-                <el-input v-model.trim="item.questionName" style="width:258px" clearable placeholder="请填写问题" />
+                <el-input
+                  v-model.trim="item.questionName"
+                  style="width:258px"
+                  clearable
+                  placeholder="请填写问题"
+                />
               </el-form-item>
               <!-- 答案 -->
               <el-form-item
                 v-for="(opt, idx) in item.answers"
-                v-show="item.type!=2"
+                v-show="item.type!=2&&item.type!=3"
                 :key="idx"
                 :label="`选项${idx + 1}`"
                 :prop="`topic.${index}.answers.${idx}.value`"
@@ -40,11 +58,42 @@
                   { required: true, message: '请输入答案', trigger: 'blur' },
                 ]"
               >
-                <el-input v-model.trim="opt.value" style="width:258px" clearable placeholder="请输入答案" />
-                <el-button style="margin-left: 20px" @click.prevent="removeDomain(index,idx)">删除</el-button>
+                <el-input
+                  v-model.trim="opt.value"
+                  v-show="item.type==0||item.type==1"
+                  style="width:258px"
+                  clearable
+                  placeholder="请输入答案"
+                />
+                <el-button
+                  style="margin-left: 20px"
+                  v-show="item.type!=3"
+                  @click.prevent="removeDomain(index,idx)"
+                >删除</el-button>
+              </el-form-item>
+              '<el-form-item
+                v-for="(opt, idx) in item.answers"
+                v-show="item.type==3"
+                :key="idx"
+                :label="`总分`"
+                :prop="`topic.${index}.answers.${idx}.value`"
+                :rules="[
+                  { required: true, message: '请输入总分', trigger: 'blur' },
+                ]"
+              >
+                <el-input
+                  v-model.trim="opt.value"
+                  v-show="item.type==3"
+                  style="width:258px"
+                  clearable
+                  placeholder="请输入总分"
+                />
               </el-form-item>
               <el-form-item>
-                <el-button v-show="item.type!=2" @click="addDomain(index)">新增选项</el-button>
+                <el-button
+                  v-show="item.type!=2 && item.type!=3"
+                  @click="addDomain(index)"
+                >新增选项</el-button>
                 <el-button @click="removeQuestion(index)">删除题目</el-button>
               </el-form-item>
             </el-collapse-item>
@@ -53,66 +102,79 @@
       </vuedraggable>
       <el-form-item>
         <el-button @click="addQuestion">新增题目</el-button>
-        <el-button style="margin-top: 10px" @click="addSubmit()">提交</el-button>
+        <el-button
+          style="margin-top: 10px"
+          @click="addSubmit()"
+        >提交</el-button>
         <el-button @click="resetForm('modelForm')">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
-
 </template>
 <script>
-import vuedraggable from 'vuedraggable'
+import vuedraggable from "vuedraggable";
 export default {
-  name: 'HelloWorld',
+  name: "HelloWorld",
   components: {
-    vuedraggable
+    vuedraggable,
   },
   data() {
     return {
       rules: {},
+      value2: 0,
       modelForm: {
-        topic: [{
-          type: '',
-          questionName: '',
-          answers: [{ value: '' }]
-        }, {
-          type: '',
-          questionName: '',
-          answers: [{ value: '' }]
-        }]
-      }
-    }
+        topic: [
+          {
+            type: "",
+            questionName: "",
+            answers: [{ value: "" }],
+          },
+          {
+            type: "",
+            questionName: "",
+            answers: [{ value: "" }],
+          },
+        ],
+      },
+    };
   },
   methods: {
     end(evt) {
-      this.$refs.modelForm.clearValidate()
+      this.$refs.modelForm.clearValidate();
     },
-    removeDomain(index, idx) { // 删除选项
-      this.modelForm.topic[index].answers.splice(idx, 1)
+    removeDomain(index, idx) {
+      // 删除选项
+      this.modelForm.topic[index].answers.splice(idx, 1);
     },
-    removeQuestion(index) {//删除题目
-      this.modelForm.topic.splice(index, 1)
+    removeQuestion(index) {
+      //删除题目
+      this.modelForm.topic.splice(index, 1);
     },
-    addDomain(index) { // 新增选项
-      this.modelForm.topic[index].answers.push({ value: '' })
+    addDomain(index) {
+      // 新增选项
+      this.modelForm.topic[index].answers.push({ value: "" });
     },
-    addQuestion() { // 新增题目
-      this.modelForm.topic.push({ type: '', questionName: '', answers: [{ value: '' }] })
+    addQuestion() {
+      // 新增题目
+      this.modelForm.topic.push({
+        type: "",
+        questionName: "",
+        answers: [{ value: "" }],
+      });
     },
-    resetForm(formName) { // 重置
-      this.$refs[formName].resetFields()
+    resetForm(formName) {
+      // 重置
+      this.$refs[formName].resetFields();
     },
     addSubmit() {
-      this.$refs.modelForm.validate(valid => {
+      this.$refs.modelForm.validate((valid) => {
         if (valid) {
-          console.log(this.modelForm.topic)
+          console.log(this.modelForm.topic);
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
-
 <style scoped>
-
 </style>
