@@ -1,5 +1,5 @@
 <template>
-    <el-container style="solid #eee">
+    <el-container class="root" style="solid #eee">
         <el-header>
             <top-bar></top-bar>
         </el-header>
@@ -26,3 +26,15 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.root {
+    background-image: url(../assets/mainbackground.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    width: 100vw;
+    height: 100vh;
+}
+</style>
