@@ -1,7 +1,6 @@
 <template>
-    <div>
+    <div width="100%">
         <el-menu
-            class="el-menu-vertical-demo"
             :default-active="this.$route.path"
             router="true"
             background-color="#ffffff"

@@ -1,8 +1,17 @@
 <template>
     <div id="top_bar">
         <div class="top_bar_frame">
-            <div class="top_bar_icon" @click="toStart">
-                <div class="top_bar_icon_title">Questionnare Star</div>
+            <div class="top_bar_icon" @click="toStart()">
+                <span>Questionnare </span>
+                <span>Planet</span>
+            </div>
+            <div class="avatar_icon">
+                <el-dropdown>
+                    <el-avatar :size="50" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item color="red">退出登录</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </div>
         </div>
     </div>
@@ -22,30 +31,33 @@ export default {
 <style scoped>
 #top_bar {
     position: fixed;
-    z-index: 10;
-    top: 0px;
-    height: 46px;
-    widows: 100vw;
-    vertical-align: middle;
-    border: #cecfd2 solid thin;
+    top: 0;
+    height: 60px;
+    width: 100vw;
     backdrop-filter: blur(20px);
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(41, 140, 233, 0.5);
+    z-index: 10;
 }
-.nav_bar_frame {
-  vertical-align: middle;
-  height: 46px;
-  width: 100%;
+.top_bar_frame {
+    height: 100%;
+    width: auto;
 }
-.nav_bar_icon {
-  margin-left: 25px;
-  float: left;
-  line-height: 45px;
-  vertical-align: middle;
-  height: 45px;
-  cursor: pointer;
+.top_bar_icon {
+    margin-left: 25px;
+    float: left;
+    line-height: 45px;
+    height: 100%;
+    cursor: pointer;
 }
-.nav_bar_icon_title {
-  display: inline;
-  font-weight: bold;
+.top_bar_icon > span {
+    font-size: 18px;
+}
+.top_bar_icon > span:first-child {
+    font-weight: bold;
+}
+.avatar_icon {
+    float: right;
+    width: auto;
+    margin-right: 25px;
 }
 </style>

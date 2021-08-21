@@ -1,10 +1,10 @@
 <template>
     <el-container class="root" style="solid #eee">
-        <el-header>
+        <el-header class="header">
             <top-bar></top-bar>
         </el-header>
         <el-container>
-            <el-aside width="125px">
+            <el-aside width="150px">
                 <side-bar/>
             </el-aside>
             <el-container>
@@ -33,8 +33,10 @@ export default {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-
     width: 100vw;
     height: 100vh;
+}
+.header {
+    padding: 0;
 }
 </style>
