@@ -209,18 +209,7 @@ export default {
             questionName: "",
             answers: [{ value: "" }],
             isNecessary: 0,
-          },
-          {
-            type: 0,
-            questionName: "",
-            isNecessary: 0,
-          },
-          {
-            type: 0,
-            questionName: "",
-            maxScore:0,
-            isNecessary: 0,
-          },
+          }
         ],
       },
     };
