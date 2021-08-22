@@ -13,7 +13,7 @@
     <el-input
       class="问卷简介"
       label="问卷简介"
-      v-model="modelForm.Introduction"
+      v-model="modelForm.introduction"
     >
     </el-input>
     <span class="demonstration">问卷截止时间</span>
@@ -29,7 +29,7 @@
     </el-date-picker>
     <span class="head">问卷权限
     </span>
-    <el-radio-group v-model="modelForm.publicy">
+    <el-radio-group v-model="modelForm.authority">
       <el-radio label="0">任何人</el-radio>
       <el-radio label="1">凭邀请码</el-radio>
       <el-radio label="2">仅登录</el-radio>
@@ -42,22 +42,22 @@
       label-width="100px"
     >
       <vuedraggable
-        v-model="modelForm.topic"
+        v-model="modelForm.question"
         class="wrapper"
         @end="end"
       >
         <div
-          v-for="(item, index) in modelForm.topic"
+          v-for="(item, index) in modelForm.question"
           :key="index"
         >
           <el-collapse>
             <el-collapse-item>
               <template slot="title">
-                第{{ index+1 }}题,题目:{{ item.questionName }}
+                第{{ index+1 }}题,题目:{{ item.question }}
               </template>
               <!-- 问题 -->
               <el-form-item
-                :prop="`topic.${index}.type`"
+                :prop="`question.${index}.type`"
                 :label="`问题${index + 1}类型`"
                 :rules="{ required: true, message: '请选择问题类型', trigger: 'change' }"
               >
@@ -69,23 +69,23 @@
                 </el-radio-group>
               </el-form-item>
               <el-form-item
-                :prop="`topic.${index}.type`"
+                :prop="`question.${index}.type`"
                 :label="`问题${index + 1}是否必答`"
                 :rules="{ required: true, message: '是否必答', trigger: 'change' }"
               >
-                <el-radio-group v-model="modelForm.topic.isNecessary">
+                <el-radio-group v-model="modelForm.question.isNecessary">
                   <el-radio label="0">是</el-radio>
                   <el-radio label="1">不是</el-radio>
                 </el-radio-group>
               </el-form-item>
               <!--              //问题-->
               <el-form-item
-                :prop="`topic.${index}.questionName`"
+                :prop="`question.${index}.question`"
                 label="问题"
                 :rules="{ required: true, message: '请填写问题', trigger: 'change' }"
               >
                 <el-input
-                  v-model.trim="item.questionName"
+                  v-model.trim="item.question"
                   style="width:258px"
                   clearable
                   placeholder="请填写问题"
@@ -93,11 +93,11 @@
               </el-form-item>
               <!-- 答案 -->
               <el-form-item
-                v-for="(opt, idx) in item.answers"
+                v-for="(opt, idx) in item.choices"
                 v-show="item.type!=2&&item.type!=3"
                 :key="idx"
                 :label="`选项${idx + 1}`"
-                :prop="`topic.${index}.answers.${idx}.value`"
+                :prop="`question.${index}.choices.${idx}.value`"
                 :rules="[
                   { required: true, message: '请输入答案', trigger: 'blur' },
                 ]"
@@ -116,11 +116,11 @@
                 >删除</el-button>
               </el-form-item>
               '<el-form-item
-                v-for="(opt, idx) in item.answers"
+                v-for="(opt, idx) in item.choices"
                 v-show="item.type==3"
                 :key="idx"
                 :label="`总分`"
-                :prop="`topic.${index}.answers.${idx}.value`"
+                :prop="`question.${index}.choices.${idx}.value`"
                 :rules="[
                   { required: true, message: '请输入总分', trigger: 'blur' },
                 ]"
@@ -201,13 +201,15 @@ export default {
       value2: 0,
       modelForm: {
         head: "",
-        publicy:-1,
-        Introduction:"",
-        topic: [
+        introduction:"",
+        authority:-1,
+        starttime:0,
+        endtime:0,
+        question: [
           {
             type: 0,
-            questionName: "",
-            answers: [{ value: "" }],
+            question: "",
+            choices: [{ choice: "" }],
             isNecessary: 0,
           }
         ],
@@ -220,22 +222,23 @@ export default {
     },
     removeDomain(index, idx) {
       // 删除选项
-      this.modelForm.topic[index].answers.splice(idx, 1);
+      this.modelForm.question[index].choices.splice(idx, 1);
     },
     removeQuestion(index) {
       //删除题目
-      this.modelForm.topic.splice(index, 1);
+      this.modelForm.question.splice(index, 1);
     },
     addDomain(index) {
       // 新增选项
-      this.modelForm.topic[index].answers.push({ value: "" });
+      this.modelForm.question[index].choices.push({ value: "" });
     },
     addQuestion() {
       // 新增题目
-      this.modelForm.topic.push({
+      this.modelForm.question.push({
         type: "",
-        questionName: "",
-        answers: [{ value: "" }],
+        question: "",
+        choices: [{ value: "" }],
+        isNecessary:0,
       });
     },
     resetForm(formName) {
@@ -245,7 +248,7 @@ export default {
     addSubmit() {
       this.$refs.modelForm.validate((valid) => {
         if (valid) {
-          console.log(this.modelForm.topic);
+          console.log(this.modelForm.question);
         }
       });
     },
