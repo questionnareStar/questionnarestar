@@ -10,6 +10,8 @@ import CreateQuestionnare from '../views/Createquestionnare.vue'
 // 用户登录注册视图
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
+//问卷页面
+import Questionnare from '../views/Questionnare.vue'
 
 Vue.use(VueRouter)
 
@@ -56,6 +58,11 @@ const routes = [
     name: 'AuthLayout',
     component: AuthLayout,
     children: AuthChildRoutes
+  },
+  {
+    path: '/questionnare/:id',
+    name: 'Questionnare',
+    component: Questionnare
   }
 ]
 
