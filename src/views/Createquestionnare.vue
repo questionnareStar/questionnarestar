@@ -1,10 +1,19 @@
 <template>
-  <div class="hello">
-    <span class="demonstration">问卷标题
+  <div class="questionnare">
+    <span class="head">问卷标题
     </span>
     <el-input
       class="问卷标题"
       label="问卷标题"
+      v-model="modelForm.head"
+    >
+    </el-input>
+    <span class="Introduction">问卷简介
+    </span>
+    <el-input
+      class="问卷简介"
+      label="问卷简介"
+      v-model="modelForm.Introduction"
     >
     </el-input>
     <span class="demonstration">问卷截止时间</span>
@@ -18,16 +27,13 @@
       align="right"
     >
     </el-date-picker>
-    <el-form-item
-      label="问卷权限"
-      prop="resource"
-    >
-      <el-radio-group v-model="pickerOptions.publicy">
-        <el-radio label="0">任何人</el-radio>
-        <el-radio label="1">凭邀请码</el-radio>
-        <el-radio label="2">仅登录</el-radio>
-      </el-radio-group>
-    </el-form-item>
+    <span class="head">问卷权限
+    </span>
+    <el-radio-group v-model="modelForm.publicy">
+      <el-radio label="0">任何人</el-radio>
+      <el-radio label="1">凭邀请码</el-radio>
+      <el-radio label="2">仅登录</el-radio>
+    </el-radio-group>
     <el-form
       ref="modelForm"
       :rule="rules"
@@ -192,21 +198,28 @@ export default {
       value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
       value2: "",
       rules: {},
-      publicy: 0,
       value2: 0,
       modelForm: {
+        head: "",
+        publicy:-1,
+        Introduction:"",
         topic: [
           {
-            type: "",
+            type: 0,
             questionName: "",
             answers: [{ value: "" }],
-            isNecessary:0
+            isNecessary: 0,
           },
           {
-            type: "",
+            type: 0,
             questionName: "",
-            answers: [{ value: "" }],
-            isNecessary:0
+            isNecessary: 0,
+          },
+          {
+            type: 0,
+            questionName: "",
+            maxScore:0,
+            isNecessary: 0,
           },
         ],
       },
