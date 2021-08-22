@@ -28,7 +28,7 @@
     </el-card>
   <el-table
     :data="tableData"
-    border="true"
+    :border="true"
     height="1000"
     style="width: 100%">
      <el-table-column
