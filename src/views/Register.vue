@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import { message } from '../util/inform'
+import auth from '../util/service/auth'
 export default {
   data() {
     var checkEmail = (rule, value, callback) => {
@@ -48,10 +50,10 @@ export default {
         if (value.length < 6 || value.length > 20) {
           callback(new Error("请输入六至二十位"));
         }
-        var regx = /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,20}$/;
-        if (!this.registerInfo.pass.match(regx)) {
-          callback(new Error("请同时包含字母数字"));
-        }
+        // var regx = /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,20}$/;
+        // if (!this.registerInfo.pass.match(regx)) {
+        //   callback(new Error("请同时包含字母数字"));
+        // }
         if (this.registerInfo.checkPass !== "") {
           this.$refs.registerInfo.validateField("checkPass");
         }
@@ -68,10 +70,10 @@ export default {
       }
     }
     var validateCode = (rule, value, callback) => {
-      if (value === this.$store.state.realCode) {
+      if (value) {
         callback()
       } else {
-        callback(new Error("验证码错误"))
+        callback(new Error("验证码不能为空"))
       }
     }
     return {
@@ -93,10 +95,30 @@ export default {
   },
   methods: {
     register(registerInfo) {
-      // this.$router.push('/auth/login');
       this.$refs[registerInfo].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            let formData = {
+              account: this.registerInfo.email,
+              code: this.registerInfo.code,
+              password: this.registerInfo.pass
+            }
+            auth.register(formData)
+              .then((response) => {
+                console.log(response)
+                const data = response.data
+                if (data.code === 20000) {
+                  message({
+                    message: data.msg,
+                    type: 'success'
+                  })
+                  this.$router.push('/auth/login')
+                } else {
+                  message({
+                    message: data.msg,
+                    type: 'error'
+                  })
+                }
+              })
           } else {
             console.log('error submit!!');
             return false;
@@ -109,10 +131,30 @@ export default {
     fetchCode() {
       if (/^(\w+)(\.\w+)*@(\w+)(\.\w+)*.(\w+)$/i.test(this.registerInfo.email)) {
         this.gotCode = true
-        // 从后端获取验证码
+        auth.fetchCodeForRegister(this.registerInfo.email)
+          .then((response) => {
+            console.log(response)
+            const data = response.data
+            if (data.code === 20000) {
+              message({
+                message: '验证码获取成功',
+                type: 'success'
+              })
+            } else {
+              message({
+                message: data.msg,
+                type: 'error'
+              })
+            }
+          })
+          .catch((error) => {
+              message({
+                  message: error.message,
+                  type: 'warning'
+              })
+          })
       } else {
-        this.$message({
-          showClose: true,
+        message({
           message: '正确输入邮箱后方可获取验证码',
           type: 'error'
         })
