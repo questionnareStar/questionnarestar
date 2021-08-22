@@ -24,6 +24,9 @@
 </template>
 
 <script>
+import auth from "../util/service/auth.js"
+import { message } from "../util/inform.js"
+
 export default {
     data() {
         return {
@@ -37,7 +40,51 @@ export default {
     },
     methods: {
         login() {
-            this.$router.push('/')
+            if (this.isPassMode) {
+                if (this.loginInfo.email !== '' && this.loginInfo.password !== '') {
+                    let formData = {
+                        account: this.loginInfo.email,
+                        password: this.loginInfo.password
+                    }
+                    auth.passwordLogin(formData)
+                        .then((response) => {
+                            const data = response.data
+                            console.log(response)
+                            if (data.code === 20000) {
+                                message({
+                                    message: '登录成功',
+                                    type: 'success'
+                                })
+                                this.$router.push('/')
+                            } else {
+                                message({
+                                    message: data.msg,
+                                    type: 'error'
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            message({
+                                message: error.message,
+                                type: 'warning'
+                            })
+                        })
+                } else {
+                    message({
+                        message: '请正确输入邮箱和密码',
+                        type: 'error'
+                    })
+                }
+            } else {
+                if (this.loginInfo.email !== '' && this.loginInfo.code !== '') {
+                    
+                } else {
+                    message({
+                        message: '请正确输入邮箱和验证码',
+                        type: 'error'
+                    })
+                }
+            }
         },
         changeLoginMode() {
             this.isPassMode = !this.isPassMode
