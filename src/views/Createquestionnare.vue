@@ -1,5 +1,12 @@
 <template>
   <div class="hello">
+    <span class="demonstration">问卷标题
+    </span>
+    <el-input
+      class="问卷标题"
+      label="问卷标题"
+    >
+    </el-input>
     <span class="demonstration">问卷截止时间</span>
     <el-date-picker
       v-model="value2"
@@ -60,7 +67,7 @@
                 :label="`问题${index + 1}是否必答`"
                 :rules="{ required: true, message: '是否必答', trigger: 'change' }"
               >
-                <el-radio-group v-model="item.type">
+                <el-radio-group v-model="modelForm.topic.isNecessary">
                   <el-radio label="0">是</el-radio>
                   <el-radio label="1">不是</el-radio>
                 </el-radio-group>
@@ -193,11 +200,13 @@ export default {
             type: "",
             questionName: "",
             answers: [{ value: "" }],
+            isNecessary:0
           },
           {
             type: "",
             questionName: "",
             answers: [{ value: "" }],
+            isNecessary:0
           },
         ],
       },
