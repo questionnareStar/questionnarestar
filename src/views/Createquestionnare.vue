@@ -1,5 +1,26 @@
 <template>
   <div class="hello">
+    <span class="demonstration">问卷截止时间</span>
+    <el-date-picker
+      v-model="value2"
+      type="datetimerange"
+      :picker-options="pickerOptions"
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      align="right"
+    >
+    </el-date-picker>
+    <el-form-item
+      label="问卷权限"
+      prop="resource"
+    >
+      <el-radio-group v-model="pickerOptions.publicy">
+        <el-radio label="0">任何人</el-radio>
+        <el-radio label="1">凭邀请码</el-radio>
+        <el-radio label="2">仅登录</el-radio>
+      </el-radio-group>
+    </el-form-item>
     <el-form
       ref="modelForm"
       :rule="rules"
@@ -32,6 +53,16 @@
                   <el-radio :label="1">多选题</el-radio>
                   <el-radio :label="2">填空题</el-radio>
                   <el-radio :label="3">评分题</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item
+                :prop="`topic.${index}.type`"
+                :label="`问题${index + 1}是否必答`"
+                :rules="{ required: true, message: '是否必答', trigger: 'change' }"
+              >
+                <el-radio-group v-model="item.type">
+                  <el-radio label="0">是</el-radio>
+                  <el-radio label="1">不是</el-radio>
                 </el-radio-group>
               </el-form-item>
               <!--              //问题-->
@@ -120,7 +151,41 @@ export default {
   },
   data() {
     return {
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "最近一周",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近一个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近三个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+        ],
+      },
+      value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+      value2: "",
       rules: {},
+      publicy: 0,
       value2: 0,
       modelForm: {
         topic: [
