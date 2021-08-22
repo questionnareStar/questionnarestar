@@ -1,4 +1,4 @@
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 
 /**
  * element-ui 消息弹窗的函数封装

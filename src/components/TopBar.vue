@@ -9,7 +9,7 @@
                 <el-dropdown>
                     <el-avatar :size="50" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item color="red">退出登录</el-dropdown-item>
+                        <el-dropdown-item @click.native="logout()">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -18,11 +18,27 @@
 </template>
 
 <script>
+import { message } from '../util/inform'
 export default {
     methods: {
         toStart() {
             this.$router.push('/')
             window.location.reload()
+        },
+        logout() {
+            this.$confirm('确认退出登录?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                console.log('call back')
+                localStorage.removeItem('userInfo')
+                this.$router.push('/auth/login')
+                message({
+                    type: 'info',
+                    message: '退出登录'
+                });
+            })
         }
     }
 }
