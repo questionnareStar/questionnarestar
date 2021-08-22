@@ -2,7 +2,7 @@
     <div width="100%">
         <el-menu
             :default-active="this.$route.path"
-            router="true"
+            :router="true"
             background-color="#ffffff"
             text-color="#242424"
             active-text-color="#1998e4"

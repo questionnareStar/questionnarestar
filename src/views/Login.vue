@@ -55,6 +55,7 @@ export default {
                                     message: '登录成功',
                                     type: 'success'
                                 })
+                                localStorage.setItem('userInfo', JSON.stringify(data.data))
                                 this.$router.push('/')
                             } else {
                                 message({
@@ -90,6 +91,7 @@ export default {
                                     message: '登录成功',
                                     type: 'success'
                                 })
+                                localStorage.setItem('userInfo', JSON.stringify(data.data))
                                 this.$router.push('/')
                             } else {
                                 message({
