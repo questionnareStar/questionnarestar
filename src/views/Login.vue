@@ -77,7 +77,33 @@ export default {
                 }
             } else {
                 if (this.loginInfo.email !== '' && this.loginInfo.code !== '') {
-                    
+                    let formData = {
+                        account: this.loginInfo.email,
+                        code: this.loginInfo.code
+                    }
+                    auth.codeLogin(formData)
+                        .then((response) => {
+                            const data = response.data
+                            console.log(response)
+                            if (data.code === 20000) {
+                                message({
+                                    message: '登录成功',
+                                    type: 'success'
+                                })
+                                this.$router.push('/')
+                            } else {
+                                message({
+                                    message: data.msg,
+                                    type: 'error'
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            message({
+                                message: error.message,
+                                type: 'warning'
+                            })
+                        })
                 } else {
                     message({
                         message: '请正确输入邮箱和验证码',
@@ -90,7 +116,36 @@ export default {
             this.isPassMode = !this.isPassMode
         },
         fetchCode() {
-            
+            if (/^(\w+)(\.\w+)*@(\w+)(\.\w+)*.(\w+)$/i.test(this.loginInfo.email)) {
+                this.gotCode = true
+                auth.fetchCodeForLogin(this.loginInfo.email)
+                    .then((response) => {
+                        console.log(response)
+                        const data = response.data
+                        if (data.code === 20000) {
+                            message({
+                                message: '验证码获取成功',
+                                type: 'success'
+                            })
+                        } else {
+                            message({
+                                message: data.msg,
+                                type: 'error'
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        message({
+                            message: error.message,
+                            type: 'warning'
+                        })
+                    })
+            } else {
+                message({
+                message: '正确输入邮箱后方可获取验证码',
+                type: 'error'
+                })
+            }
         },
         toRegister() {
             this.$router.push('/auth/register')

@@ -29,7 +29,7 @@ export default {
             },
             method: 'GET',
             url: '/api/v1/user/mail/send/code/login/' + mail,
-            timeout: 5000
+            timeout: 10000
         })
     },
     fetchCodeForRegister(mail) {
