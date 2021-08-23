@@ -31,7 +31,6 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                console.log('call back')
                 localStorage.removeItem('userInfo')
                 this.$router.push('/auth/login')
                 message({
