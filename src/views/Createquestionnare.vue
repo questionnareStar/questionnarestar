@@ -25,6 +25,7 @@
       start-placeholder="开始日期"
       end-placeholder="结束日期"
       align="right"
+      value-format="timestamp"
     >
     </el-date-picker>
     <span class="head">问卷权限
@@ -38,6 +39,12 @@
     <el-radio-group v-model="modelForm.isLogin">
       <el-radio label="0">需要</el-radio>
       <el-radio label="1">不需要</el-radio>
+    </el-radio-group>
+    <span class="head">是否需要显示题号
+    </span>
+    <el-radio-group v-model="modelForm.serial">
+      <el-radio label=true>需要</el-radio>
+      <el-radio label=false>不需要</el-radio>
     </el-radio-group>
     <el-form
       ref="modelForm"
@@ -78,7 +85,7 @@
                 :label="`问题${index + 1}是否必答`"
                 :rules="{ required: true, message: '是否必答', trigger: 'change' }"
               >
-                <el-radio-group v-model="item.isNecessary">
+                <el-radio-group v-model="item.required">
                   <el-radio label="0">是</el-radio>
                   <el-radio label="1">不是</el-radio>
                 </el-radio-group>
@@ -94,6 +101,18 @@
                   style="width:258px"
                   clearable
                   placeholder="请填写问题"
+                />
+              </el-form-item>
+              <el-form-item
+                :prop="`question.${index}.question`"
+                label="问题描述"
+                :rules="{ required: true, message: '请填写问题描述', trigger: 'change' }"
+              >
+                <el-input
+                  v-model.trim="item.desc"
+                  style="width:258px"
+                  clearable
+                  placeholder="请填写问题描述"
                 />
               </el-form-item>
               <!-- 答案 -->
@@ -210,15 +229,17 @@ export default {
       modelForm: {
         head: "",
         introduction: "",
-        isReleased: 0,
+        isReleased: -1,
         authority: -1,
         isLogin: -1,
+        serial: false,
         question: [
           {
-            type: -1,
+            desc: "",
+            type: 0,
             question: "",
             choices: [{ choice: "" }],
-            isNecessary: 0,
+            required: -1,
           },
         ],
       },
@@ -246,23 +267,30 @@ export default {
     addQuestion() {
       // 新增题目
       this.modelForm.question.push({
+        desc: "",
         type: 0,
         question: "",
         choices: [{ value: "" }],
-        isNecessary: 0,
+        required: 0,
       });
     },
     addSubmit() {
-      var questionreturned=[];
-      this.modelForm.question.forEach(function (item,index) {
+      var questionreturned = [];
+      this.modelForm.question.forEach(function (item, index) {
         console.log(item);
         if (item.type == 0) {
+          var choice = [];
+          item.choices.forEach(function (items) {
+            choice.push(items.value);
+          });
+          console.log(choice);
           let JsonCreateQuestion = {
-            choices: item.choices,
+            desc: item.desc,
+            choices: choice,
             question: item.question,
-            isNecessary: Number(item.isNecessary),
+            required: Number(item.required),
           };
-          console.log(JsonCreateQuestion)
+          console.log(JsonCreateQuestion);
           axios({
             method: "post",
             url: "https://question.xk857.club/api/v1/topic/create/single/choice",
@@ -271,20 +299,26 @@ export default {
             console.log(res);
             if (res.data.id != 0) {
               questionreturned.push({
-                questionid: res.data.id,
-                itemorder: index+1,
-                itemtype: 0,
+                itemId: res.data.data.id,
+                itemOrder: index + 1,
+                itemType: 0,
               });
             }
           });
         }
         if (item.type == 1) {
+          var choice = [];
+          item.choices.forEach(function (items) {
+            choice.push(items.value);
+          });
+          console.log(choice);
           let JsonCreateQuestion = {
-            choices: item.choices,
+            desc: item.desc,
+            choices: choice,
             question: item.question,
-            isNecessary: Number(item.isNecessary),
+            required: Number(item.required),
           };
-          console.log(JsonCreateQuestion)
+          console.log(JsonCreateQuestion);
           axios({
             method: "post",
             url: "https://question.xk857.club/api/v1/topic/create/multi/choice",
@@ -293,8 +327,8 @@ export default {
             console.log(res);
             if (res.data.id != 0) {
               questionreturned.push({
-                questionid: res.data.id,
-                itemorder: index+1,
+                questionid: res.data.data.id,
+                itemorder: index + 1,
                 itemtype: 1,
               });
             }
@@ -303,9 +337,9 @@ export default {
         if (item.type == 2) {
           let JsonCreateQuestion = {
             question: item.question,
-            isNecessary: Number(item.isNecessary),
+            required: Number(item.required),
           };
-          console.log(JsonCreateQuestion)
+          console.log(JsonCreateQuestion);
           axios({
             method: "post",
             url: "https://question.xk857.club/api/v1/topic/create/fill/blank",
@@ -314,8 +348,8 @@ export default {
             console.log(res);
             if (res.data.id != 0) {
               questionreturned.push({
-                questionid: res.data.id,
-                itemorder: index+1,
+                questionid: res.data.data.id,
+                itemorder: index + 1,
                 itemtype: 2,
               });
             }
@@ -323,11 +357,12 @@ export default {
         }
         if (item.type == 3) {
           let JsonCreateQuestion = {
-            maxscore: Number(item.maxscore),
+            desc: item.desc,
+            maxScore: Number(item.maxscore),
             question: item.question,
-            isNecessary: Number(item.isNecessary),
+            required: Number(item.required),
           };
-          console.log(JsonCreateQuestion)
+          console.log(JsonCreateQuestion);
           axios({
             method: "post",
             url: "https://question.xk857.club/api/v1/topic/create/mark",
@@ -335,48 +370,135 @@ export default {
           }).then((res) => {
             console.log(res);
             if (res.data.id != 0) {
-              this.questionreturned.push({
-                questionid: res.data.id,
-                itemorder: index+1,
+              questionreturned.push({
+                questionid: res.data.data.id,
+                itemorder: index + 1,
                 itemtype: 3,
               });
             }
           });
         }
       });
-      console.log(questionreturned)
+      console.log(questionreturned);
+      console.log(this.value2);
       let JsonCreateQuestionnaire = {
         head: this.modelForm.head,
         introduction: this.modelForm.introduction,
         isReleased: 0,
-        authority: this.modelForm.authority,
-        isLogin: this.modelForm.authority,
-        question: this.modelForm.question,
-        starttime: this.value2[0],
-        endtime: this.value2[1],
+        itemList: questionreturned,
+        serial: JSON.parse(this.modelForm.serial),
+        startTime: this.value2[0].toString(),
+        endTime: this.value2[1].toString(),
       };
-      axios({
-        method: "post",
-        url: "https://question.xk857.club/api/v1/questionnaire/create",
-        data: JsonCreateQuestionnaire,
-      }).then((res) => {
-        console.log(res);
-        if (res.data.type == 0) {
-          this.$message({
-            showClose: true,
-            message: "创建问卷成功，任何人均可填写问卷",
-            type: "success",
-          });
-          window.location.herf = "../find/me/all";
-        } else {
-          this.$message({
-            showClose: true,
-            message: "创建问卷成功，他人可凭邀请码可填写问卷",
-            type: "success",
-          });
-          window.location.herf = "../find/me/all";
-        }
-      });
+      console.log(JsonCreateQuestionnaire);
+      if (this.modelForm.authority == 0 && this.modelForm.isLogin == 0) {
+        axios({
+          headers: {
+            token: JSON.parse(localStorage.getItem("userInfo")).token,
+          },
+          method: "post",
+          url: "https://question.xk857.club/api/v1/questionnaire/create",
+          data: JsonCreateQuestionnaire,
+        }).then((res) => {
+          console.log(res);
+          if (res.data.type == 0) {
+            this.$message({
+              showClose: true,
+              message: "创建问卷成功，任何人均可填写问卷",
+              type: "success",
+            });
+            window.location.herf = "../find/me/all";
+          } else {
+            this.$message({
+              showClose: true,
+              message: "创建问卷成功，他人可凭邀请码可填写问卷",
+              type: "success",
+            });
+            window.location.herf = "../find/me/all";
+          }
+        });
+      }
+      if (this.modelForm.authority == 1 && this.modelForm.isLogin == 0) {
+        axios({
+          headers: {
+            token: JSON.parse(localStorage.getItem("userInfo")).token,
+          },
+          method: "post",
+          url: "https://question.xk857.club/api/v1/questionnaire/create/code",
+          data: JsonCreateQuestionnaire,
+        }).then((res) => {
+          console.log(res);
+          if (res.data.type == 0) {
+            this.$message({
+              showClose: true,
+              message: "创建问卷成功，任何人均可填写问卷",
+              type: "success",
+            });
+            window.location.herf = "../find/me/all";
+          } else {
+            this.$message({
+              showClose: true,
+              message: "创建问卷成功，他人可凭邀请码可填写问卷",
+              type: "success",
+            });
+            window.location.herf = "../find/me/all";
+          }
+        });
+      }
+      if (this.modelForm.authority == 0 && this.modelForm.isLogin == 1) {
+        axios({
+          headers: {
+            token: JSON.parse(localStorage.getItem("userInfo")).token,
+          },
+          method: "post",
+          url: "https://question.xk857.club/api/v1/questionnaire/create/login",
+          data: JsonCreateQuestionnaire,
+        }).then((res) => {
+          console.log(res);
+          if (res.data.type == 0) {
+            this.$message({
+              showClose: true,
+              message: "创建问卷成功，任何人均可填写问卷",
+              type: "success",
+            });
+            window.location.herf = "../find/me/all";
+          } else {
+            this.$message({
+              showClose: true,
+              message: "创建问卷成功，他人可凭邀请码可填写问卷",
+              type: "success",
+            });
+            window.location.herf = "../find/me/all";
+          }
+        });
+      }
+      if (this.modelForm.authority == 1 && this.modelForm.isLogin == 1) {
+        axios({
+          headers: {
+            token: JSON.parse(localStorage.getItem("userInfo")).token,
+          },
+          method: "post",
+          url: "https://question.xk857.club/api/v1/questionnaire/create/login/code",
+          data: JsonCreateQuestionnaire,
+        }).then((res) => {
+          console.log(res);
+          if (res.data.type == 0) {
+            this.$message({
+              showClose: true,
+              message: "创建问卷成功，任何人均可填写问卷",
+              type: "success",
+            });
+            window.location.herf = "../find/me/all";
+          } else {
+            this.$message({
+              showClose: true,
+              message: "创建问卷成功，他人可凭邀请码可填写问卷",
+              type: "success",
+            });
+            window.location.herf = "../find/me/all";
+          }
+        });
+      }
     },
   },
 };
