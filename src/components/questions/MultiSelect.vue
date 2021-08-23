@@ -1,20 +1,25 @@
 <template>
     <div style="width=85% mb-8">
-        <el-row class="question-title mb-8">
-            <span v-if="serial">{{sequence}}</span>
-            <span>{{question}}</span>
-            <span v-if="required" class="red">*</span>
-            【多选题】
-        </el-row>
-        <el-row v-if="description" class="question-des mb-8">
-            <span>{{description}}</span>
-        </el-row>
-        <el-row class="question-choices mb-8">
-            <el-checkbox-group v-model="answers" @change="onchange()">
-                <el-checkbox class="choice-block" v-for="(item, index) in choices" :key="index" :label="item">{{item}}</el-checkbox>
-            </el-checkbox-group>
-        </el-row>
-    </div>
+        <ValidationProvider :rules="`${required ? 'required' : ''}`" v-slot="{ errors }">
+            <el-row class="question-title mb-8">
+                <span v-if="serial">{{sequence}}</span>
+                <span>{{question}}</span>
+                <span v-if="required" class="red">*</span>
+                【多选题】
+            </el-row>
+            <el-row v-if="description" class="question-des mb-8">
+                <span>{{description}}</span>
+            </el-row>
+            <el-row class="question-choices">
+                <el-checkbox-group v-model="answers" @change="onchange()">
+                    <el-checkbox class="choice-block" v-for="(item, index) in choices" :key="index" :label="item">{{item}}</el-checkbox>
+                </el-checkbox-group>
+            </el-row>
+            <el-row class="red mb-8">
+                <span>{{ errors[0] }}</span>
+            </el-row>
+        </ValidationProvider>
+   </div>
 </template>
 
 <script>
