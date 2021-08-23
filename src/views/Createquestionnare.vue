@@ -32,7 +32,12 @@
     <el-radio-group v-model="modelForm.authority">
       <el-radio label="0">任何人</el-radio>
       <el-radio label="1">凭邀请码</el-radio>
-      <el-radio label="2">仅登录</el-radio>
+    </el-radio-group>
+    <span class="head">是否需要登录
+    </span>
+    <el-radio-group v-model="modelForm.isLogin">
+      <el-radio label="0">需要</el-radio>
+      <el-radio label="1">不需要</el-radio>
     </el-radio-group>
     <el-form
       ref="modelForm"
@@ -149,8 +154,7 @@
         <el-button
           style="margin-top: 10px"
           @click="addSubmit()"
-        >提交</el-button>
-        <el-button @click="resetForm('modelForm')">重置</el-button>
+        >保存</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -201,17 +205,19 @@ export default {
       value2: 0,
       modelForm: {
         head: "",
-        introduction:"",
-        authority:-1,
-        starttime:0,
-        endtime:0,
+        introduction: "",
+        isReleased: 0,
+        authority: -1,
+        starttime: 0,
+        endtime: 0,
+        isLogin: 0,
         question: [
           {
             type: 0,
             question: "",
             choices: [{ choice: "" }],
             isNecessary: 0,
-          }
+          },
         ],
       },
     };
@@ -238,7 +244,7 @@ export default {
         type: "",
         question: "",
         choices: [{ value: "" }],
-        isNecessary:0,
+        isNecessary: 0,
       });
     },
     resetForm(formName) {
@@ -246,9 +252,25 @@ export default {
       this.$refs[formName].resetFields();
     },
     addSubmit() {
-      this.$refs.modelForm.validate((valid) => {
-        if (valid) {
-          console.log(this.modelForm.question);
+      this.$axios({
+        method: "post",
+        url: "http://47.93.216.213:3344/api/v1/questionnaire/create",
+        data: modelData,
+      }).then((res) => {
+        console.log(res);
+        if (res.data.type == 0) {
+          this.$message({
+            showClose: true,
+            message: "创建问卷成功，任何人均可填写问卷",
+            type: "success",
+          });
+          window.location.herf = "../find/me/all";
+        } else {
+          this.$message({
+            showClose: true,
+            message: "创建问卷成功，他人可凭邀请码可填写问卷",
+            type: "success",
+          });
         }
       });
     },
