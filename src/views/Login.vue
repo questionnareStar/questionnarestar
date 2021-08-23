@@ -56,7 +56,7 @@ export default {
                                     type: 'success'
                                 })
                                 localStorage.setItem('userInfo', JSON.stringify(data.data))
-                                this.$router.push('/')
+                                this.afterLogin()
                             } else {
                                 message({
                                     message: data.msg,
@@ -92,7 +92,7 @@ export default {
                                     type: 'success'
                                 })
                                 localStorage.setItem('userInfo', JSON.stringify(data.data))
-                                this.$router.push('/')
+                                this.afterLogin()
                             } else {
                                 message({
                                     message: data.msg,
@@ -151,6 +151,14 @@ export default {
         },
         toRegister() {
             this.$router.push('/auth/register')
+        },
+        afterLogin() {
+            console.log(this.$route.params.id)
+            if (this.$route.params.id === undefined) {
+                this.$router.push('/')
+            } else {
+                this.$router.push('/questionnare/' + this.$route.params.id)
+            }
         }
     }
 }

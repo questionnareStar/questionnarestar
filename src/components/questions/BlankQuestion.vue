@@ -1,16 +1,22 @@
 <template>
     <div style="width=85% mb-8 height=100px">
-        <el-row class="question-title mb-8">
-            <span v-if="serial">{{sequence}}</span>
-            <span>{{question}}</span>
-            <span v-if="required" class="red">*</span>
-        </el-row>
-        <el-row v-if="description" class="question-des mb-8">
-            <span>{{description}}</span>
-        </el-row>
-        <el-row class="question-choices mb-8">
-            <el-input v-model="answers[0]" type="textarea" autosize placeholder="请输入内容" @change="onchange()"/>
-        </el-row>
+        <ValidationProvider :rules="`${required ? 'required' : ''}`" v-slot="{ errors }">
+            <el-row class="question-title mb-8">
+                <span v-if="serial">{{sequence}}</span>
+                <span>{{question}}</span>
+                <span v-if="required" class="red">*</span>
+            </el-row>
+            <el-row v-if="description" class="question-des mb-8">
+                <span>{{description}}</span>
+            </el-row>
+            <el-row class="question-choices">
+                <el-input v-model="answers[0]" type="textarea" autosize placeholder="请输入内容" @change="onchange()"/>
+            </el-row>
+            <el-row class="red mb-8">
+                <span>{{ errors[0] }}</span>
+            </el-row>
+        </ValidationProvider>
+        
     </div>
 </template>
 

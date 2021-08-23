@@ -12,6 +12,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 //问卷页面
 import Questionnare from '../views/Questionnare.vue'
+import Finish from '../views/Finish.vue'
 
 Vue.use(VueRouter)
 
@@ -43,7 +44,15 @@ const AuthChildRoutes = [
     path: 'register',
     name: 'register',
     component: Register
+  },
+  {
+    path: 'validate/:id',
+    name: 'Validate',
+    component: Login
   }
+]
+
+const QuestionnareChildRoutes = [
 ]
 
 const routes = [
@@ -63,6 +72,11 @@ const routes = [
     path: '/questionnare/:id',
     name: 'Questionnare',
     component: Questionnare
+  },
+  {
+    path: '/finish',
+    name: 'Finish',
+    component: Finish
   }
 ]
 
