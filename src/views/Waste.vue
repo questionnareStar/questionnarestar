@@ -30,7 +30,7 @@
                 <span style="margin-left: 10px">{{ scope.row.title }}</span>
             </template>
         </el-table-column>
-        <el-table-column label="创建日期" width="180">
+        <el-table-column label="创建日期" width="250">
             <template slot-scope="scope">
                 <i class="el-icon-time"></i>
                 <span style="margin-left: 10px">{{ scope.row.date }}</span>
@@ -68,8 +68,20 @@ export default {
 
             console.log(res)
             for (let item of res.data.data.records) {
+                let date = new Date(item.createTime);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                let h = date.getHours();
+                h = h < 10 ? ('0' + h) : h;
+                let m = date.getMinutes();
+                m = m < 10 ? ('0' + m) : m;
+                let s = date.getSeconds();
+                s = s < 10 ? ('0' + s) : s;
                 this.tableData.push({
-                    date: item.createTime,
+                    date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
                     num: item.writeNum,
                     ID: item.id,
                     title: item.head,
@@ -168,8 +180,20 @@ export default {
                 console.log(res)
                 this.tableData = []
                 for (let item of res.data.data.records) {
+                    let date = new Date(item.createTime);
+                    let y = date.getFullYear();
+                    let MM = date.getMonth() + 1;
+                    MM = MM < 10 ? ('0' + MM) : MM;
+                    let d = date.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    let h = date.getHours();
+                    h = h < 10 ? ('0' + h) : h;
+                    let m = date.getMinutes();
+                    m = m < 10 ? ('0' + m) : m;
+                    let s = date.getSeconds();
+                    s = s < 10 ? ('0' + s) : s;
                     this.tableData.push({
-                        date: item.createTime,
+                        date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
                         num: item.writeNum,
                         ID: item.id,
                         title: item.head,
@@ -179,7 +203,13 @@ export default {
         },
         Search(input) {
             console.log(input);
-
+              if(input==""){
+              message({
+                        message: '输入为空',
+                        type: 'error'
+                    })
+          }
+          else{
             let listinit = {
                 current: 1,
                 size: 100000,
@@ -194,8 +224,20 @@ export default {
                     this.tableData = []
                     console.log(res)
                     for (let item of res.data.data.records) {
+                        let date = new Date(item.createTime);
+                        let y = date.getFullYear();
+                        let MM = date.getMonth() + 1;
+                        MM = MM < 10 ? ('0' + MM) : MM;
+                        let d = date.getDate();
+                        d = d < 10 ? ('0' + d) : d;
+                        let h = date.getHours();
+                        h = h < 10 ? ('0' + h) : h;
+                        let m = date.getMinutes();
+                        m = m < 10 ? ('0' + m) : m;
+                        let s = date.getSeconds();
+                        s = s < 10 ? ('0' + s) : s;
                         this.tableData.push({
-                            date: item.createTime,
+                            date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
                             num: item.writeNum,
                             ID: item.id,
                             title: item.head,
@@ -215,7 +257,7 @@ export default {
                 }
 
             })
-
+          }
         },
     }
 }
@@ -231,5 +273,3 @@ export default {
     font-size: 12px;
 }
 </style>
-
-

@@ -28,7 +28,7 @@
                 <span style="margin-left: 10px">{{ scope.row.title }}</span>
             </template>
         </el-table-column>
-        <el-table-column label="创建日期" width="180">
+        <el-table-column label="创建日期" width="250">
             <template slot-scope="scope">
                 <i class="el-icon-time"></i>
                 <span style="margin-left: 10px">{{ scope.row.date }}</span>
@@ -72,14 +72,25 @@ export default {
         list.getlist(listinit).then((res) => {
             console.log(res.data.data.records);
             for (let item of res.data.data.records) {
-                if (item.deleted == false)
-                    this.tableData.push({
-                        date: item.createTime,
-                        num: item.writeNum,
-                        ID: item.id,
-                        title: item.head,
-                        value: item.isReleased == 1,
-                    });
+                let date = new Date(item.createTime);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                let h = date.getHours();
+                h = h < 10 ? ('0' + h) : h;
+                let m = date.getMinutes();
+                m = m < 10 ? ('0' + m) : m;
+                let s = date.getSeconds();
+                s = s < 10 ? ('0' + s) : s;
+                this.tableData.push({
+                    date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
+                    num: item.writeNum,
+                    ID: item.id,
+                    title: item.head,
+                    value: item.isReleased == 1,
+                });
             }
         });
     },
@@ -107,11 +118,29 @@ export default {
             tableData: [],
         };
     },
+
     methods: {
+        formatDate(value) {
+            let date = new Date(value);
+            let y = date.getFullYear();
+            let MM = date.getMonth() + 1;
+            MM = MM < 10 ? ('0' + MM) : MM;
+            let d = date.getDate();
+            d = d < 10 ? ('0' + d) : d;
+            let h = date.getHours();
+            h = h < 10 ? ('0' + h) : h;
+            let m = date.getMinutes();
+            m = m < 10 ? ('0' + m) : m;
+            let s = date.getSeconds();
+            s = s < 10 ? ('0' + s) : s;
+            return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+        },
         Preview(index, row) {
             console.log(index, row);
         },
         Statistics(index, row) {
+            localStorage.setItem('questionnaireID', JSON.stringify(row.ID))
+            // localStorage.setItem("statistics", JSON.stringify(data))
             this.$router.push("/statistics");
         },
         copyQu(index, row) {
@@ -130,14 +159,25 @@ export default {
                     list.getlist(listinit).then((res) => {
                         console.log(res);
                         for (let item of res.data.data.records) {
-                            if (item.deleted == false)
-                                this.tableData.push({
-                                    date: item.createTime,
-                                    num: item.writeNum,
-                                    ID: item.id,
-                                    title: item.head,
-                                    value: item.isReleased == 1,
-                                });
+                            let date = new Date(item.createTime);
+                            let y = date.getFullYear();
+                            let MM = date.getMonth() + 1;
+                            MM = MM < 10 ? ('0' + MM) : MM;
+                            let d = date.getDate();
+                            d = d < 10 ? ('0' + d) : d;
+                            let h = date.getHours();
+                            h = h < 10 ? ('0' + h) : h;
+                            let m = date.getMinutes();
+                            m = m < 10 ? ('0' + m) : m;
+                            let s = date.getSeconds();
+                            s = s < 10 ? ('0' + s) : s;
+                            this.tableData.push({
+                                date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
+                                num: item.writeNum,
+                                ID: item.id,
+                                title: item.head,
+                                value: item.isReleased == 1,
+                            });
                         }
                     });
                 } else
@@ -169,14 +209,25 @@ export default {
                 console.log(res);
                 this.tableData = [];
                 for (let item of res.data.data.records) {
-                    if (item.deleted == false)
-                        this.tableData.push({
-                            date: item.createTime,
-                            num: item.writeNum,
-                            ID: item.id,
-                            value: item.isReleased == 1,
-                            title: item.head,
-                        });
+                    let date = new Date(item.createTime);
+                    let y = date.getFullYear();
+                    let MM = date.getMonth() + 1;
+                    MM = MM < 10 ? ('0' + MM) : MM;
+                    let d = date.getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    let h = date.getHours();
+                    h = h < 10 ? ('0' + h) : h;
+                    let m = date.getMinutes();
+                    m = m < 10 ? ('0' + m) : m;
+                    let s = date.getSeconds();
+                    s = s < 10 ? ('0' + s) : s;
+                    this.tableData.push({
+                        date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
+                        num: item.writeNum,
+                        ID: item.id,
+                        value: item.isReleased == 1,
+                        title: item.head,
+                    });
                 }
             });
         },
@@ -197,43 +248,61 @@ export default {
             })
         },
         Search(input) {
-            console.log(input);
-            let listinit = {
-                current: 1,
-                size: 100000,
-                head: input,
-            };
-            list.getlist(listinit).then((res) => {
-                console.log(res);
-                if (res.data.code == 20000 && res.data.data.total != 0) {
-                    message({
-                        message: '查询成功',
-                        type: 'success'
-                    })
-                    this.tableData = [];
-                    for (let item of res.data.data.records) {
-                        if (item.deleted == false)
+            if (input == "") {
+                message({
+                    message: '输入为空',
+                    type: 'error'
+                })
+            } else {
+                console.log(input);
+                let listinit = {
+                    current: 1,
+                    size: 100000,
+                    head: input,
+                };
+                list.getlist(listinit).then((res) => {
+                    console.log(res);
+                    if (res.data.code == 20000 && res.data.data.total != 0) {
+                        message({
+                            message: '查询成功',
+                            type: 'success'
+                        })
+                        this.tableData = [];
+                        for (let item of res.data.data.records) {
+                            let date = new Date(item.createTime);
+                            let y = date.getFullYear();
+                            let MM = date.getMonth() + 1;
+                            MM = MM < 10 ? ('0' + MM) : MM;
+                            let d = date.getDate();
+                            d = d < 10 ? ('0' + d) : d;
+                            let h = date.getHours();
+                            h = h < 10 ? ('0' + h) : h;
+                            let m = date.getMinutes();
+                            m = m < 10 ? ('0' + m) : m;
+                            let s = date.getSeconds();
+                            s = s < 10 ? ('0' + s) : s;
                             this.tableData.push({
-                                date: item.createTime,
+                                date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
                                 num: item.writeNum,
                                 ID: item.id,
                                 value: item.isReleased == 1,
                                 title: item.head,
                             });
+                        }
+                    } else if (res.data.code == 20000 && res.data.data.total == 0) {
+                        message({
+                            message: '未查找到相关问卷',
+                            type: 'warning'
+                        });
+                    } else {
+                        message({
+                            message: '查询错误',
+                            type: 'error'
+                        })
+                        this.tableData = [];
                     }
-                } else if (res.data.code == 20000 && res.data.data.total == 0) {
-                    message({
-                        message: '未查找到相关问卷',
-                        type: 'warning'
-                    });
-                } else {
-                    message({
-                        message: '查询错误',
-                        type: 'error'
-                    })
-                    this.tableData = [];
-                }
-            });
+                });
+            }
         },
     },
 };
