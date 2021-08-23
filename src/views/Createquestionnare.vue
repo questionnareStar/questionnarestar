@@ -78,7 +78,7 @@
                 :label="`问题${index + 1}是否必答`"
                 :rules="{ required: true, message: '是否必答', trigger: 'change' }"
               >
-                <el-radio-group v-model="modelForm.question.isNecessary">
+                <el-radio-group v-model="item.isNecessary">
                   <el-radio label="0">是</el-radio>
                   <el-radio label="1">不是</el-radio>
                 </el-radio-group>
@@ -131,7 +131,7 @@
                 ]"
               >
                 <el-input
-                  v-model.trim="opt.value"
+                  v-model="item.maxscore"
                   v-show="item.type==3"
                   style="width:258px"
                   clearable
@@ -165,6 +165,7 @@
 </template>
 <script>
 import vuedraggable from "vuedraggable";
+import axios from "axios";
 export default {
   name: "HelloWorld",
   components: {
@@ -206,18 +207,15 @@ export default {
       value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
       value2: "",
       rules: {},
-      value2: 0,
       modelForm: {
         head: "",
         introduction: "",
         isReleased: 0,
         authority: -1,
-        starttime: 0,
-        endtime: 0,
-        isLogin: 0,
+        isLogin: -1,
         question: [
           {
-            type: 0,
+            type: -1,
             question: "",
             choices: [{ choice: "" }],
             isNecessary: 0,
@@ -248,15 +246,116 @@ export default {
     addQuestion() {
       // 新增题目
       this.modelForm.question.push({
-        type: "",
+        type: 0,
         question: "",
         choices: [{ value: "" }],
         isNecessary: 0,
       });
     },
     addSubmit() {
-      let JsonCreateQuestionnaire = JSON.stringify(this.modelForm);
-      this.$axios({
+      var questionreturned=[];
+      this.modelForm.question.forEach(function (item,index) {
+        console.log(item);
+        if (item.type == 0) {
+          let JsonCreateQuestion = {
+            choices: item.choices,
+            question: item.question,
+            isNecessary: Number(item.isNecessary),
+          };
+          console.log(JsonCreateQuestion)
+          axios({
+            method: "post",
+            url: "https://question.xk857.club/api/v1/topic/create/single/choice",
+            data: JsonCreateQuestion,
+          }).then((res) => {
+            console.log(res);
+            if (res.data.id != 0) {
+              questionreturned.push({
+                questionid: res.data.id,
+                itemorder: index+1,
+                itemtype: 0,
+              });
+            }
+          });
+        }
+        if (item.type == 1) {
+          let JsonCreateQuestion = {
+            choices: item.choices,
+            question: item.question,
+            isNecessary: Number(item.isNecessary),
+          };
+          console.log(JsonCreateQuestion)
+          axios({
+            method: "post",
+            url: "https://question.xk857.club/api/v1/topic/create/multi/choice",
+            data: JsonCreateQuestion,
+          }).then((res) => {
+            console.log(res);
+            if (res.data.id != 0) {
+              questionreturned.push({
+                questionid: res.data.id,
+                itemorder: index+1,
+                itemtype: 1,
+              });
+            }
+          });
+        }
+        if (item.type == 2) {
+          let JsonCreateQuestion = {
+            question: item.question,
+            isNecessary: Number(item.isNecessary),
+          };
+          console.log(JsonCreateQuestion)
+          axios({
+            method: "post",
+            url: "https://question.xk857.club/api/v1/topic/create/fill/blank",
+            data: JsonCreateQuestion,
+          }).then((res) => {
+            console.log(res);
+            if (res.data.id != 0) {
+              questionreturned.push({
+                questionid: res.data.id,
+                itemorder: index+1,
+                itemtype: 2,
+              });
+            }
+          });
+        }
+        if (item.type == 3) {
+          let JsonCreateQuestion = {
+            maxscore: Number(item.maxscore),
+            question: item.question,
+            isNecessary: Number(item.isNecessary),
+          };
+          console.log(JsonCreateQuestion)
+          axios({
+            method: "post",
+            url: "https://question.xk857.club/api/v1/topic/create/mark",
+            data: JsonCreateQuestion,
+          }).then((res) => {
+            console.log(res);
+            if (res.data.id != 0) {
+              this.questionreturned.push({
+                questionid: res.data.id,
+                itemorder: index+1,
+                itemtype: 3,
+              });
+            }
+          });
+        }
+      });
+      console.log(questionreturned)
+      let JsonCreateQuestionnaire = {
+        head: this.modelForm.head,
+        introduction: this.modelForm.introduction,
+        isReleased: 0,
+        authority: this.modelForm.authority,
+        isLogin: this.modelForm.authority,
+        question: this.modelForm.question,
+        starttime: this.value2[0],
+        endtime: this.value2[1],
+      };
+      axios({
         method: "post",
         url: "https://question.xk857.club/api/v1/questionnaire/create",
         data: JsonCreateQuestionnaire,
