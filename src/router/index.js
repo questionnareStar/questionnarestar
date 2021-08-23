@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import {message} from '../util/inform'
 // 布局文件
 import MainLayout from '../layout/MainLayout.vue'
 import AuthLayout from '../layout/AuthLayout.vue'
@@ -20,17 +21,20 @@ const MainChildRoutes = [
   {
     path: 'list',
     name: 'list',
-    component: QuestionnareList
+    component: QuestionnareList,
+    meta: { sign: true },
   },
   {
     path: 'waste',
     name: 'waste',
-    component: Waste
+    component: Waste,
+    meta: { sign: true },
   },
   {
     path: 'create',
     name: 'create',
-    component: CreateQuestionnare
+    component: CreateQuestionnare,
+    meta: { sign: true },
   }
 ]
 
@@ -38,17 +42,20 @@ const AuthChildRoutes = [
   {
     path: 'login',
     name: 'login',
-    component: Login
+    component: Login,
+    meta: { sign: false },
   },
   {
     path: 'register',
     name: 'register',
-    component: Register
+    component: Register,
+    meta: { sign: false },
   },
   {
     path: 'validate/:id',
     name: 'Validate',
-    component: Login
+    component: Login,
+    meta: { sign: false }
   }
 ]
 
@@ -60,23 +67,27 @@ const routes = [
     path: '/',
     name: 'MainLayout',
     component: MainLayout,
-    children: MainChildRoutes
+    children: MainChildRoutes,
+    meta: { sign: true }
   },
   {
     path: '/auth',
     name: 'AuthLayout',
     component: AuthLayout,
-    children: AuthChildRoutes
+    children: AuthChildRoutes,
+    meta: { sign: false }
   },
   {
     path: '/questionnare/:id',
     name: 'Questionnare',
-    component: Questionnare
+    component: Questionnare,
+    meta: { sign: false }
   },
   {
     path: '/finish',
     name: 'Finish',
-    component: Finish
+    component: Finish,
+    meta: { sign: false }
   }
 ]
 
@@ -84,6 +95,22 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.sign) {
+    if (JSON.parse(localStorage.getItem('userInfo')) === undefined || JSON.parse(localStorage.getItem('userInfo')) === null) {
+      message({
+        message: '请先登录',
+        type: 'warning'
+      })
+      next('/auth/login')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router
