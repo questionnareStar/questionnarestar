@@ -144,6 +144,10 @@
                   @click="addDomain(index)"
                 >新增选项</el-button>
                 <el-button @click="removeQuestion(index)">删除题目</el-button>
+                <el-button
+                  style="margin-top: 10px"
+                  @click="copyQuestion(index)"
+                >复制问题</el-button>
               </el-form-item>
             </el-collapse-item>
           </el-collapse>
@@ -238,6 +242,9 @@ export default {
       // 新增选项
       this.modelForm.question[index].choices.push({ value: "" });
     },
+    copyQuestion(index) {
+      this.modelForm.question.push(this.modelForm.question[index]);
+    },
     addQuestion() {
       // 新增题目
       this.modelForm.question.push({
@@ -247,15 +254,12 @@ export default {
         isNecessary: 0,
       });
     },
-    resetForm(formName) {
-      // 重置
-      this.$refs[formName].resetFields();
-    },
     addSubmit() {
+      let JsonCreateQuestionnaire = JSON.stringify(this.modelForm);
       this.$axios({
         method: "post",
-        url: "http://47.93.216.213:3344/api/v1/questionnaire/create",
-        data: modelData,
+        url: "https://question.xk857.club/api/v1/questionnaire/create",
+        data: JsonCreateQuestionnaire,
       }).then((res) => {
         console.log(res);
         if (res.data.type == 0) {
@@ -271,6 +275,7 @@ export default {
             message: "创建问卷成功，他人可凭邀请码可填写问卷",
             type: "success",
           });
+          window.location.herf = "../find/me/all";
         }
       });
     },
