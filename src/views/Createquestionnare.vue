@@ -271,7 +271,7 @@ export default {
         type: 0,
         question: "",
         choices: [{ value: "" }],
-        required: 0,
+        required: -1,
       });
     },
     addSubmit() {
