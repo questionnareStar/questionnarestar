@@ -186,7 +186,7 @@
 </template>
 <script>
 import vuedraggable from "vuedraggable";
-import axios from "axios";
+import axios from "../util/service/index";
 export default {
   name: "HelloWorld",
   components: {
@@ -298,7 +298,7 @@ export default {
           console.log(JsonCreateQuestion);
           axios({
             method: "post",
-            url: "https://question.xk857.club/api/v1/topic/create/single/choice",
+            url: "/api/v1/topic/create/single/choice",
             data: JsonCreateQuestion,
           }).then((res) => {
             console.log(res);
@@ -326,7 +326,7 @@ export default {
           console.log(JsonCreateQuestion);
           axios({
             method: "post",
-            url: "https://question.xk857.club/api/v1/topic/create/multi/choice",
+            url: "/api/v1/topic/create/multi/choice",
             data: JsonCreateQuestion,
           }).then((res) => {
             console.log(res);
@@ -347,7 +347,7 @@ export default {
           console.log(JsonCreateQuestion);
           axios({
             method: "post",
-            url: "https://question.xk857.club/api/v1/topic/create/fill/blank",
+            url: "/api/v1/topic/create/fill/blank",
             data: JsonCreateQuestion,
           }).then((res) => {
             console.log(res);
@@ -370,7 +370,7 @@ export default {
           console.log(JsonCreateQuestion);
           axios({
             method: "post",
-            url: "https://question.xk857.club/api/v1/topic/create/mark",
+            url: "/api/v1/topic/create/mark",
             data: JsonCreateQuestion,
           }).then((res) => {
             console.log(res);
@@ -401,7 +401,7 @@ export default {
             token: JSON.parse(localStorage.getItem("userInfo")).token,
           },
           method: "post",
-          url: "https://question.xk857.club/api/v1/questionnaire/create",
+          url: "/api/v1/questionnaire/create",
           data: JsonCreateQuestionnaire,
         }).then((res) => {
           if (res.data.code == 20000) {
@@ -427,7 +427,7 @@ export default {
             token: JSON.parse(localStorage.getItem("userInfo")).token,
           },
           method: "post",
-          url: "https://question.xk857.club/api/v1/questionnaire/create/code",
+          url: "/api/v1/questionnaire/create/code",
           data: JsonCreateQuestionnaire,
         }).then((res) => {
           if (res.data.code == 20000) {
@@ -455,7 +455,7 @@ export default {
             token: JSON.parse(localStorage.getItem("userInfo")).token,
           },
           method: "post",
-          url: "https://question.xk857.club/api/v1/questionnaire/create/login",
+          url: "/api/v1/questionnaire/create/login",
           data: JsonCreateQuestionnaire,
         }).then((res) => {
           if (res.data.code == 20000) {
@@ -481,7 +481,7 @@ export default {
             token: JSON.parse(localStorage.getItem("userInfo")).token,
           },
           method: "post",
-          url: "https://question.xk857.club/api/v1/questionnaire/create/login/code",
+          url: "/api/v1/questionnaire/create/login/code",
           data: JsonCreateQuestionnaire,
         }).then((res) => {
           if (res.data.code == 20000) {
