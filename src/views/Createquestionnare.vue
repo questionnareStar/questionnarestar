@@ -75,10 +75,10 @@
                 :rules="{ required: true, message: '请选择问题类型', trigger: 'blur' }"
               >
                 <el-radio-group v-model="item.type">
-                  <el-radio :label="0">单选题</el-radio>
-                  <el-radio :label="1">多选题</el-radio>
-                  <el-radio :label="2">填空题</el-radio>
-                  <el-radio :label="3">评分题</el-radio>
+                  <el-radio :label="4">单选题</el-radio>
+                  <el-radio :label="3">多选题</el-radio>
+                  <el-radio :label="1">填空题</el-radio>
+                  <el-radio :label="2">评分题</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item
@@ -129,7 +129,7 @@
               >
                 <el-input
                   v-model.trim="opt.value"
-                  v-show="item.type==0||item.type==1"
+                  v-show="item.type==3||item.type==4"
                   style="width:258px"
                   clearable
                   placeholder="请输入答案"
@@ -142,7 +142,7 @@
               </el-form-item>
               '<el-form-item
                 v-for="(opt, idx) in item.choices"
-                v-show="item.type==3"
+                v-show="item.type==2"
                 :key="idx"
                 :label="`总分`"
                 :prop="`question.${index}.choices.${idx}.value`"
@@ -152,7 +152,7 @@
               >
                 <el-input
                   v-model="item.maxscore"
-                  v-show="item.type==3"
+                  v-show="item.type==2"
                   style="width:258px"
                   clearable
                   placeholder="请输入总分"
@@ -160,7 +160,7 @@
               </el-form-item>
               <el-form-item>
                 <el-button
-                  v-show="item.type!=2 && item.type!=3"
+                  v-show="item.type!=1 && item.type!=2"
                   @click="addDomain(index)"
                 >新增选项</el-button>
                 <el-button @click="removeQuestion(index)">删除题目</el-button>
@@ -289,7 +289,7 @@ export default {
       let _this = this;
       this.modelForm.question.forEach(function (item, index) {
         // console.log(item);
-        if (item.type == 0) {
+        if (item.type == 3) {
           var choice = [];
           item.choices.forEach(function (items) {
             choice.push(items.value);
@@ -304,13 +304,14 @@ export default {
             method: "post",
             url: "/api/v1/topic/create/single/choice",
             data: JsonCreateQuestion,
+            timeout:1000
           }).then((res) => {
             console.log(res);
             if (res.data.code == 20000) {
               questionreturned.push({
                 itemId: res.data.data.id,
                 itemOrder: index + 1,
-                itemType: 0,
+                itemType: 3,
               });
             } else {
               message({
@@ -320,7 +321,7 @@ export default {
             }
           });
         }
-        if (item.type == 1) {
+        if (item.type == 4) {
           var choice = [];
           item.choices.forEach(function (items) {
             choice.push(items.value);
@@ -337,13 +338,14 @@ export default {
             method: "post",
             url: "/api/v1/topic/create/multi/choice",
             data: JsonCreateQuestion,
+            timeout:1000
           }).then((res) => {
             console.log(res);
             if (res.data.code == 20000) {
               questionreturned.push({
                 itemId: res.data.data.id,
                 itemOrder: index + 1,
-                itemType: 1,
+                itemType:4,
               });
             } else {
               _this.flag = false;
@@ -354,7 +356,7 @@ export default {
             }
           });
         }
-        if (item.type == 2) {
+        if (item.type == 1) {
           let JsonCreateQuestion = {
             question: item.question,
             required: Number(item.required),
@@ -364,13 +366,14 @@ export default {
             method: "post",
             url: "/api/v1/topic/create/fill/blank",
             data: JsonCreateQuestion,
+            timeout:1000
           }).then((res) => {
             console.log(res);
             if (res.data.code == 20000) {
               questionreturned.push({
                 itemId: res.data.data.id,
                 itemOrder: index + 1,
-                itemType: 2,
+                itemType:1,
               });
             } else {
               _this.flag = false;
@@ -381,7 +384,7 @@ export default {
             }
           });
         }
-        if (item.type == 3) {
+        if (item.type ==2) {
           let JsonCreateQuestion = {
             desc: item.desc,
             maxScore: Number(item.maxscore),
@@ -393,13 +396,14 @@ export default {
             method: "post",
             url: "/api/v1/topic/create/mark",
             data: JsonCreateQuestion,
+            timeout:1000
           }).then((res) => {
             console.log(res);
             if (res.data.code == 20000) {
               questionreturned.push({
                 itemId: res.data.data.id,
                 itemOrder: index + 1,
-                itemType: 3,
+                itemType: 2,
               });
             } else {
               _this.flag = false;
@@ -462,6 +466,7 @@ export default {
             method: "post",
             url: "/api/v1/questionnaire/create",
             data: JsonCreateQuestionnaire,
+            timeout:1000
           }).then((res) => {
             if (res.data.code == 20000) {
               console.log(res);
@@ -496,6 +501,7 @@ export default {
             method: "post",
             url: "/api/v1/questionnaire/create/code",
             data: JsonCreateQuestionnaire,
+            timeout:1000
           }).then((res) => {
             if (res.data.code == 20000) {
               console.log(res);
@@ -531,6 +537,7 @@ export default {
             method: "post",
             url: "/api/v1/questionnaire/create/login",
             data: JsonCreateQuestionnaire,
+            timeout:1000
           }).then((res) => {
             if (res.data.code == 20000) {
               console.log(res);
@@ -564,6 +571,7 @@ export default {
             method: "post",
             url: "/api/v1/questionnaire/create/login/code",
             data: JsonCreateQuestionnaire,
+            timeout:1000
           }).then((res) => {
             console.log(res);
             if (res.data.code == 20000) {
@@ -588,7 +596,7 @@ export default {
             }
           });
         }
-      }, 3000);
+      }, 1000);
     },
   },
 };
