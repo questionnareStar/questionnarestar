@@ -33,14 +33,14 @@
     <span class="head">是否需要邀请码
     </span>
     <el-radio-group v-model="modelForm.authority">
-      <el-radio label="0">不需要</el-radio>
-      <el-radio label="1">需要</el-radio>
+      <el-radio label=0>不需要</el-radio>
+      <el-radio label=1>需要</el-radio>
     </el-radio-group>
     <span class="head">是否需要登录
     </span>
     <el-radio-group v-model="modelForm.isLogin">
-      <el-radio label="0">不需要</el-radio>
-      <el-radio label="1">需要</el-radio>
+      <el-radio label=0>不需要</el-radio>
+      <el-radio label=1>需要</el-radio>
     </el-radio-group>
     <span class="head">是否需要显示题号
     </span>
@@ -277,6 +277,9 @@ export default {
       });
     },
     addSubmit() {
+      console.log(this.modelForm)
+      console.log(this.modelForm.authority)
+      console.log(this.modelForm.isLogin)
       var questionreturned = [];
       this.modelForm.question.forEach(function (item, index) {
         console.log(item);
@@ -329,9 +332,9 @@ export default {
             console.log(res);
             if (res.data.id != 0) {
               questionreturned.push({
-                questionid: res.data.data.id,
-                itemorder: index + 1,
-                itemtype: 1,
+                itemId: res.data.data.id,
+                itemOrder: index + 1,
+                itemType: 1,
               });
             }
           });
@@ -350,9 +353,9 @@ export default {
             console.log(res);
             if (res.data.id != 0) {
               questionreturned.push({
-                questionid: res.data.data.id,
-                itemorder: index + 1,
-                itemtype: 2,
+                itemId: res.data.data.id,
+                itemOrder: index + 1,
+                itemType: 2,
               });
             }
           });
@@ -373,16 +376,15 @@ export default {
             console.log(res);
             if (res.data.id != 0) {
               questionreturned.push({
-                questionid: res.data.data.id,
-                itemorder: index + 1,
-                itemtype: 3,
+                itemId: res.data.data.id,
+                itemOrder: index + 1,
+                itemType: 3,
               });
             }
           });
         }
       });
       console.log(questionreturned);
-      console.log(this.value2);
       let JsonCreateQuestionnaire = {
         head: this.modelForm.head,
         introduction: this.modelForm.introduction,
@@ -390,10 +392,10 @@ export default {
         itemList: questionreturned,
         serial: JSON.parse(this.modelForm.serial),
         startTime: "1629767826",
-        endTime:"1661303826",
+        endTime: "1661303826",
       };
       console.log(JsonCreateQuestionnaire);
-      if (this.modelForm.authority == 0 && this.modelForm.isLogin == 0) {
+      if (Number(this.modelForm.authority) === 0 && Number(this.modelForm.isLogin) === 0) {
         axios({
           headers: {
             token: JSON.parse(localStorage.getItem("userInfo")).token,
@@ -405,19 +407,21 @@ export default {
           if (res.data.code == 20000) {
             console.log(res);
             this.$alert(
-              "您创建的问卷所有人均可回答，点击确认回到“问卷列表”界面",
+              "您创建的问卷http://47.93.216.213:8081/questionnare/" +
+                res.data.data.id +
+                "所有人均可回答，点击确认回到“问卷列表”界面",
               "创建问卷成功",
               {
                 confirmButtonText: "确定",
                 callback: () => {
-                  this.$router.push('/list');
+                  this.$router.push("/list");
                 },
               }
             );
           }
         });
       }
-      if (this.modelForm.authority == 1 && this.modelForm.isLogin == 0) {
+      if (Number(this.modelForm.authority) === 1 && Number(this.modelForm.isLogin) === 0) {
         axios({
           headers: {
             token: JSON.parse(localStorage.getItem("userInfo")).token,
@@ -429,21 +433,23 @@ export default {
           if (res.data.code == 20000) {
             console.log(res);
             this.$alert(
-              "您创建的问卷他人凭借邀请码" +
+              "您创建的问卷http://47.93.216.213:8081/questionnare/" +
+                res.data.data.id +
+                "他人凭借邀请码" +
                 res.data.data.code +
                 "即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
               "创建问卷成功",
               {
                 confirmButtonText: "确定",
                 callback: () => {
-                  this.$router.push('/list');
+                  this.$router.push("/list");
                 },
               }
             );
           }
         });
       }
-      if (this.modelForm.authority == 0 && this.modelForm.isLogin == 1) {
+      if (Number(this.modelForm.authority) === 0 && Number(this.modelForm.isLogin) === 1) {
         axios({
           headers: {
             token: JSON.parse(localStorage.getItem("userInfo")).token,
@@ -455,19 +461,21 @@ export default {
           if (res.data.code == 20000) {
             console.log(res);
             this.$alert(
-              "您创建的问卷他人登录后即可回答，点击确认回到“问卷列表”界面",
+              "您创建的问卷http://47.93.216.213:8081/questionnare/" +
+                res.data.data.id +
+                "他人登录后即可回答，点击确认回到“问卷列表”界面",
               "创建问卷成功",
               {
                 confirmButtonText: "确定",
                 callback: () => {
-                  this.$router.push('/list');
+                  this.$router.push("/list");
                 },
               }
             );
           }
         });
       }
-      if (this.modelForm.authority == 1 && this.modelForm.isLogin == 1) {
+      if (Number(this.modelForm.authority) === 1 && Number(this.modelForm.isLogin) === 1) {
         axios({
           headers: {
             token: JSON.parse(localStorage.getItem("userInfo")).token,
@@ -479,14 +487,16 @@ export default {
           if (res.data.code == 20000) {
             console.log(res);
             this.$alert(
-              "您创建的问卷他人登陆后凭借邀请码" +
+              "您创建的问卷http://47.93.216.213:8081/questionnare/" +
+                res.data.data.id +
+                "他人登陆后凭借邀请码" +
                 res.data.data.code +
                 "即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
               "创建问卷成功",
               {
                 confirmButtonText: "确定",
                 callback: () => {
-                  this.$router.push('/list');
+                  this.$router.push("/list");
                 },
               }
             );
