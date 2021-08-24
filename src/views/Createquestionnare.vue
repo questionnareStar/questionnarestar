@@ -119,7 +119,7 @@
               <!-- 答案 -->
               <el-form-item
                 v-for="(opt, idx) in item.choices"
-                v-show="item.type!=2&&item.type!=3"
+                v-show="item.type!=1&&item.type!=2"
                 :key="idx"
                 :label="`选项${idx + 1}`"
                 :prop="`question.${index}.choices.${idx}.value`"
@@ -136,7 +136,7 @@
                 />
                 <el-button
                   style="margin-left: 20px"
-                  v-show="item.type!=3"
+                  v-show="item.type==3||item.type==4"
                   @click.prevent="removeDomain(index,idx)"
                 >删除</el-button>
               </el-form-item>
@@ -238,7 +238,7 @@ export default {
         question: [
           {
             desc: "",
-            type: 0,
+            type:4,
             question: "",
             choices: [{ choice: "" }],
             required: -1,
@@ -277,7 +277,7 @@ export default {
       // 新增题目
       this.modelForm.question.push({
         desc: "",
-        type: 0,
+        type: 4,
         question: "",
         choices: [{ value: "" }],
         required: -1,
@@ -289,7 +289,8 @@ export default {
       let _this = this;
       this.modelForm.question.forEach(function (item, index) {
         // console.log(item);
-        if (item.type == 3) {
+        //单选
+        if (item.type == 4) {
           var choice = [];
           item.choices.forEach(function (items) {
             choice.push(items.value);
@@ -311,7 +312,7 @@ export default {
               questionreturned.push({
                 itemId: res.data.data.id,
                 itemOrder: index + 1,
-                itemType: 3,
+                itemType: 4,
               });
             } else {
               message({
@@ -321,7 +322,7 @@ export default {
             }
           });
         }
-        if (item.type == 4) {
+        if (item.type == 3) {
           var choice = [];
           item.choices.forEach(function (items) {
             choice.push(items.value);
@@ -345,7 +346,7 @@ export default {
               questionreturned.push({
                 itemId: res.data.data.id,
                 itemOrder: index + 1,
-                itemType:4,
+                itemType:3,
               });
             } else {
               _this.flag = false;
