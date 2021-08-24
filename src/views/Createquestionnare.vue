@@ -256,9 +256,9 @@ export default {
       // 删除选项
       if (idx != 0) {
         this.modelForm.question[index].choices.splice(idx, 1);
-      } else{
-        this.$alert('至少要有一个选项', '提示', {
-          confirmButtonText: '确定',
+      } else {
+        this.$alert("至少要有一个选项", "提示", {
+          confirmButtonText: "确定",
         });
       }
     },
@@ -440,153 +440,155 @@ export default {
       //   })
       //   return;
       // }
-      let JsonCreateQuestionnaire = {
-        head: this.modelForm.head,
-        introduction: this.modelForm.introduction,
-        isReleased: 0,
-        itemList: questionreturned,
-        serial: this.modelForm.serial,
-        startTime: "1629767826",
-        endTime: "1661303826",
-      };
-      console.log(JsonCreateQuestionnaire);
-      if (
-        Number(this.modelForm.authority) === 0 &&
-        Number(this.modelForm.isLogin) === 0
-      ) {
-        axios({
-          headers: {
-            token: JSON.parse(localStorage.getItem("userInfo")).token,
-          },
-          method: "post",
-          url: "/api/v1/questionnaire/create",
-          data: JsonCreateQuestionnaire,
-        }).then((res) => {
-          if (res.data.code == 20000) {
+      setTimeout(() => {
+        let JsonCreateQuestionnaire = {
+          head: this.modelForm.head,
+          introduction: this.modelForm.introduction,
+          isReleased: 0,
+          itemList: questionreturned,
+          serial: this.modelForm.serial,
+          startTime: "1629767826",
+          endTime: "1661303826",
+        };
+        console.log(JsonCreateQuestionnaire);
+        if (
+          Number(this.modelForm.authority) === 0 &&
+          Number(this.modelForm.isLogin) === 0
+        ) {
+          axios({
+            headers: {
+              token: JSON.parse(localStorage.getItem("userInfo")).token,
+            },
+            method: "post",
+            url: "/api/v1/questionnaire/create",
+            data: JsonCreateQuestionnaire,
+          }).then((res) => {
+            if (res.data.code == 20000) {
+              console.log(res);
+              this.$alert(
+                "问卷链接: http://47.93.216.213:8081/questionnare/" +
+                  res.data.data.id +
+                  "\n所有人均可回答，点击确认回到“问卷列表”界面",
+                "创建问卷成功",
+                {
+                  confirmButtonText: "确定",
+                  callback: () => {
+                    this.$router.push("/list");
+                  },
+                }
+              );
+            } else {
+              this.$alert(res.data.msg, {
+                confirmButtonText: "确定",
+              });
+            }
+          });
+        }
+        if (
+          Number(this.modelForm.authority) === 1 &&
+          Number(this.modelForm.isLogin) === 0 &&
+          this.flag
+        ) {
+          axios({
+            headers: {
+              token: JSON.parse(localStorage.getItem("userInfo")).token,
+            },
+            method: "post",
+            url: "/api/v1/questionnaire/create/code",
+            data: JsonCreateQuestionnaire,
+          }).then((res) => {
+            if (res.data.code == 20000) {
+              console.log(res);
+              this.$alert(
+                "问卷链接: http://47.93.216.213:8081/questionnare/" +
+                  res.data.data.id +
+                  "他人凭借邀请码: " +
+                  res.data.data.code +
+                  "\n即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
+                "创建问卷成功",
+                {
+                  confirmButtonText: "确定",
+                  callback: () => {
+                    this.$router.push("/list");
+                  },
+                }
+              );
+            } else {
+              this.$alert(res.data.msg, {
+                confirmButtonText: "确定",
+              });
+            }
+          });
+        }
+        if (
+          Number(this.modelForm.authority) === 0 &&
+          Number(this.modelForm.isLogin) === 1
+        ) {
+          axios({
+            headers: {
+              token: JSON.parse(localStorage.getItem("userInfo")).token,
+            },
+            method: "post",
+            url: "/api/v1/questionnaire/create/login",
+            data: JsonCreateQuestionnaire,
+          }).then((res) => {
+            if (res.data.code == 20000) {
+              console.log(res);
+              this.$alert(
+                "问卷链接: http://47.93.216.213:8081/questionnare/" +
+                  res.data.data.id +
+                  "\n他人登录后即可回答，点击确认回到“问卷列表”界面",
+                "创建问卷成功",
+                {
+                  confirmButtonText: "确定",
+                  callback: () => {
+                    this.$router.push("/list");
+                  },
+                }
+              );
+            } else {
+              this.$alert(res.data.msg, {
+                confirmButtonText: "确定",
+              });
+            }
+          });
+        }
+        if (
+          Number(this.modelForm.authority) === 1 &&
+          Number(this.modelForm.isLogin) === 1
+        ) {
+          axios({
+            headers: {
+              token: JSON.parse(localStorage.getItem("userInfo")).token,
+            },
+            method: "post",
+            url: "/api/v1/questionnaire/create/login/code",
+            data: JsonCreateQuestionnaire,
+          }).then((res) => {
             console.log(res);
-            this.$alert(
-              "问卷链接: http://47.93.216.213:8081/questionnare/" +
-                res.data.data.id +
-                "\n所有人均可回答，点击确认回到“问卷列表”界面",
-              "创建问卷成功",
-              {
+            if (res.data.code == 20000) {
+              this.$alert(
+                "问卷链接: http://47.93.216.213:8081/questionnare/" +
+                  res.data.data.id +
+                  "\n他人登陆后凭借邀请码: " +
+                  res.data.data.code +
+                  "即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
+                "创建问卷成功",
+                {
+                  confirmButtonText: "确定",
+                  callback: () => {
+                    this.$router.push("/list");
+                  },
+                }
+              );
+            } else {
+              this.$alert(res.data.msg, {
                 confirmButtonText: "确定",
-                callback: () => {
-                  this.$router.push("/list");
-                },
-              }
-            );
-          } else {
-            this.$alert(res.data.msg, {
-              confirmButtonText: "确定",
-            });
-          }
-        });
-      }
-      if (
-        Number(this.modelForm.authority) === 1 &&
-        Number(this.modelForm.isLogin) === 0 &&
-        this.flag
-      ) {
-        axios({
-          headers: {
-            token: JSON.parse(localStorage.getItem("userInfo")).token,
-          },
-          method: "post",
-          url: "/api/v1/questionnaire/create/code",
-          data: JsonCreateQuestionnaire,
-        }).then((res) => {
-          if (res.data.code == 20000) {
-            console.log(res);
-            this.$alert(
-              "问卷链接: http://47.93.216.213:8081/questionnare/" +
-                res.data.data.id +
-                "他人凭借邀请码: " +
-                res.data.data.code +
-                "\n即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
-              "创建问卷成功",
-              {
-                confirmButtonText: "确定",
-                callback: () => {
-                  this.$router.push("/list");
-                },
-              }
-            );
-          } else {
-            this.$alert(res.data.msg, {
-              confirmButtonText: "确定",
-            });
-          }
-        });
-      }
-      if (
-        Number(this.modelForm.authority) === 0 &&
-        Number(this.modelForm.isLogin) === 1
-      ) {
-        axios({
-          headers: {
-            token: JSON.parse(localStorage.getItem("userInfo")).token,
-          },
-          method: "post",
-          url: "/api/v1/questionnaire/create/login",
-          data: JsonCreateQuestionnaire,
-        }).then((res) => {
-          if (res.data.code == 20000) {
-            console.log(res);
-            this.$alert(
-              "问卷链接: http://47.93.216.213:8081/questionnare/" +
-                res.data.data.id +
-                "\n他人登录后即可回答，点击确认回到“问卷列表”界面",
-              "创建问卷成功",
-              {
-                confirmButtonText: "确定",
-                callback: () => {
-                  this.$router.push("/list");
-                },
-              }
-            );
-          } else {
-            this.$alert(res.data.msg, {
-              confirmButtonText: "确定",
-            });
-          }
-        });
-      }
-      if (
-        Number(this.modelForm.authority) === 1 &&
-        Number(this.modelForm.isLogin) === 1
-      ) {
-        axios({
-          headers: {
-            token: JSON.parse(localStorage.getItem("userInfo")).token,
-          },
-          method: "post",
-          url: "/api/v1/questionnaire/create/login/code",
-          data: JsonCreateQuestionnaire,
-        }).then((res) => {
-          console.log(res);
-          if (res.data.code == 20000) {
-            this.$alert(
-              "问卷链接: http://47.93.216.213:8081/questionnare/" +
-                res.data.data.id +
-                "\n他人登陆后凭借邀请码: " +
-                res.data.data.code +
-                "即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
-              "创建问卷成功",
-              {
-                confirmButtonText: "确定",
-                callback: () => {
-                  this.$router.push("/list");
-                },
-              }
-            );
-          } else {
-            this.$alert(res.data.msg, {
-              confirmButtonText: "确定",
-            });
-          }
-        });
-      }
+              });
+            }
+          });
+        }
+      }, 3000);
     },
   },
 };
