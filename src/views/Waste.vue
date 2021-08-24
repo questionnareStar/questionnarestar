@@ -116,6 +116,7 @@ export default {
     methods: {
         Preview(index, row) {
             console.log(index, row);
+            this.$router.push('/preview/0/' + row.ID)
         },
         Delete(index, row) {
             list.deleteDeath(row.ID).then((res) => {

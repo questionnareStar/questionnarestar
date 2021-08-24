@@ -135,8 +135,11 @@ export default {
             })
         },
         back() {
-            console.log('click')
-            this.$router.replace('/list')
+            if (this.$route.params.from == 1) {
+                this.$router.replace('/list')
+            } else {
+                this.$router.replace('/waste')
+            }
         }
     }
 }
