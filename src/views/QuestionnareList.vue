@@ -65,6 +65,8 @@ import {
 
 export default {
     mounted() {
+        localStorage.removeItem('input')
+          localStorage.removeItem('sort')
         let listinit = {
             current: 1,
             size: 100000,
@@ -98,7 +100,7 @@ export default {
         return {
             options: [{
                     label: "按创建时间排序-增序",
-                    value: "2",
+                    value: "3",
                 },
                 {
                     label: "按创建时间排序-降序",
@@ -106,7 +108,7 @@ export default {
                 },
                 {
                     label: "按问卷回收量排序-增序",
-                    value: "3",
+                    value: "4",
                 },
                 {
                     label: "按问卷回收量排序-降序",
@@ -137,7 +139,7 @@ export default {
         },
         Preview(index, row) {
             console.log(index, row);
-            this.$router.push('/preview/1/' + row.ID)
+            this.$router.push('/preview/' + row.ID)
         },
         Statistics(index, row) {
             list.getStatistics(parseInt(row.ID)).then((res) => {
@@ -196,19 +198,33 @@ export default {
             if (row.value == false) {
                 list.closeQu(row.ID).then((res) => {
                     console.log(res);
+                     if (res.data.code == 20000) {
+                    message({
+                        message: '问卷关闭成功',
+                        type: 'success'
+                    })
+                } 
                 });
             } else {
                 list.openQu(row.ID).then((res) => {
                     console.log(res);
+                     if (res.data.code == 20000) {
+                    message({
+                        message: '问卷开启成功',
+                        type: 'success'
+                    })
+                } 
                 });
             }
         },
         changeSelect() {
             console.log(this.option);
+            localStorage.setItem('sort', JSON.stringify(this.option))
             let listinit = {
                 current: 1,
                 size: 100000,
-                sortBy: this.option,
+                sortBy: JSON.parse(localStorage.getItem('sort')),
+                head:JSON.parse(localStorage.getItem('input')),
             };
             list.getlist(listinit).then((res) => {
                 console.log(res);
@@ -237,7 +253,9 @@ export default {
             });
         },
         Delete(index, row) {
-            list.deleteQu(row.ID).then((res) => {
+              list.closeQu(row.ID).then((res) => {
+                    console.log(res);  
+                    list.deleteQu(row.ID).then((res) => {
                 console.log(res);
                 if (res.data.code == 20000) {
                     message({
@@ -251,13 +269,17 @@ export default {
                         type: 'error'
                     })
             })
+                })
+         
         },
         Search(input) {
                 console.log(input);
+                localStorage.setItem('input', JSON.stringify(input))
                 let listinit = {
                     current: 1,
                     size: 100000,
-                    head: input,
+                sortBy: JSON.parse(localStorage.getItem('sort')),
+                head:JSON.parse(localStorage.getItem('input')),
                 };
                 list.getlist(listinit).then((res) => {
                     console.log(res);
