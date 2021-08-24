@@ -91,7 +91,7 @@ const routes = [
     meta: { sign: false }
   },
   {
-    path: '/preview/:id',
+    path: '/preview/:from/:id',
     name: 'Preview',
     component: Preview,
     meta: { sign: true }

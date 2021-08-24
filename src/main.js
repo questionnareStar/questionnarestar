@@ -5,7 +5,9 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './plugin/index.js'
+import VeRing from 'v-charts/lib/ring.common'// 环形图
 
+Vue.component(VeRing.name, VeRing)
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 
