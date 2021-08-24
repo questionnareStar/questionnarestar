@@ -16,6 +16,7 @@
       v-model="modelForm.introduction"
     >
     </el-input>
+    <!--
     <span class="demonstration">问卷截止时间</span>
     <el-date-picker
       v-model="value2"
@@ -28,6 +29,7 @@
       value-format="timestamp"
     >
     </el-date-picker>
+    -->
     <span class="head">是否需要邀请码
     </span>
     <el-radio-group v-model="modelForm.authority">
@@ -387,8 +389,8 @@ export default {
         isReleased: 0,
         itemList: questionreturned,
         serial: JSON.parse(this.modelForm.serial),
-        startTime: this.value2[0].toString(),
-        endTime: this.value2[1].toString(),
+        startTime: "1629767826",
+        endTime:"4785441426",
       };
       console.log(JsonCreateQuestionnaire);
       if (this.modelForm.authority == 0 && this.modelForm.isLogin == 0) {
