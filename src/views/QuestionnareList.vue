@@ -139,9 +139,13 @@ export default {
             console.log(index, row);
         },
         Statistics(index, row) {
-            localStorage.setItem('questionnaireID', JSON.stringify(row.ID))
-            // localStorage.setItem("statistics", JSON.stringify(data))
-            this.$router.push("/statistics");
+            list.getStatistics(parseInt(row.ID)).then((res) => {
+                console.log(res);
+                localStorage.setItem('questionnaireID', JSON.stringify(row.ID))
+                localStorage.setItem('qutitle', JSON.stringify(row.title))
+                localStorage.setItem("statistics", JSON.stringify(res.data))
+                this.$router.push("/statistics");
+            })
         },
         copyQu(index, row) {
             list.copy(row.ID).then((res) => {
