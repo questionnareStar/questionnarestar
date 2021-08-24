@@ -33,21 +33,21 @@
     <span class="head">是否需要邀请码
     </span>
     <el-radio-group v-model="modelForm.authority">
-      <el-radio label=0>不需要</el-radio>
-      <el-radio label=1>需要</el-radio>
-    </el-radio-group>
+      <el-radio :label="0">不需要</el-radio>
+      <el-radio :label="1">需要</el-radio>
+    </el-radio-group><br/>
     <span class="head">是否需要登录
     </span>
     <el-radio-group v-model="modelForm.isLogin">
-      <el-radio label=0>不需要</el-radio>
-      <el-radio label=1>需要</el-radio>
-    </el-radio-group>
+      <el-radio :label="0">不需要</el-radio>
+      <el-radio :label="1">需要</el-radio>
+    </el-radio-group><br/>
     <span class="head">是否需要显示题号
     </span>
     <el-radio-group v-model="modelForm.serial">
-      <el-radio label=true>需要</el-radio>
-      <el-radio label=false>不需要</el-radio>
-    </el-radio-group>
+      <el-radio :label="true">需要</el-radio>
+      <el-radio :label="false">不需要</el-radio>
+    </el-radio-group><br/>
     <el-form
       ref="modelForm"
       :rule="rules"
@@ -231,10 +231,10 @@ export default {
       modelForm: {
         head: "",
         introduction: "",
-        isReleased: -1,
-        authority: -1,
-        isLogin: "",
-        serial: "",
+        isReleased: 0,
+        authority: 0,
+        isLogin: 0,
+        serial: 0,
         question: [
           {
             desc: "",
@@ -508,4 +508,7 @@ export default {
 };
 </script>
 <style scoped>
+.questionnare {
+  width: 100%;
+}
 </style>
