@@ -137,6 +137,7 @@ export default {
         },
         Preview(index, row) {
             console.log(index, row);
+            this.$router.push('/preview/' + row.ID)
         },
         Statistics(index, row) {
             list.getStatistics(parseInt(row.ID)).then((res) => {
