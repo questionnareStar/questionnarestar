@@ -78,6 +78,12 @@ const routes = [
     children: AuthChildRoutes,
     meta: { sign: false }
   },
+    {
+    path: '/statistics',
+    name: 'statistics',
+    component: () => import("../views/statistics.vue"),
+    meta: { sign: false }
+  },
   {
     path: '/questionnare/:id',
     name: 'Questionnare',
