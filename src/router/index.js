@@ -13,6 +13,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 //问卷页面
 import Questionnare from '../views/Questionnare.vue'
+import Preview from '../views/Preview.vue'
 import Finish from '../views/Finish.vue'
 
 Vue.use(VueRouter)
@@ -82,6 +83,12 @@ const routes = [
     name: 'Questionnare',
     component: Questionnare,
     meta: { sign: false }
+  },
+  {
+    path: '/preview/:id',
+    name: 'Preview',
+    component: Preview,
+    meta: { sign: true }
   },
   {
     path: '/finish',

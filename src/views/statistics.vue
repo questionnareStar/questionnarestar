@@ -4,7 +4,7 @@
  * @Author: 张怡健
  * @Date: 2021-08-21 18:54:25
  * @LastEditors: 张怡健
- * @LastEditTime: 2021-08-24 08:27:28
+ * @LastEditTime: 2021-08-24 09:18:51
 -->
 <template>
 <div>
@@ -21,8 +21,8 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                 </el-form>
-             
+            </el-form>
+
         </el-card>
     </el-card>
     <div v-if="quID==0">
@@ -124,32 +124,32 @@ export default {
         }
     },
     methods: {
-        refresh(){
-             list. getStatistics(JSON.parse(localStorage.getItem('questionnaireID'))).then((res) => {
+        refresh() {
+            list.getStatistics(JSON.parse(localStorage.getItem('questionnaireID'))).then((res) => {
                 console.log(res);
-            localStorage.setItem("statistics", JSON.stringify(res.data))
-              let data = JSON.parse(localStorage.getItem('statistics')).data
-        console.log(data)
-        let i = 1
-        let format = ""
-        for (let item of data.questions) {
-            if (item.type == 1)
-                format = "题目" + i + ":" + item.topic + "[" + "填空题]"
-            else if (item.type == 2)
-                format = "题目" + i + ":" + item.topic + "[" + "评分题]"
-            else if (item.type == 3)
-                format = "题目" + i + ":" + item.topic + "[" + "单选题]"
-            else
-                format = "题目" + i + ":" + item.topic + "[" + "多选题]"
-            this.options.push({
-                value: i,
-                label: format,
-                type: item.type
+                localStorage.setItem("statistics", JSON.stringify(res.data))
+                let data = JSON.parse(localStorage.getItem('statistics')).data
+                console.log(data)
+                let i = 1
+                let format = ""
+                for (let item of data.questions) {
+                    if (item.type == 1)
+                        format = "题目" + i + ":" + item.topic + "[" + "填空题]"
+                    else if (item.type == 2)
+                        format = "题目" + i + ":" + item.topic + "[" + "评分题]"
+                    else if (item.type == 3)
+                        format = "题目" + i + ":" + item.topic + "[" + "单选题]"
+                    else
+                        format = "题目" + i + ":" + item.topic + "[" + "多选题]"
+                    this.options.push({
+                        value: i,
+                        label: format,
+                        type: item.type
+                    })
+                    i = i + 1
+                }
+                this.$router.go(0);
             })
-            i = i + 1
-        }
-           this.$router.go(0);
-     })
         },
         goBack() {
             this.$router.push("/list");
@@ -172,12 +172,12 @@ export default {
                     })
                     i = i + 1
                 }
-                 this.total=i-1
+                this.total = i - 1
             } else if (this.type == "评分题") {
                 this.quID = 0
                 let i = 1
                 this.quesNum = this.option.substring(2, 3) - "0" - 1
-                this.total=0
+                this.total = 0
                 for (let item of ques[this.quesNum].choices) {
                     this.colors[i - 1] = this.colorMax[i - 1]
                     this.scaleData.rows.push({
@@ -185,7 +185,7 @@ export default {
                         填写量: item.number,
                         内容: item.mark + "分",
                     })
-                    this.total=this.total+item.number
+                    this.total = this.total + item.number
                     i = i + 1
                 }
                 console.log(this.colors)
@@ -193,7 +193,7 @@ export default {
             } else if (this.type == "单选题" || this.type == "多选题") {
                 this.quID = 0
                 let i = 1
-                 this.total=0
+                this.total = 0
                 this.quesNum = this.option.substring(2, 3) - "0" - 1
                 for (let item of ques[this.quesNum].choices) {
                     this.colors[i - 1] = this.colorMax[i - 1]
@@ -202,7 +202,7 @@ export default {
                         填写量: item.number,
                         内容: item.choice,
                     })
-                    this.total=this.total+item.number
+                    this.total = this.total + item.number
                     i = i + 1
                 }
                 console.log(this.colors)
@@ -215,13 +215,13 @@ export default {
             options: [],
             option: "",
             tableData: [],
-            total:0,
+            total: 0,
             title: JSON.parse(localStorage.getItem('qutitle')),
             type: "",
             choicenum: 0,
             quID: 2,
             quesNum: 1,
-            colorMax: ['#F141AF', '#F85E1F', '#000000', '#A52A2A', '#9830FA', '#0C99FD', '#25D9B4', '#1AA2FC', '#7FFF00', '#DC143C', '#00BFFF', '#FFA07A'],
+            colorMax: ['#F141AF', '#F85E1F', '#000000', '#A52A2A', '#9830FA', '#0C99FD', '#25D9B4', '#1AA2FC', '#7FFF00', '#DC143C', '#00BFFF', '#FFA07A',"#FFD700","#4B0082","#F08080"],
             colors: [],
             scaleData: {
                 columns: ['类目', '填写量', "内容"],

@@ -137,6 +137,7 @@ export default {
         },
         Preview(index, row) {
             console.log(index, row);
+            this.$router.push('/preview/' + row.ID)
         },
         Statistics(index, row) {
             list.getStatistics(parseInt(row.ID)).then((res) => {
@@ -252,12 +253,6 @@ export default {
             })
         },
         Search(input) {
-            if (input == "") {
-                message({
-                    message: '输入为空',
-                    type: 'error'
-                })
-            } else {
                 console.log(input);
                 let listinit = {
                     current: 1,
@@ -305,8 +300,7 @@ export default {
                         })
                         this.tableData = [];
                     }
-                });
-            }
+                })
         },
     },
 };

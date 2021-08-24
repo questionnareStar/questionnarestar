@@ -203,13 +203,6 @@ export default {
         },
         Search(input) {
             console.log(input);
-              if(input==""){
-              message({
-                        message: '输入为空',
-                        type: 'error'
-                    })
-          }
-          else{
             let listinit = {
                 current: 1,
                 size: 100000,
@@ -257,7 +250,6 @@ export default {
                 }
 
             })
-          }
         },
     }
 }
