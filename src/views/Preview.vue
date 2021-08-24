@@ -1,5 +1,8 @@
 <template>
     <div class="backgroud">
+        <div class="back-container">
+            <el-button @click="back()">返回</el-button>
+        </div>
         <div class="survay-container">
             <div class="title-container">
                 <h1>{{head}}</h1>
@@ -130,6 +133,10 @@ export default {
                 message: '预览不能提交问卷',
                 type: 'warning'
             })
+        },
+        back() {
+            console.log('click')
+            this.$router.replace('/list')
         }
     }
 }
