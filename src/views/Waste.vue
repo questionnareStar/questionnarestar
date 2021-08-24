@@ -60,6 +60,8 @@ import {
 
 export default {
     mounted() {
+              localStorage.removeItem('input')
+          localStorage.removeItem('sort')
         let listinit = {
             current: 1,
             size: 100000,
@@ -93,19 +95,19 @@ export default {
         return {
             options: [{
                     label: "按创建时间排序-增序",
-                    value: "2"
+                    value: "3",
                 },
                 {
                     label: "按创建时间排序-降序",
-                    value: "0"
+                    value: "0",
                 },
                 {
                     label: "按问卷回收量排序-增序",
-                    value: "3"
+                    value: "4",
                 },
                 {
                     label: "按问卷回收量排序-降序",
-                    value: "1"
+                    value: "1",
                 },
             ],
             option: "",
@@ -114,7 +116,7 @@ export default {
         }
     },
     methods: {
-        Preview(index, row) {
+         Preview(index, row) {
             console.log(index, row);
             this.$router.push('/preview/0/' + row.ID)
         },
@@ -172,11 +174,13 @@ export default {
           },*/
         changeSelect() {
             console.log(this.option)
+            localStorage.setItem('sort', JSON.stringify(this.option))
             let listinit = {
                 current: 1,
                 size: 100000,
-                sortBy: this.option
-            }
+                sortBy: JSON.parse(localStorage.getItem('sort')),
+                head:JSON.parse(localStorage.getItem('input')),
+            };
             list.getwaste(listinit).then((res) => {
                 console.log(res)
                 this.tableData = []
@@ -204,11 +208,13 @@ export default {
         },
         Search(input) {
             console.log(input);
-            let listinit = {
-                current: 1,
-                size: 100000,
-                head: input,
-            }
+                localStorage.setItem('input', JSON.stringify(input))
+                let listinit = {
+                    current: 1,
+                    size: 100000,
+                sortBy: JSON.parse(localStorage.getItem('sort')),
+                head:JSON.parse(localStorage.getItem('input')),
+                };
             list.getwaste(listinit).then((res) => {
                 if (res.data.code == 20000 && res.data.data.total != 0) {
                     message({
@@ -266,3 +272,4 @@ export default {
     font-size: 12px;
 }
 </style>
+
