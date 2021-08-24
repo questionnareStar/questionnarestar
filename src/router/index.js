@@ -91,6 +91,7 @@ const routes = [
     meta: { sign: false }
   },
   {
+    // 0 为回收站， 1 为列表
     path: '/preview/:from/:id',
     name: 'Preview',
     component: Preview,
