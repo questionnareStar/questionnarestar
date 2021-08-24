@@ -28,17 +28,17 @@
       value-format="timestamp"
     >
     </el-date-picker>
-    <span class="head">问卷权限
+    <span class="head">是否需要邀请码
     </span>
     <el-radio-group v-model="modelForm.authority">
-      <el-radio label="0">任何人</el-radio>
-      <el-radio label="1">凭邀请码</el-radio>
+      <el-radio label="0">不需要</el-radio>
+      <el-radio label="1">需要</el-radio>
     </el-radio-group>
     <span class="head">是否需要登录
     </span>
     <el-radio-group v-model="modelForm.isLogin">
-      <el-radio label="0">需要</el-radio>
-      <el-radio label="1">不需要</el-radio>
+      <el-radio label="0">不需要</el-radio>
+      <el-radio label="1">需要</el-radio>
     </el-radio-group>
     <span class="head">是否需要显示题号
     </span>
@@ -71,7 +71,7 @@
               <el-form-item
                 :prop="`question.${index}.type`"
                 :label="`问题${index + 1}类型`"
-                :rules="{ required: true, message: '请选择问题类型', trigger: 'change' }"
+                :rules="{ required: true, message: '请选择问题类型', trigger: 'blur' }"
               >
                 <el-radio-group v-model="item.type">
                   <el-radio :label="0">单选题</el-radio>
@@ -83,7 +83,7 @@
               <el-form-item
                 :prop="`question.${index}.type`"
                 :label="`问题${index + 1}是否必答`"
-                :rules="{ required: true, message: '是否必答', trigger: 'change' }"
+                :rules="{ required: true, message: '是否必答', trigger: 'blur' }"
               >
                 <el-radio-group v-model="item.required">
                   <el-radio label="0">是</el-radio>
@@ -94,7 +94,7 @@
               <el-form-item
                 :prop="`question.${index}.question`"
                 label="问题"
-                :rules="{ required: true, message: '请填写问题', trigger: 'change' }"
+                :rules="{ required: true, message: '请填写问题', trigger: 'blur' }"
               >
                 <el-input
                   v-model.trim="item.question"
@@ -106,7 +106,7 @@
               <el-form-item
                 :prop="`question.${index}.question`"
                 label="问题描述"
-                :rules="{ required: true, message: '请填写问题描述', trigger: 'change' }"
+                :rules="{ required: true, message: '请填写问题描述', trigger: 'blur' }"
               >
                 <el-input
                   v-model.trim="item.desc"
@@ -231,8 +231,8 @@ export default {
         introduction: "",
         isReleased: -1,
         authority: -1,
-        isLogin: -1,
-        serial: false,
+        isLogin: "",
+        serial: "",
         question: [
           {
             desc: "",
@@ -400,21 +400,18 @@ export default {
           url: "https://question.xk857.club/api/v1/questionnaire/create",
           data: JsonCreateQuestionnaire,
         }).then((res) => {
-          console.log(res);
-          if (res.data.type == 0) {
-            this.$message({
-              showClose: true,
-              message: "创建问卷成功，任何人均可填写问卷",
-              type: "success",
-            });
-            window.location.herf = "../find/me/all";
-          } else {
-            this.$message({
-              showClose: true,
-              message: "创建问卷成功，他人可凭邀请码可填写问卷",
-              type: "success",
-            });
-            window.location.herf = "../find/me/all";
+          if (res.data.code == 20000) {
+            console.log(res);
+            this.$alert(
+              "您创建的问卷所有人均可回答，点击确认回到“问卷列表”界面",
+              "创建问卷成功",
+              {
+                confirmButtonText: "确定",
+                callback: () => {
+                  this.$router.push('/list');
+                },
+              }
+            );
           }
         });
       }
@@ -427,21 +424,20 @@ export default {
           url: "https://question.xk857.club/api/v1/questionnaire/create/code",
           data: JsonCreateQuestionnaire,
         }).then((res) => {
-          console.log(res);
-          if (res.data.type == 0) {
-            this.$message({
-              showClose: true,
-              message: "创建问卷成功，任何人均可填写问卷",
-              type: "success",
-            });
-            window.location.herf = "../find/me/all";
-          } else {
-            this.$message({
-              showClose: true,
-              message: "创建问卷成功，他人可凭邀请码可填写问卷",
-              type: "success",
-            });
-            window.location.herf = "../find/me/all";
+          if (res.data.code == 20000) {
+            console.log(res);
+            this.$alert(
+              "您创建的问卷他人凭借邀请码" +
+                res.data.data.code +
+                "即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
+              "创建问卷成功",
+              {
+                confirmButtonText: "确定",
+                callback: () => {
+                  this.$router.push('/list');
+                },
+              }
+            );
           }
         });
       }
@@ -454,21 +450,18 @@ export default {
           url: "https://question.xk857.club/api/v1/questionnaire/create/login",
           data: JsonCreateQuestionnaire,
         }).then((res) => {
-          console.log(res);
-          if (res.data.type == 0) {
-            this.$message({
-              showClose: true,
-              message: "创建问卷成功，任何人均可填写问卷",
-              type: "success",
-            });
-            window.location.herf = "../find/me/all";
-          } else {
-            this.$message({
-              showClose: true,
-              message: "创建问卷成功，他人可凭邀请码可填写问卷",
-              type: "success",
-            });
-            window.location.herf = "../find/me/all";
+          if (res.data.code == 20000) {
+            console.log(res);
+            this.$alert(
+              "您创建的问卷他人登录后即可回答，点击确认回到“问卷列表”界面",
+              "创建问卷成功",
+              {
+                confirmButtonText: "确定",
+                callback: () => {
+                  this.$router.push('/list');
+                },
+              }
+            );
           }
         });
       }
@@ -481,21 +474,20 @@ export default {
           url: "https://question.xk857.club/api/v1/questionnaire/create/login/code",
           data: JsonCreateQuestionnaire,
         }).then((res) => {
-          console.log(res);
-          if (res.data.type == 0) {
-            this.$message({
-              showClose: true,
-              message: "创建问卷成功，任何人均可填写问卷",
-              type: "success",
-            });
-            window.location.herf = "../find/me/all";
-          } else {
-            this.$message({
-              showClose: true,
-              message: "创建问卷成功，他人可凭邀请码可填写问卷",
-              type: "success",
-            });
-            window.location.herf = "../find/me/all";
+          if (res.data.code == 20000) {
+            console.log(res);
+            this.$alert(
+              "您创建的问卷他人登陆后凭借邀请码" +
+                res.data.data.code +
+                "即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
+              "创建问卷成功",
+              {
+                confirmButtonText: "确定",
+                callback: () => {
+                  this.$router.push('/list');
+                },
+              }
+            );
           }
         });
       }
