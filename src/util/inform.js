@@ -1,4 +1,6 @@
-import { Message } from 'element-ui'
+import {
+    Message
+} from 'element-ui'
 
 /**
  * element-ui 消息弹窗的函数封装
@@ -6,7 +8,7 @@ import { Message } from 'element-ui'
 
 /**
  * 消息提示框
- * @param {message, type} options 
+ * @param {message, type} options
  * type: success/warning/info/error
  */
 export function message(options) {

@@ -1,6 +1,6 @@
 /*
- * @Description: 
- * @version: 
+ * @Description:
+ * @version:
  * @Author: 张怡健
  * @Date: 2021-08-22 15:40:09
  * @LastEditors: 张怡健
@@ -50,22 +50,22 @@ export default {
             data: data
         })
     },
-    recovery(data){
+    recovery(data) {
         return axios({
             headers: {
                 "token": JSON.parse(localStorage.getItem('userInfo')).token
             },
             method: 'PUT',
-            url: '/api/v1/questionnaire/restore/'+data,
+            url: '/api/v1/questionnaire/restore/' + data,
         })
     },
-    deleteDeath(data){
+    deleteDeath(data) {
         return axios({
             headers: {
                 "token": JSON.parse(localStorage.getItem('userInfo')).token
             },
             method: 'DELETE',
-            url: '/api/v1/questionnaire/death/'+data,
+            url: '/api/v1/questionnaire/death/' + data,
             timeout: 5000
         })
     },
@@ -108,7 +108,7 @@ export default {
                 "token": JSON.parse(localStorage.getItem('userInfo')).token
             },
             method: 'POST',
-            url: '/api/v1/statics/get'+"?questionnaireId="+data,
+            url: '/api/v1/statics/get' + "?questionnaireId=" + data,
             questionnaireId: data
         })
     },
