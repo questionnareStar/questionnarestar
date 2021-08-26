@@ -238,7 +238,7 @@ export default {
         question: [
           {
             desc: "",
-            type:4,
+            type: 4,
             question: "",
             choices: [{ choice: "" }],
             required: -1,
@@ -246,6 +246,8 @@ export default {
         ],
       },
       flag: false,
+      dialogFormVisible: false,
+      formLabelWidth: "120px",
     };
   },
   methods: {
@@ -305,7 +307,7 @@ export default {
             method: "post",
             url: "/api/v1/topic/create/single/choice",
             data: JsonCreateQuestion,
-            timeout:1000
+            timeout: 1000,
           }).then((res) => {
             console.log(res);
             if (res.data.code == 20000) {
@@ -339,14 +341,14 @@ export default {
             method: "post",
             url: "/api/v1/topic/create/multi/choice",
             data: JsonCreateQuestion,
-            timeout:1000
+            timeout: 1000,
           }).then((res) => {
             console.log(res);
             if (res.data.code == 20000) {
               questionreturned.push({
                 itemId: res.data.data.id,
                 itemOrder: index + 1,
-                itemType:3,
+                itemType: 3,
               });
             } else {
               _this.flag = false;
@@ -367,14 +369,14 @@ export default {
             method: "post",
             url: "/api/v1/topic/create/fill/blank",
             data: JsonCreateQuestion,
-            timeout:1000
+            timeout: 1000,
           }).then((res) => {
             console.log(res);
             if (res.data.code == 20000) {
               questionreturned.push({
                 itemId: res.data.data.id,
                 itemOrder: index + 1,
-                itemType:1,
+                itemType: 1,
               });
             } else {
               _this.flag = false;
@@ -385,7 +387,7 @@ export default {
             }
           });
         }
-        if (item.type ==2) {
+        if (item.type == 2) {
           let JsonCreateQuestion = {
             desc: item.desc,
             maxScore: Number(item.maxscore),
@@ -397,7 +399,7 @@ export default {
             method: "post",
             url: "/api/v1/topic/create/mark",
             data: JsonCreateQuestion,
-            timeout:1000
+            timeout: 1000,
           }).then((res) => {
             console.log(res);
             if (res.data.code == 20000) {
@@ -424,6 +426,17 @@ export default {
         });
         this.flag = false;
       }
+      this.modelForm.question.forEach(function (item) {
+        item.choices.forEach(function (items) {
+          if (!items) {
+            this.flag = false;
+            message({
+              message: "请填写选项",
+              type: "warning",
+            });
+          }
+        });
+      });
       if (questionreturned.length === this.modelForm.question.length) {
         this.flag = false;
       }
@@ -445,159 +458,162 @@ export default {
       //   })
       //   return;
       // }
-      setTimeout(() => {
-        let JsonCreateQuestionnaire = {
-          head: this.modelForm.head,
-          introduction: this.modelForm.introduction,
-          isReleased: 0,
-          itemList: questionreturned,
-          serial: this.modelForm.serial,
-          startTime: "1629767826",
-          endTime: "1661303826",
-        };
-        console.log(JsonCreateQuestionnaire);
-        if (
-          Number(this.modelForm.authority) === 0 &&
-          Number(this.modelForm.isLogin) === 0
-        ) {
-          axios({
-            headers: {
-              token: JSON.parse(localStorage.getItem("userInfo")).token,
-            },
-            method: "post",
-            url: "/api/v1/questionnaire/create",
-            data: JsonCreateQuestionnaire,
-            timeout:1000
-          }).then((res) => {
-            if (res.data.code == 20000) {
+      console.log(questionreturned)
+      if (questionreturned.length != 0) {
+        setTimeout(() => {
+          let JsonCreateQuestionnaire = {
+            head: this.modelForm.head,
+            introduction: this.modelForm.introduction,
+            isReleased: 0,
+            itemList: questionreturned,
+            serial: this.modelForm.serial,
+            startTime: "1629767826",
+            endTime: "1661303826",
+          };
+          console.log(JsonCreateQuestionnaire);
+          if (
+            Number(this.modelForm.authority) === 0 &&
+            Number(this.modelForm.isLogin) === 0
+          ) {
+            axios({
+              headers: {
+                token: JSON.parse(localStorage.getItem("userInfo")).token,
+              },
+              method: "post",
+              url: "/api/v1/questionnaire/create",
+              data: JsonCreateQuestionnaire,
+              timeout: 1000,
+            }).then((res) => {
+              if (res.data.code == 20000) {
+                console.log(res);
+                this.$alert(
+                  "问卷链接: http://47.93.216.213:8081/questionnare/" +
+                    res.data.data.id +
+                    "\n所有人均可回答，点击确认回到“问卷列表”界面",
+                  "创建问卷成功",
+                  {
+                    confirmButtonText: "确定",
+                    callback: () => {
+                      this.$router.push("/list");
+                    },
+                  }
+                );
+              } else {
+                this.$alert(res.data.msg, {
+                  confirmButtonText: "确定",
+                });
+              }
+            });
+          }
+          if (
+            Number(this.modelForm.authority) === 1 &&
+            Number(this.modelForm.isLogin) === 0 &&
+            this.flag
+          ) {
+            axios({
+              headers: {
+                token: JSON.parse(localStorage.getItem("userInfo")).token,
+              },
+              method: "post",
+              url: "/api/v1/questionnaire/create/code",
+              data: JsonCreateQuestionnaire,
+              timeout: 1000,
+            }).then((res) => {
+              if (res.data.code == 20000) {
+                console.log(res);
+                this.$alert(
+                  "问卷链接: http://47.93.216.213:8081/questionnare/" +
+                    res.data.data.id +
+                    "他人凭借邀请码: " +
+                    res.data.data.code +
+                    "\n即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
+                  "创建问卷成功",
+                  {
+                    confirmButtonText: "确定",
+                    callback: () => {
+                      this.$router.push("/list");
+                    },
+                  }
+                );
+              } else {
+                this.$alert(res.data.msg, {
+                  confirmButtonText: "确定",
+                });
+              }
+            });
+          }
+          if (
+            Number(this.modelForm.authority) === 0 &&
+            Number(this.modelForm.isLogin) === 1
+          ) {
+            axios({
+              headers: {
+                token: JSON.parse(localStorage.getItem("userInfo")).token,
+              },
+              method: "post",
+              url: "/api/v1/questionnaire/create/login",
+              data: JsonCreateQuestionnaire,
+              timeout: 1000,
+            }).then((res) => {
+              if (res.data.code == 20000) {
+                console.log(res);
+                this.$alert(
+                  "问卷链接: http://47.93.216.213:8081/questionnare/" +
+                    res.data.data.id +
+                    "\n他人登录后即可回答，点击确认回到“问卷列表”界面",
+                  "创建问卷成功",
+                  {
+                    confirmButtonText: "确定",
+                    callback: () => {
+                      this.$router.push("/list");
+                    },
+                  }
+                );
+              } else {
+                this.$alert(res.data.msg, {
+                  confirmButtonText: "确定",
+                });
+              }
+            });
+          }
+          if (
+            Number(this.modelForm.authority) === 1 &&
+            Number(this.modelForm.isLogin) === 1
+          ) {
+            axios({
+              headers: {
+                token: JSON.parse(localStorage.getItem("userInfo")).token,
+              },
+              method: "post",
+              url: "/api/v1/questionnaire/create/login/code",
+              data: JsonCreateQuestionnaire,
+              timeout: 1000,
+            }).then((res) => {
               console.log(res);
-              this.$alert(
-                "问卷链接: http://47.93.216.213:8081/questionnare/" +
-                  res.data.data.id +
-                  "\n所有人均可回答，点击确认回到“问卷列表”界面",
-                "创建问卷成功",
-                {
+              if (res.data.code == 20000) {
+                this.$alert(
+                  "问卷链接: http://47.93.216.213:8081/questionnare/" +
+                    res.data.data.id +
+                    "\n他人登陆后凭借邀请码: " +
+                    res.data.data.code +
+                    "即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
+                  "创建问卷成功",
+                  {
+                    confirmButtonText: "确定",
+                    callback: () => {
+                      this.$router.push("/list");
+                    },
+                  }
+                );
+              } else {
+                this.$alert(res.data.msg, {
                   confirmButtonText: "确定",
-                  callback: () => {
-                    this.$router.push("/list");
-                  },
-                }
-              );
-            } else {
-              this.$alert(res.data.msg, {
-                confirmButtonText: "确定",
-              });
-            }
-          });
-        }
-        if (
-          Number(this.modelForm.authority) === 1 &&
-          Number(this.modelForm.isLogin) === 0 &&
-          this.flag
-        ) {
-          axios({
-            headers: {
-              token: JSON.parse(localStorage.getItem("userInfo")).token,
-            },
-            method: "post",
-            url: "/api/v1/questionnaire/create/code",
-            data: JsonCreateQuestionnaire,
-            timeout:1000
-          }).then((res) => {
-            if (res.data.code == 20000) {
-              console.log(res);
-              this.$alert(
-                "问卷链接: http://47.93.216.213:8081/questionnare/" +
-                  res.data.data.id +
-                  "他人凭借邀请码: " +
-                  res.data.data.code +
-                  "\n即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
-                "创建问卷成功",
-                {
-                  confirmButtonText: "确定",
-                  callback: () => {
-                    this.$router.push("/list");
-                  },
-                }
-              );
-            } else {
-              this.$alert(res.data.msg, {
-                confirmButtonText: "确定",
-              });
-            }
-          });
-        }
-        if (
-          Number(this.modelForm.authority) === 0 &&
-          Number(this.modelForm.isLogin) === 1
-        ) {
-          axios({
-            headers: {
-              token: JSON.parse(localStorage.getItem("userInfo")).token,
-            },
-            method: "post",
-            url: "/api/v1/questionnaire/create/login",
-            data: JsonCreateQuestionnaire,
-            timeout:1000
-          }).then((res) => {
-            if (res.data.code == 20000) {
-              console.log(res);
-              this.$alert(
-                "问卷链接: http://47.93.216.213:8081/questionnare/" +
-                  res.data.data.id +
-                  "\n他人登录后即可回答，点击确认回到“问卷列表”界面",
-                "创建问卷成功",
-                {
-                  confirmButtonText: "确定",
-                  callback: () => {
-                    this.$router.push("/list");
-                  },
-                }
-              );
-            } else {
-              this.$alert(res.data.msg, {
-                confirmButtonText: "确定",
-              });
-            }
-          });
-        }
-        if (
-          Number(this.modelForm.authority) === 1 &&
-          Number(this.modelForm.isLogin) === 1
-        ) {
-          axios({
-            headers: {
-              token: JSON.parse(localStorage.getItem("userInfo")).token,
-            },
-            method: "post",
-            url: "/api/v1/questionnaire/create/login/code",
-            data: JsonCreateQuestionnaire,
-            timeout:1000
-          }).then((res) => {
-            console.log(res);
-            if (res.data.code == 20000) {
-              this.$alert(
-                "问卷链接: http://47.93.216.213:8081/questionnare/" +
-                  res.data.data.id +
-                  "\n他人登陆后凭借邀请码: " +
-                  res.data.data.code +
-                  "即可回答，请记好邀请码信息，点击确认回到“问卷列表”界面",
-                "创建问卷成功",
-                {
-                  confirmButtonText: "确定",
-                  callback: () => {
-                    this.$router.push("/list");
-                  },
-                }
-              );
-            } else {
-              this.$alert(res.data.msg, {
-                confirmButtonText: "确定",
-              });
-            }
-          });
-        }
-      }, 1000);
+                });
+              }
+            });
+          }
+        }, 1000);
+      }
     },
   },
 };
@@ -610,3 +626,143 @@ export default {
   margin-bottom: 5px;
 }
 </style>
+<!--
+<el-button
+      type="text"
+      @click="dialogFormVisible = true"
+    >新增题目</el-button>
+    <el-dialog
+      title="题目"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+      ref="modelForm"
+      :rule="rules"
+      :model="modelForm"
+      label-position="right"
+      label-width="100px"
+    >
+      <vuedraggable
+        v-model="modelForm.question"
+        class="wrapper"
+        @end="end"
+      >
+        <div
+          v-for="(item, index) in modelForm.question"
+          :key="index"
+        >
+          <el-collapse>
+            <el-collapse-item>
+              <template slot="title">
+                第{{ index+1 }}题,题目:{{ item.question }}
+              </template>
+              <el-form-item
+                :prop="`question.${index}.type`"
+                :label="`问题${index + 1}类型`"
+                :rules="{ required: true, message: '请选择问题类型', trigger: 'blur' }"
+              >
+                <el-radio-group v-model="item.type">
+                  <el-radio :label="4">单选题</el-radio>
+                  <el-radio :label="3">多选题</el-radio>
+                  <el-radio :label="1">填空题</el-radio>
+                  <el-radio :label="2">评分题</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item
+                :prop="`question.${index}.type`"
+                :label="`问题${index + 1}是否必答`"
+                :rules="{ required: true, message: '是否必答', trigger: 'blur' }"
+              >
+                <el-radio-group v-model="item.required">
+                  <el-radio :label="0">是</el-radio>
+                  <el-radio :label="1">不是</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item
+                :prop="`question.${index}.question`"
+                label="问题"
+                :rules="{ required: true, message: '请填写问题', trigger: 'blur' }"
+              >
+                <el-input
+                  v-model.trim="item.question"
+                  style="width:258px"
+                  clearable
+                  placeholder="请填写问题"
+                />
+              </el-form-item>
+              <el-form-item
+                :prop="`question.${index}.question`"
+                label="问题描述"
+                :rules="{ required: true, message: '请填写问题描述', trigger: 'blur' }"
+              >
+                <el-input
+                  v-model.trim="item.desc"
+                  style="width:258px"
+                  clearable
+                  placeholder="请填写问题描述"
+                />
+              </el-form-item>
+              <el-form-item
+                v-for="(opt, idx) in item.choices"
+                v-show="item.type!=1&&item.type!=2"
+                :key="idx"
+                :label="`选项${idx + 1}`"
+                :prop="`question.${index}.choices.${idx}.value`"
+                :rules="[
+                  { required: true, message: '请输入答案', trigger: 'blur' },
+                ]"
+              >
+                <el-input
+                  v-model.trim="opt.value"
+                  v-show="item.type==3||item.type==4"
+                  style="width:258px"
+                  clearable
+                  placeholder="请输入答案"
+                />
+                <el-button
+                  style="margin-left: 20px"
+                  v-show="item.type==3||item.type==4"
+                  @click.prevent="removeDomain(index,idx)"
+                >删除</el-button>
+              </el-form-item>
+              '<el-form-item
+                v-for="(opt, idx) in item.choices"
+                v-show="item.type==2"
+                :key="idx"
+                :label="`总分`"
+                :prop="`question.${index}.choices.${idx}.value`"
+                :rules="[
+                  { required: true, message: '请输入总分', trigger: 'blur' },
+                ]"
+              >
+                <el-input
+                  v-model="item.maxscore"
+                  v-show="item.type==2"
+                  style="width:258px"
+                  clearable
+                  placeholder="请输入总分"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button
+                  v-show="item.type!=1 && item.type!=2"
+                  @click="addDomain(index)"
+                >新增选项</el-button>
+              </el-form-item>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+      </vuedraggable>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogFormVisible = false;"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
+-->
