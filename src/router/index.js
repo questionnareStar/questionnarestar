@@ -8,6 +8,7 @@ import AuthLayout from '../layout/AuthLayout.vue'
 import QuestionnareList from '../views/QuestionnareList.vue'
 import Waste from '../views/Waste.vue'
 import CreateQuestionnare from '../views/Createquestionnare.vue'
+import Edit from '../views/Edit.vue'
 import Welcome from '../views/Welcome.vue'
 // 用户登录注册视图
 import Login from '../views/Login.vue'
@@ -33,9 +34,9 @@ const MainChildRoutes = [
     meta: { sign: true },
   },
   {
-    path: 'create',
-    name: 'create',
-    component: CreateQuestionnare,
+    path: 'edit',
+    name: 'edit',
+    component: Edit,
     meta: { sign: true },
   },
   {
@@ -43,6 +44,12 @@ const MainChildRoutes = [
     name: 'welcome',
     component: Welcome,
     meta: { sign: false }
+  },
+  {
+    path: 'create',
+    name: 'create',
+    component: CreateQuestionnare,
+    meta: { sign: true }
   }
 ]
 
@@ -68,6 +75,9 @@ const AuthChildRoutes = [
 ]
 
 const QuestionnareChildRoutes = [
+  {
+    path: ''
+  }
 ]
 
 const routes = [

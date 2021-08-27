@@ -15,8 +15,8 @@
                             <span>我的问卷</span>
                         </router-link>
                     </li>
-                    <li :class="`${isLogin() ? '' : 'disabled'} ${activeLink('create') ? 'active' : ''}`">
-                        <router-link to="/create">
+                    <li :class="`${isLogin() ? '' : 'disabled'} ${activeLink('edit') ? 'active' : ''}`">
+                        <router-link to="/edit">
                             <em class="el-icon-edit" />
                             <span>编辑问卷</span>
                         </router-link>
