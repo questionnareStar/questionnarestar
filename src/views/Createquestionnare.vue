@@ -182,7 +182,6 @@
       </el-form-item>
     </el-form>
   </div>
-  <canvas ref="qrcode_ban"></canvas>
 </template>
 <script>
 import vuedraggable from "vuedraggable";
@@ -289,12 +288,6 @@ export default {
           that.$forceUpdate();
         }
       );
-      let that = this;
-      this.dialogVisiable = true; //打开弹窗
-      setTimeout(() => {
-        that.useqrcode("qrcode_ban", qrcode_ban); //生成二维码
-        that.dialogLoading = false; //关闭弹窗loading
-      }, 1000);
     },
 
     //因为是弹窗中使用的二维码。绑定值和页面找到对应canvas有时间差，所以用了一个1秒的定时器
