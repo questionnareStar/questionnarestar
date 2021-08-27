@@ -80,14 +80,6 @@ export default {
                 if (response.data.code === 20000) {
                     const data = response.data.data
                     if (data.isReleased) {
-                        // TODO: 添加对于登录的验证
-                        if (data.type === 2 || data.type === 3) {
-                            message({
-                                message: '本问卷需登录方可填写',
-                                type: 'info'
-                            })
-                            this.$$router.push('/auth/validate/' + data.id)
-                        }
                         this.head = data.head
                         this.introduction = data.introduction
                         this.itemList = data.itemList
