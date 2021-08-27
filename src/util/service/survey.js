@@ -26,6 +26,9 @@ export default {
     },
     createBlank(data) {
         return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
             method: "post",
             url: "/api/v1/topic/create/fill/blank",
             data: data
@@ -33,6 +36,9 @@ export default {
     },
     createMark(data) {
         return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
             method: "post",
             url: "/api/v1/topic/create/mark",
             data: data
@@ -40,6 +46,9 @@ export default {
     },
     createMulti(data) {
         return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
             method: "post",
             url: "/api/v1/topic/create/multi/choice",
             data: data
@@ -47,13 +56,20 @@ export default {
     },
     createSingle(data) {
         return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
             method: "post",
             url: "/api/v1/topic/create/single/choice",
             data: data
         })
     },
     createQuestionnare(data) {
+        console.log(data)
         return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
             method: 'POST',
             url: '/api/v1/questionnaire/create',
             data: data

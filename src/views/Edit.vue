@@ -40,91 +40,96 @@
                     </div>
                     <!-- 问卷内容 -->
                     <div class="body p-5">
-                        <div v-for="(item, index) in data.questions" :key="index">
-                            <!-- 填空题 -->
-                            <div class="cursoron" v-if="item.type === 1">
-                                <el-row class="mb-8">
-                                    <span class="question" v-if="data.serial">{{index + 1}}</span>
-                                    <span class="question">{{item.question}}</span>
-                                    <span class="question red"
-                                        v-if="item.required"
-                                        >*</span>
-                                </el-row>
-                                <el-row class="mb-8">
-                                    <span class="des">{{item.desc}}</span>
-                                </el-row>
-                                <el-row class="mb-8">
-                                    <el-input
-                                        type="textarea"
-                                        autosize
-                                        disabled
-                                        placeholder="此处作答"/>
-                                </el-row>
-                            </div>
-                            <!-- 评分题 -->
-                            <div class="cursoron" v-if="item.type === 2">
-                                <el-row class="mb-8">
-                                    <span class="question" v-if="data.serial">{{index + 1}}</span>
-                                    <span class="question">{{item.question}}</span>
-                                    <span class="question red"
-                                        v-if="item.required"
-                                        >*</span>
-                                </el-row>
-                                <el-row class="mb-8">
-                                    <span class="des">{{item.desc}}</span>
-                                </el-row>
-                                <el-row class="mb-8">
-                                    <el-rate :max="item.maxScore"/>
-                                </el-row>
-                            </div>
-                            <!-- 多选题 -->
-                            <div class="cursoron" v-if="item.type === 3">
-                                <el-row class="mb-8">
-                                    <span class="question" v-if="data.serial">{{index + 1}}</span>
-                                    <span class="question">{{item.question}}</span>
-                                    <span class="question red"
-                                        v-if="item.required"
-                                        >*</span>
-                                    【多选题】
-                                </el-row>
-                                <el-row class="mb-8">
-                                    <span class="des">{{item.desc}}</span>
-                                </el-row>
-                                <el-row class="mb-8">
-                                    <el-checkbox
-                                        class="choice-block"
-                                        v-for="(choice, idx) in item.choices"
-                                        :key="idx"
-                                        :label="choice.value">{{choice.value}}</el-checkbox>
-                                </el-row>
-                            </div>
-                            <!-- 单选题 -->
-                            <div class="cursoron" v-if="item.type === 4">
-                                <el-row class="mb-8">
-                                    <span class="question" v-if="data.serial">{{index + 1}}</span>
-                                    <span class="question">{{item.question}}</span>
-                                    <span class="question red"
-                                        v-if="item.required"
-                                        >*</span>
-                                </el-row>
-                                <el-row class="mb-8">
-                                    <span class="des">{{item.desc}}</span>
-                                </el-row>
-                                <el-row class="mb-8">
-                                    <el-radio
-                                        class="choice-block"
-                                        v-for="(choice, idx) in item.choices"
-                                        :key="idx"
-                                        :label="choice.value">{{choice.value}}</el-radio>
-                                </el-row>
-                            </div>
-                            <el-row>
-                                <el-button type="primary" icon="el-icon-edit" size="small" circle @click.native="editQ(index, item)"/>
-                                <el-button type="info" icon="el-icon-document-copy" size="small" circle @click.native="copyQ(item)"/>
-                                <el-button type="danger" icon="el-icon-delete" size="small" circle @click.native="deleteQ(index)"/>
-                            </el-row>
-                            <el-divider class="mt-8"/>
-                        </div>
+                        <draggable v-model="data.questions"  @start="onStart" @end="onEnd">
+                            <transition-group>
+                                <div v-for="(item, index) in data.questions" :key="index" class="cursoron">
+                                    <!-- 填空题 -->
+                                    <div v-if="item.type === 1">
+                                        <el-row class="mb-8">
+                                            <span class="question" v-if="data.serial">{{index + 1}}</span>
+                                            <span class="question">{{item.question}}</span>
+                                            <span class="question red"
+                                                v-if="item.required"
+                                                >*</span>
+                                        </el-row>
+                                        <el-row class="mb-8">
+                                            <span class="des">{{item.desc}}</span>
+                                        </el-row>
+                                        <el-row class="mb-8">
+                                            <el-input
+                                                type="textarea"
+                                                autosize
+                                                disabled
+                                                placeholder="此处作答"/>
+                                        </el-row>
+                                    </div>
+                                    <!-- 评分题 -->
+                                    <div class="cursoron" v-if="item.type === 2">
+                                        <el-row class="mb-8">
+                                            <span class="question" v-if="data.serial">{{index + 1}}</span>
+                                            <span class="question">{{item.question}}</span>
+                                            <span class="question red"
+                                                v-if="item.required"
+                                                >*</span>
+                                        </el-row>
+                                        <el-row class="mb-8">
+                                            <span class="des">{{item.desc}}</span>
+                                        </el-row>
+                                        <el-row class="mb-8">
+                                            <el-rate :max="item.maxScore"/>
+                                        </el-row>
+                                    </div>
+                                    <!-- 多选题 -->
+                                    <div class="cursoron" v-if="item.type === 3">
+                                        <el-row class="mb-8">
+                                            <span class="question" v-if="data.serial">{{index + 1}}</span>
+                                            <span class="question">{{item.question}}</span>
+                                            <span class="question red"
+                                                v-if="item.required"
+                                                >*</span>
+                                            【多选题】
+                                        </el-row>
+                                        <el-row class="mb-8">
+                                            <span class="des">{{item.desc}}</span>
+                                        </el-row>
+                                        <el-row class="mb-8">
+                                            <el-checkbox
+                                                class="choice-block"
+                                                v-for="(choice, idx) in item.choices"
+                                                :key="idx"
+                                                :label="choice.value">{{choice.value}}</el-checkbox>
+                                        </el-row>
+                                    </div>
+                                    <!-- 单选题 -->
+                                    <div class="cursoron" v-if="item.type === 4">
+                                        <el-row class="mb-8">
+                                            <span class="question" v-if="data.serial">{{index + 1}}</span>
+                                            <span class="question">{{item.question}}</span>
+                                            <span class="question red"
+                                                v-if="item.required"
+                                                >*</span>
+                                        </el-row>
+                                        <el-row class="mb-8">
+                                            <span class="des">{{item.desc}}</span>
+                                        </el-row>
+                                        <el-row class="mb-8">
+                                            <el-radio
+                                                class="choice-block"
+                                                v-for="(choice, idx) in item.choices"
+                                                :key="idx"
+                                                :label="choice.value">{{choice.value}}</el-radio>
+                                        </el-row>
+                                    </div>
+                                    <el-row>
+                                        <el-button type="primary" icon="el-icon-edit" size="small" circle @click.native="editQ(index, item)"/>
+                                        <el-button type="info" icon="el-icon-document-copy" size="small" circle @click.native="copyQ(item)"/>
+                                        <el-button type="danger" icon="el-icon-delete" size="small" circle @click.native="deleteQ(index)"/>
+                                    </el-row>
+                                    <el-divider class="mt-8"/>
+                                </div>
+                            </transition-group>
+                        </draggable>
+                        
                     </div>
                 </div>
             </div>
@@ -285,11 +290,12 @@
 </template>
 
 <script>
-import { message } from '../util/inform';
-import survey from '../util/service/survey';
+import { message } from '../util/inform'
+import survey from '../util/service/survey'
+import draggable from 'vuedraggable'
 export default {
-    mounted() {
-        console.log(Date.now())
+    components: {
+        draggable
     },
     data() {
         return {
@@ -352,7 +358,8 @@ export default {
                 desc: '',
                 required: true,
                 choices: [{ value: '新增选项' }]
-            }
+            },
+            itemList: []
         }
     },
     methods: {
@@ -495,7 +502,128 @@ export default {
         deleteQ(index) {
             this.data.questions.splice(index, 1)
         },
-        submit() {
+        onStart(){
+            this.drag=true;
+        },
+        onEnd() {
+            this.drag=false;
+        },
+        async submitQuestion() {
+            let formData
+            for (let i = 0; i < this.data.questions.length; i++) {
+                const item = this.data.questions[i]
+                switch (item.type) {
+                    case 1:
+                        formData = {
+                            question: item.question,
+                            desc: item.desc,
+                            required: Number(item.required)
+                        }
+                        await survey.createBlank(formData)
+                            .then((response) => {
+                                if (response.data.code === 20000) {
+                                    console.log('题目信息')
+                                    console.log(response.data)
+                                    this.itemList.push({
+                                        itemId: response.data.data.id,
+                                        itemOrder: i + 1,
+                                        itemType: 1
+                                    })
+                                    console.log(this.itemList)
+                                }
+                            })
+                        console.log(i + 'q')
+                        break
+                     case 2:
+                        formData = {
+                            question: item.question,
+                            desc: item.desc,
+                            maxScore: item.maxScore,
+                            required: Number(item.required)
+                        }
+                        await survey.createMark(formData)
+                            .then((response) => {
+                                if (response.data.code === 20000) {
+                                    this.itemList.push({
+                                        itemId: response.data.data.id,
+                                        itemOrder: i + 1,
+                                        itemType: 2
+                                    })
+                                }
+                            })
+                        console.log(i + 'q')
+                        break
+                    case 3:
+                        formData = {
+                            question: item.question,
+                            desc: item.desc,
+                            choices: [],
+                            required: Number(item.required)
+                        }
+                        item.choices.forEach(choice => {
+                            formData.choices.push(choice.value)
+                        })
+                        await survey.createMulti(formData)
+                            .then((response) => {
+                                if (response.data.code === 20000) {
+                                    this.itemList.push({
+                                        itemId: response.data.data.id,
+                                        itemOrder: i + 1,
+                                        itemType: 3
+                                    })
+                                }
+                            })
+                        console.log(i + 'q')
+                        break
+                    case 4:
+                        formData = {
+                            question: item.question,
+                            desc: item.desc,
+                            choices: [],
+                            required: Number(item.required)
+                        }
+                        item.choices.forEach(choice => {
+                            formData.choices.push(choice.value)
+                        })
+                        await survey.createSingle(formData)
+                            .then((response) => {
+                                if (response.data.code === 20000) {
+                                    this.itemList.push({
+                                        itemId: response.data.data.id,
+                                        itemOrder: i + 1,
+                                        itemType: 4
+                                    })
+                                }
+                            })
+                        console.log(i + 'q')
+                        break
+                }
+            }
+        },
+        async submitQuestionnare(submitData) {
+            survey.createQuestionnare(submitData)
+                .then((response) => {
+                    console.log(response)
+                    if (response.data.code === 20000) {
+                        message({
+                            message: response.data.msg,
+                            type: 'success'
+                        })
+                    } else {
+                        message({
+                            message: response.data.msg,
+                            type: 'warning'
+                        })
+                    }
+                })
+                .catch((error) => {
+                    message({
+                        message: error.message,
+                        type: 'error'
+                    })
+                })
+        },
+        async submit() {
             if (this.setEndtime) {
                 if (this.data.endTime === '') {
                     message({
@@ -505,120 +633,17 @@ export default {
                     return
                 }
             }
+            await this.submitQuestion()
             let submitData = {
-                endTime: setEndtime?this.data.endTime:'4785667200000',
+                endTime: this.setEndtime?this.data.endTime:'4785667200000',
                 head: this.data.head,
                 introduction: this.data.introduction,
                 isReleased: 0,
-                itemList: [],
+                itemList: this.itemList,
                 serial: this.data.serial,
                 startTime: this.data.startTime
             }
-            this.data.questions.forEach((item, index) => {
-                let data = {
-                    question: item.question,
-                    desc: item.desc,
-                    required: Number(item.required)
-                }
-                switch (item.type) {
-                    case 1:
-                        survey.createBlank(data)
-                            .then((response) => {
-                                const data = response.data
-                                if (data.code === 20000) {
-                                    submitData.itemList.push({
-                                        itemId: data.id,
-                                        itemOrder: index,
-                                        itemType: 1
-                                    })
-                                } else {
-                                    message({
-                                        message: data.msg,
-                                        type: 'warning'
-                                    })
-                                }
-                            })
-                            .catch((error) => {
-                                message({
-                                    message: error.message,
-                                    type: 'warning'
-                                })
-                            })
-                        break
-                    case 2:
-                        survey.createMark(data)
-                            .then((response) => {
-                                const data = response.data
-                                if (data.code === 20000) {
-                                    submitData.itemList.push({
-                                        itemId: data.id,
-                                        itemOrder: index,
-                                        itemType: 2
-                                    })
-                                } else {
-                                    message({
-                                        message: data.msg,
-                                        type: 'warning'
-                                    })
-                                }
-                            })
-                            .catch((error) => {
-                                message({
-                                    message: error.message,
-                                    type: 'warning'
-                                })
-                            })
-                        break
-                    case 3:
-                        survey.createMulti(data)
-                            .then((response) => {
-                                const data = response.data
-                                if (data.code === 20000) {
-                                    submitData.itemList.push({
-                                        itemId: data.id,
-                                        itemOrder: index,
-                                        itemType: 3
-                                    })
-                                } else {
-                                    message({
-                                        message: data.msg,
-                                        type: 'warning'
-                                    })
-                                }
-                            })
-                            .catch((error) => {
-                                message({
-                                    message: error.message,
-                                    type: 'warning'
-                                })
-                            })
-                        break
-                    case 4:
-                        survey.createSingle(data)
-                            .then((response) => {
-                                const data = response.data
-                                if (data.code === 20000) {
-                                    submitData.itemList.push({
-                                        itemId: data.id,
-                                        itemOrder: index,
-                                        itemType: 4
-                                    })
-                                } else {
-                                    message({
-                                        message: data.msg,
-                                        type: 'warning'
-                                    })
-                                }
-                            })
-                            .catch((error) => {
-                                message({
-                                    message: error.message,
-                                    type: 'warning'
-                                })
-                            })
-                        break
-                }
-            })
+            this.submitQuestionnare(submitData)
         }
     },
     directives: {
