@@ -2,8 +2,14 @@
   <div>
     <div class="container">
       <div class="intro">
-        <h2>问卷星球</h2>
-        <p>问卷星球是一款在线问卷制作工具。通过它，您能够轻松完成问卷搜集调查。我们提供了多种问卷类型，满足您的各种需求。</p>
+        <img
+          style="width:400px"
+          src="../assets/mainlogo.png"
+        />
+        <h1>问卷星球</h1>
+      </div>
+      <div id="wrapper">
+        <h3> 问卷星球是一款在线问卷制作工具。通过它，您能够轻松完成问卷搜集调查。我们提供了多种问卷类型，满足您的各种需求。</h3>
       </div>
       <div v-if="!isLogin()">
         <a
@@ -11,13 +17,6 @@
           href="/auth/login"
         >登录</a>
       </div>
-    </div>
-    <div id="wrapper">
-      <img
-        style="width:600px"
-        src="../assets/图标.jpg"
-      />
-      <h3>您的问卷解决方案</h3>
       <el-divider></el-divider>
       <el-carousel
         :interval="4000"
@@ -25,28 +24,24 @@
         height="300px"
       >
         <el-carousel-item>
-          <div class="banner">投票问卷</div>
-          <img src="../assets/问卷图标.jpg" />
-        </el-carousel-item>
-        <el-carousel-item>
-          <div class="banner">投票问卷</div>
-          <img src="../assets/问卷图标.jpg" />
-        </el-carousel-item>
-        <el-carousel-item>
-          <div class="banner">投票问卷</div>
-          <img src="../assets/问卷图标.jpg" />
-        </el-carousel-item>
-        <el-carousel-item>
           <div class="banner">普通问卷</div>
-          <img src="../assets/问卷图标.jpg" />
+          <img src="../assets/Questionlogo.png" />
         </el-carousel-item>
         <el-carousel-item>
           <div class="banner">投票问卷</div>
-          <img src="../assets/问卷图标.jpg" />
+          <img src="../assets/Questionlogo.png" />
         </el-carousel-item>
         <el-carousel-item>
-          <div class="banner">普通问卷</div>
-          <img src="../assets/问卷图标.jpg" />
+          <div class="banner">疫情打卡问卷</div>
+          <img src="../assets/Questionlogo.png" />
+        </el-carousel-item>
+        <el-carousel-item>
+          <div class="banner">考试问卷</div>
+          <img src="../assets/Questionlogo.png" />
+        </el-carousel-item>
+        <el-carousel-item>
+          <div class="banner">报名问卷</div>
+          <img src="../assets/Questionlogo.png" />
         </el-carousel-item>
       </el-carousel>
     </div>
