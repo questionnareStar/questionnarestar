@@ -3,13 +3,39 @@
     <div class="container">
       <div class="intro">
         <img
-          style="width:400px"
+          style="width:300px"
           src="../assets/mainlogo.png"
         />
         <h1>问卷星球</h1>
       </div>
       <div id="wrapper">
         <h3> 问卷星球是一款在线问卷制作工具。通过它，您能够轻松完成问卷搜集调查。我们提供了多种问卷类型，满足您的各种需求。</h3>
+        <el-carousel
+          :interval="4000"
+          type="card"
+          height="300px"
+        >
+          <el-carousel-item>
+            <div class="banner">普通问卷</div>
+            <img src="../assets/Questionlogo.png" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <div class="banner">投票问卷</div>
+            <img src="../assets/Questionlogo.png" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <div class="banner">疫情打卡问卷</div>
+            <img src="../assets/Questionlogo.png" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <div class="banner">考试问卷</div>
+            <img src="../assets/Questionlogo.png" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <div class="banner">报名问卷</div>
+            <img src="../assets/Questionlogo.png" />
+          </el-carousel-item>
+        </el-carousel>
       </div>
       <div v-if="!isLogin()">
         <a
@@ -18,32 +44,6 @@
         >登录</a>
       </div>
       <el-divider></el-divider>
-      <el-carousel
-        :interval="4000"
-        type="card"
-        height="300px"
-      >
-        <el-carousel-item>
-          <div class="banner">普通问卷</div>
-          <img src="../assets/Questionlogo.png" />
-        </el-carousel-item>
-        <el-carousel-item>
-          <div class="banner">投票问卷</div>
-          <img src="../assets/Questionlogo.png" />
-        </el-carousel-item>
-        <el-carousel-item>
-          <div class="banner">疫情打卡问卷</div>
-          <img src="../assets/Questionlogo.png" />
-        </el-carousel-item>
-        <el-carousel-item>
-          <div class="banner">考试问卷</div>
-          <img src="../assets/Questionlogo.png" />
-        </el-carousel-item>
-        <el-carousel-item>
-          <div class="banner">报名问卷</div>
-          <img src="../assets/Questionlogo.png" />
-        </el-carousel-item>
-      </el-carousel>
     </div>
   </div>
 </template>
@@ -100,7 +100,7 @@ export default {
   left: 40%;
   font-size: 25px;
   z-index: 100;
-  color: #ffffff;
+  color: #261a68;
   font-family: 微軟正黑體;
 }
 .el-carousel__item img {
