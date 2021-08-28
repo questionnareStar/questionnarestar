@@ -837,6 +837,7 @@ export default {
       console.log(response);
       if (response.data.code === 20000) {
         this.$store.commit('updateOperation', { id: response.data.data.id, code: response.data.data.code, isReleased: response.data.data.isReleased?true:false })
+        this.$store.commit('setStamp', 4)
         this.$router.push('/publish')
         message({
           message: response.data.msg,
