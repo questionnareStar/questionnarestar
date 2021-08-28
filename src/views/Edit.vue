@@ -129,164 +129,479 @@
                                 </div>
                             </transition-group>
                         </draggable>
-                        
+
                     </div>
                 </div>
+              </div>
             </div>
-            <!-- 操作面板 -->
-            <div class="col-md-4">
-                <div class="ml-10 panel">
-                    <div class="shadow p-5 mb-20">
-                        <h3>问卷设置</h3>
-                        <el-divider/>
-                        <el-row class="mb-8">
-                            <el-switch v-model="data.serial" active-text="显示题号"/>
-                        </el-row>
-                        <el-row class="mb-8">
-                            <el-switch v-model="setEndtime" active-text="截止时间"/>
-                        </el-row>
-                        <el-row class="mb-8" v-if="setEndtime">
-                            <el-date-picker
-                                v-model="data.endTime"
-                                type="date"
-                                placeholder="选择日期"
-                                :picker-options="datePickerOptions"/>
-                        </el-row>
-                        <el-row class="mb-8 p-5">
-                            <el-button type="primary" @click.native="submit()">提交</el-button>
-                        </el-row>
-                    </div>
-                    <div class="shadow p-5 mb-20">
-                        <h3>添加题目</h3>
-                        <el-divider/>
-                        <el-row class="ml-40 mb-8 p-5">
-                            <el-button type="primary" plain @click="single.visible = true"><em class="el-icon-plus mr-5"/>单选题</el-button>
-                            <el-button type="primary" plain @click="multi.visible = true"><em class="el-icon-plus mr-5"/>多选题</el-button>
-                        </el-row>
-                        <el-row class="ml-40 mb-8 p-5">
-                            <el-button type="primary" plain @click="blank.visible = true"><em class="el-icon-plus mr-5"/>填空题</el-button>
-                            <el-button type="primary" plain @click="mark.visible = true"><em class="el-icon-plus mr-5"/>评分题</el-button>
-                        </el-row>
-                    </div>
+            <div class="mouseon">
+              <div
+                class="center-block"
+                @click="desEdit=!desEdit"
+              >
+                <el-input
+                  v-if="desEdit"
+                  v-focus
+                  type="textarea"
+                  :autosize="{ minRows: 2, maxRows: 4}"
+                  @blur="desEdit=false"
+                  v-model="data.introduction"
+                />
+                <p v-else>{{data.introduction}}</p>
+              </div>
+              <div
+                class="clearfix pd-5"
+                width="100%"
+              >
+                <div class="pull-right">
+                  <el-button
+                    v-if="desEdit"
+                    type="success"
+                    icon="el-icon-check"
+                    size="small"
+                    circle
+                    @click="desEdit=false"
+                  />
+                  <el-button
+                    v-else
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="small"
+                    circle
+                    @click="desEdit=true"
+                  />
                 </div>
+              </div>
             </div>
+          </div>
+          <!-- 问卷内容 -->
+          <div class="body p-5">
+            <div
+              v-for="(item, index) in data.questions"
+              :key="index"
+            >
+              <!-- 填空题 -->
+              <div
+                class="cursoron"
+                v-if="item.type === 1"
+              >
+                <el-row class="mb-8">
+                  <span
+                    class="question"
+                    v-if="data.serial"
+                  >{{index + 1}}</span>
+                  <span class="question">{{item.question}}</span>
+                  <span
+                    class="question red"
+                    v-if="item.required"
+                  >*</span>
+                </el-row>
+                <el-row class="mb-8">
+                  <span class="des">{{item.desc}}</span>
+                </el-row>
+                <el-row class="mb-8">
+                  <el-input
+                    type="textarea"
+                    autosize
+                    disabled
+                    placeholder="此处作答"
+                  />
+                </el-row>
+              </div>
+              <!-- 评分题 -->
+              <div
+                class="cursoron"
+                v-if="item.type === 2"
+              >
+                <el-row class="mb-8">
+                  <span
+                    class="question"
+                    v-if="data.serial"
+                  >{{index + 1}}</span>
+                  <span class="question">{{item.question}}</span>
+                  <span
+                    class="question red"
+                    v-if="item.required"
+                  >*</span>
+                </el-row>
+                <el-row class="mb-8">
+                  <span class="des">{{item.desc}}</span>
+                </el-row>
+                <el-row class="mb-8">
+                  <el-rate :max="item.maxScore" />
+                </el-row>
+              </div>
+              <!-- 多选题 -->
+              <div
+                class="cursoron"
+                v-if="item.type === 3"
+              >
+                <el-row class="mb-8">
+                  <span
+                    class="question"
+                    v-if="data.serial"
+                  >{{index + 1}}</span>
+                  <span class="question">{{item.question}}</span>
+                  <span
+                    class="question red"
+                    v-if="item.required"
+                  >*</span>
+                  【多选题】
+                </el-row>
+                <el-row class="mb-8">
+                  <span class="des">{{item.desc}}</span>
+                </el-row>
+                <el-row class="mb-8">
+                  <el-checkbox
+                    class="choice-block"
+                    v-for="(choice, idx) in item.choices"
+                    :key="idx"
+                    :label="choice.value"
+                  >{{choice.value}}</el-checkbox>
+                </el-row>
+              </div>
+              <!-- 单选题 -->
+              <div
+                class="cursoron"
+                v-if="item.type === 4"
+              >
+                <el-row class="mb-8">
+                  <span
+                    class="question"
+                    v-if="data.serial"
+                  >{{index + 1}}</span>
+                  <span class="question">{{item.question}}</span>
+                  <span
+                    class="question red"
+                    v-if="item.required"
+                  >*</span>
+                </el-row>
+                <el-row class="mb-8">
+                  <span class="des">{{item.desc}}</span>
+                </el-row>
+                <el-row class="mb-8">
+                  <el-radio
+                    class="choice-block"
+                    v-for="(choice, idx) in item.choices"
+                    :key="idx"
+                    :label="choice.value"
+                  >{{choice.value}}</el-radio>
+                </el-row>
+              </div>
+              <el-row>
+                <el-button
+                  type="primary"
+                  icon="el-icon-edit"
+                  size="small"
+                  circle
+                  @click.native="editQ(index, item)"
+                />
+                <el-button
+                  type="info"
+                  icon="el-icon-document-copy"
+                  size="small"
+                  circle
+                  @click.native="copyQ(item)"
+                />
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  size="small"
+                  circle
+                  @click.native="deleteQ(index)"
+                />
+              </el-row>
+              <el-divider class="mt-8" />
+            </div>
+          </div>
         </div>
-        <!-- 填空题 -->
-        <el-dialog
-            title="编辑填空题"
-            :visible.sync="blank.visible"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            :show-close="false">
-            <el-form :model="blank">
-                <el-form-item label="题目">
-                    <el-input v-model="blank.question" autocomplete="off"/>
-                </el-form-item>
-                <el-form-item label="描述">
-                    <el-input v-model="blank.desc" placeholder="此处输入题目描述" autocomplete="off"/>
-                </el-form-item>
-                <el-form-item>
-                    <el-switch v-model="blank.required" active-text="必答"/>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click.native="addBlank()">确 定</el-button>
-            </div>
-        </el-dialog>
-        <!-- 评分题 -->
-        <el-dialog
-            title="编辑评分题"
-            :visible.sync="mark.visible"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            :show-close="false">
-            <el-form :model="mark">
-                <el-form-item label="题目">
-                    <el-input v-model="mark.question" autocomplete="off"/>
-                </el-form-item>
-                <el-form-item label="描述">
-                    <el-input v-model="mark.desc" placeholder="此处输入题目描述" autocomplete="off"/>
-                </el-form-item>
-                <el-form-item>
-                    <el-input-number v-model="mark.maxScore" :min="2" :max="20" label="最大分数"/>
-                </el-form-item>
-                <el-form-item>
-                    <el-switch v-model="mark.required" active-text="必答"/>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="addMark()">确 定</el-button>
-            </div>
-        </el-dialog>
-        <!-- 多选题 -->
-        <el-dialog
-            title="编辑多选题"
-            :visible.sync="multi.visible"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            :show-close="false">
-            <el-form :model="multi">
-                <el-form-item label="题目">
-                    <el-input v-model="multi.question" autocomplete="off"/>
-                </el-form-item>
-                <el-form-item label="描述">
-                    <el-input v-model="multi.desc" placeholder="此处输入题目描述" autocomplete="off"/>
-                </el-form-item>
-                <el-form-item>
-                    <div v-for="(item, index) in multi.choices" :key="index">
-                        <div class="edit_choice">
-                            <span>{{`选项${index+1}  `}}</span>
-                            <input v-model="item.value"/>
-                        </div>
-                    </div>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" class="el-icon-plus" size="small" circle @click="multi.choices.push({ value: '新增选项' })"/>
-                    <el-button type="danger" class="el-icon-minus" size="small" circle @click="multi.choices.pop()"/>
-                </el-form-item>
-                <el-form-item>
-                    <el-switch v-model="multi.required" active-text="必答"/>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="addMulti()">确 定</el-button>
-            </div>
-        </el-dialog>
-        <!-- 单选题 -->
-        <el-dialog
-            title="编辑单选题"
-            :visible.sync="single.visible"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            :show-close="false">
-            <el-form :model="single">
-                <el-form-item label="题目">
-                    <el-input v-model="single.question" autocomplete="off"/>
-                </el-form-item>
-                <el-form-item label="描述">
-                    <el-input v-model="single.desc" placeholder="此处输入题目描述" autocomplete="off"/>
-                </el-form-item>
-                <el-form-item>
-                    <div v-for="(item, index) in single.choices" :key="index">
-                        <div class="edit_choice">
-                            <span>{{`选项${index+1}  `}}</span>
-                            <input v-model="item.value"/>
-                        </div>
-                    </div>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" class="el-icon-plus" size="small" circle @click="single.choices.push({ value: '新增选项' })"/>
-                    <el-button type="danger" class="el-icon-minus" size="small" circle @click="single.choices.pop()"/>
-                </el-form-item>
-                <el-form-item>
-                    <el-switch v-model="single.required" active-text="必答"/>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="addSingle()">确 定</el-button>
-            </div>
-        </el-dialog>
+      </div>
+      <!-- 操作面板 -->
+      <div class="col-md-4">
+        <div class="ml-10 panel">
+          <div class="shadow p-5 mb-20">
+            <h3>问卷设置</h3>
+            <el-divider />
+            <el-row class="mb-8">
+              <el-switch
+                v-model="data.serial"
+                active-text="显示题号"
+              />
+            </el-row>
+            <el-row class="mb-8">
+              <el-switch
+                v-model="setEndtime"
+                active-text="截止时间"
+              />
+            </el-row>
+            <el-row
+              class="mb-8"
+              v-if="setEndtime"
+            >
+              <el-date-picker
+                v-model="data.endTime"
+                type="date"
+                placeholder="选择日期"
+                :picker-options="datePickerOptions"
+              />
+            </el-row>
+            <el-row class="mb-8 p-5">
+              <el-button
+                type="primary"
+                @click.native="submit()"
+              >提交</el-button>
+            </el-row>
+          </div>
+          <div class="shadow p-5 mb-20">
+            <h3>添加题目</h3>
+            <el-divider />
+            <el-row class="ml-40 mb-8 p-5">
+              <el-button
+                type="primary"
+                plain
+                @click="single.visible = true"
+              ><em class="el-icon-plus mr-5" />单选题</el-button>
+              <el-button
+                type="primary"
+                plain
+                @click="multi.visible = true"
+              ><em class="el-icon-plus mr-5" />多选题</el-button>
+            </el-row>
+            <el-row class="ml-40 mb-8 p-5">
+              <el-button
+                type="primary"
+                plain
+                @click="blank.visible = true"
+              ><em class="el-icon-plus mr-5" />填空题</el-button>
+              <el-button
+                type="primary"
+                plain
+                @click="mark.visible = true"
+              ><em class="el-icon-plus mr-5" />评分题</el-button>
+            </el-row>
+          </div>
+        </div>
+      </div>
     </div>
+    <!-- 填空题 -->
+    <el-dialog
+      title="编辑填空题"
+      :visible.sync="blank.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <el-form :model="blank">
+        <el-form-item label="题目">
+          <el-input
+            v-model="blank.question"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input
+            v-model="blank.desc"
+            placeholder="此处输入题目描述"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-switch
+            v-model="blank.required"
+            active-text="必答"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click.native="addBlank()"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 评分题 -->
+    <el-dialog
+      title="编辑评分题"
+      :visible.sync="mark.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <el-form :model="mark">
+        <el-form-item label="题目">
+          <el-input
+            v-model="mark.question"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input
+            v-model="mark.desc"
+            placeholder="此处输入题目描述"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input-number
+            v-model="mark.maxScore"
+            :min="2"
+            :max="20"
+            label="最大分数"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-switch
+            v-model="mark.required"
+            active-text="必答"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="addMark()"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 多选题 -->
+    <el-dialog
+      title="编辑多选题"
+      :visible.sync="multi.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <el-form :model="multi">
+        <el-form-item label="题目">
+          <el-input
+            v-model="multi.question"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input
+            v-model="multi.desc"
+            placeholder="此处输入题目描述"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item>
+          <div
+            v-for="(item, index) in multi.choices"
+            :key="index"
+          >
+            <div class="edit_choice">
+              <span>{{`选项${index+1}  `}}</span>
+              <input v-model="item.value" />
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            class="el-icon-plus"
+            size="small"
+            circle
+            @click="multi.choices.push({ value: '新增选项' })"
+          />
+          <el-button
+            type="danger"
+            class="el-icon-minus"
+            size="small"
+            circle
+            @click="multi.choices.pop()"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-switch
+            v-model="multi.required"
+            active-text="必答"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="addMulti()"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 单选题 -->
+    <el-dialog
+      title="编辑单选题"
+      :visible.sync="single.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <el-form :model="single">
+        <el-form-item label="题目">
+          <el-input
+            v-model="single.question"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input
+            v-model="single.desc"
+            placeholder="此处输入题目描述"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item>
+          <div
+            v-for="(item, index) in single.choices"
+            :key="index"
+          >
+            <div class="edit_choice">
+              <span>{{`选项${index+1}  `}}</span>
+              <input v-model="item.value" />
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            class="el-icon-plus"
+            size="small"
+            circle
+            @click="single.choices.push({ value: '新增选项' })"
+          />
+          <el-button
+            type="danger"
+            class="el-icon-minus"
+            size="small"
+            circle
+            @click="single.choices.pop()"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-switch
+            v-model="single.required"
+            active-text="必答"
+          />
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="addSingle()"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -344,12 +659,11 @@ export default {
                 required: true,
                 maxScore: 5
             },
-            multi: {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                choices: [{ value: '新增选项' }]
+          },
+          {
+            text: "十天",
+            onClick(picker) {
+              picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 10);
             },
             single: {
                 visible: false,
@@ -651,80 +965,82 @@ export default {
             }
             this.submitQuestionnare(submitData)
         }
+      });
     },
-    directives: {
-        focus: {
-            inserted: function(el) {
-                el.children[0].focus();
-            },
-        }
+  },
+  directives: {
+    focus: {
+      inserted: function (el) {
+        el.children[0].focus();
+      },
     },
-}
+  },
+};
 </script>
 
 <style scoped>
 .p-20 {
-    padding: 20px;
+  padding: 20px;
 }
 .p-5 {
-    padding: 5px;
+  padding: 5px;
 }
 .mb-8 {
-    margin-bottom: 8px;
+  margin-bottom: 8px;
 }
 .mb-20 {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 .ml-15 {
-    margin-left: 15px;
+  margin-left: 15px;
 }
 .ml-40 {
-    margin-left: 40px;
+  margin-left: 40px;
 }
 .mr-5 {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 .shadow {
-    border:1px darkslategray;
-    box-shadow: rgb(233, 231, 231) 2px 2px 10px 1px;
+  border: 1px darkslategray;
+  box-shadow: rgb(233, 231, 231) 2px 2px 10px 1px;
 }
 .mouseon:hover {
-    padding: 2px;
-    background-color: rgb(235, 246, 255);
+  padding: 2px;
+  background-color: rgb(235, 246, 255);
 }
 .cursoron:hover {
-    cursor: move;
-    background-color: rgb(245, 247, 248);
+  cursor: move;
+  background-color: rgb(245, 247, 248);
 }
 .blank {
-    width: 85%;
-    margin-bottom: 8px;
+  width: 85%;
+  margin-bottom: 8px;
 }
 h3 {
-    font-weight: bold;
+  font-weight: bold;
 }
 span.question {
-    font-size: 18px;
-    font-weight: bold;
-    margin-right: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 10px;
 }
 span.des {
-    font-size: 13px;
-    font-weight: lighter;
+  font-size: 13px;
+  font-weight: lighter;
 }
 span.red {
-    color: red;
+  color: red;
 }
 .choice-block {
-    display: block;
-    margin: 3px;
-    font-size: 16px;
+  display: block;
+  margin: 3px;
+  font-size: 16px;
 }
 .panel {
-    padding: 10px;
-    width: 350px;
-    position: fixed;
-    right: 100px;
-    top: 100px;
+  padding: 10px;
+  width: 350px;
+  position: fixed;
+  right: 100px;
+  top: 100px;
 }
 </style>
