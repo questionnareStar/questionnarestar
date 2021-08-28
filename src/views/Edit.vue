@@ -1,136 +1,46 @@
 <template>
-    <div class="container-fluid p-20">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="shadow ml-40 p-5">
-                    <!-- 问卷抬头 -->
-                    <div class="header">
-                        <div class="mouseon">
-                            <div class="center-block" @click="titleEdit=!titleEdit">
-                                <el-input v-if="titleEdit" v-focus
-                                    type="textarea"
-                                    autosize
-                                    @blur="titleEdit=false"
-                                    v-model="data.head"/>
-                                <h3 v-else>{{data.head}}</h3>
-                            </div>
-                            <div class="clearfix pd-5" width="100%">
-                                <div class="pull-right">
-                                    <el-button v-if="titleEdit" type="success" icon="el-icon-check" size="small" circle @click="titleEdit=false"/>
-                                    <el-button v-else type="primary" icon="el-icon-edit" size="small" circle @click="titleEdit=true"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mouseon">
-                            <div class="center-block" @click="desEdit=!desEdit">
-                                <el-input v-if="desEdit" v-focus
-                                    type="textarea"
-                                    :autosize="{ minRows: 2, maxRows: 4}"
-                                    @blur="desEdit=false"
-                                    v-model="data.introduction"/>
-                                <p v-else>{{data.introduction}}</p>
-                            </div>
-                            <div class="clearfix pd-5" width="100%">
-                                <div class="pull-right">
-                                    <el-button v-if="desEdit" type="success" icon="el-icon-check" size="small" circle @click="desEdit=false"/>
-                                    <el-button v-else type="primary" icon="el-icon-edit" size="small" circle @click="desEdit=true"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 问卷内容 -->
-                    <div class="body p-5">
-                        <draggable v-model="data.questions"  @start="onStart" @end="onEnd">
-                            <transition-group>
-                                <div v-for="(item, index) in data.questions" :key="index" class="cursoron">
-                                    <!-- 填空题 -->
-                                    <div v-if="item.type === 1">
-                                        <el-row class="mb-8">
-                                            <span class="question" v-if="data.serial">{{index + 1}}</span>
-                                            <span class="question">{{item.question}}</span>
-                                            <span class="question red"
-                                                v-if="item.required"
-                                                >*</span>
-                                        </el-row>
-                                        <el-row class="mb-8">
-                                            <span class="des">{{item.desc}}</span>
-                                        </el-row>
-                                        <el-row class="mb-8">
-                                            <el-input
-                                                type="textarea"
-                                                autosize
-                                                disabled
-                                                placeholder="此处作答"/>
-                                        </el-row>
-                                    </div>
-                                    <!-- 评分题 -->
-                                    <div class="cursoron" v-if="item.type === 2">
-                                        <el-row class="mb-8">
-                                            <span class="question" v-if="data.serial">{{index + 1}}</span>
-                                            <span class="question">{{item.question}}</span>
-                                            <span class="question red"
-                                                v-if="item.required"
-                                                >*</span>
-                                        </el-row>
-                                        <el-row class="mb-8">
-                                            <span class="des">{{item.desc}}</span>
-                                        </el-row>
-                                        <el-row class="mb-8">
-                                            <el-rate :max="item.maxScore"/>
-                                        </el-row>
-                                    </div>
-                                    <!-- 多选题 -->
-                                    <div class="cursoron" v-if="item.type === 3">
-                                        <el-row class="mb-8">
-                                            <span class="question" v-if="data.serial">{{index + 1}}</span>
-                                            <span class="question">{{item.question}}</span>
-                                            <span class="question red"
-                                                v-if="item.required"
-                                                >*</span>
-                                            【多选题】
-                                        </el-row>
-                                        <el-row class="mb-8">
-                                            <span class="des">{{item.desc}}</span>
-                                        </el-row>
-                                        <el-row class="mb-8">
-                                            <el-checkbox
-                                                class="choice-block"
-                                                v-for="(choice, idx) in item.choices"
-                                                :key="idx"
-                                                :label="choice.value">{{choice.value}}</el-checkbox>
-                                        </el-row>
-                                    </div>
-                                    <!-- 单选题 -->
-                                    <div class="cursoron" v-if="item.type === 4">
-                                        <el-row class="mb-8">
-                                            <span class="question" v-if="data.serial">{{index + 1}}</span>
-                                            <span class="question">{{item.question}}</span>
-                                            <span class="question red"
-                                                v-if="item.required"
-                                                >*</span>
-                                        </el-row>
-                                        <el-row class="mb-8">
-                                            <span class="des">{{item.desc}}</span>
-                                        </el-row>
-                                        <el-row class="mb-8">
-                                            <el-radio
-                                                class="choice-block"
-                                                v-for="(choice, idx) in item.choices"
-                                                :key="idx"
-                                                :label="choice.value">{{choice.value}}</el-radio>
-                                        </el-row>
-                                    </div>
-                                    <el-row>
-                                        <el-button type="primary" icon="el-icon-edit" size="small" circle @click.native="editQ(index, item)"/>
-                                        <el-button type="info" icon="el-icon-document-copy" size="small" circle @click.native="copyQ(item)"/>
-                                        <el-button type="danger" icon="el-icon-delete" size="small" circle @click.native="deleteQ(index)"/>
-                                    </el-row>
-                                    <el-divider class="mt-8"/>
-                                </div>
-                            </transition-group>
-                        </draggable>
-
-                    </div>
+  <div class="container-fluid p-20">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="shadow ml-40 p-5">
+          <!-- 问卷抬头 -->
+          <div class="header">
+            <div class="mouseon">
+              <div
+                class="center-block"
+                @click="titleEdit=!titleEdit"
+              >
+                <el-input
+                  v-if="titleEdit"
+                  v-focus
+                  type="textarea"
+                  autosize
+                  @blur="titleEdit=false"
+                  v-model="data.head"
+                />
+                <h3 v-else>{{data.head}}</h3>
+              </div>
+              <div
+                class="clearfix pd-5"
+                width="100%"
+              >
+                <div class="pull-right">
+                  <el-button
+                    v-if="titleEdit"
+                    type="success"
+                    icon="el-icon-check"
+                    size="small"
+                    circle
+                    @click="titleEdit=false"
+                  />
+                  <el-button
+                    v-else
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="small"
+                    circle
+                    @click="titleEdit=true"
+                  />
                 </div>
               </div>
             </div>
@@ -176,143 +86,149 @@
           </div>
           <!-- 问卷内容 -->
           <div class="body p-5">
-            <div
-              v-for="(item, index) in data.questions"
-              :key="index"
+            <draggable
+              v-model="data.questions"
+              @start="onStart"
+              @end="onEnd"
             >
-              <!-- 填空题 -->
-              <div
-                class="cursoron"
-                v-if="item.type === 1"
-              >
-                <el-row class="mb-8">
-                  <span
-                    class="question"
-                    v-if="data.serial"
-                  >{{index + 1}}</span>
-                  <span class="question">{{item.question}}</span>
-                  <span
-                    class="question red"
-                    v-if="item.required"
-                  >*</span>
-                </el-row>
-                <el-row class="mb-8">
-                  <span class="des">{{item.desc}}</span>
-                </el-row>
-                <el-row class="mb-8">
-                  <el-input
-                    type="textarea"
-                    autosize
-                    disabled
-                    placeholder="此处作答"
-                  />
-                </el-row>
-              </div>
-              <!-- 评分题 -->
-              <div
-                class="cursoron"
-                v-if="item.type === 2"
-              >
-                <el-row class="mb-8">
-                  <span
-                    class="question"
-                    v-if="data.serial"
-                  >{{index + 1}}</span>
-                  <span class="question">{{item.question}}</span>
-                  <span
-                    class="question red"
-                    v-if="item.required"
-                  >*</span>
-                </el-row>
-                <el-row class="mb-8">
-                  <span class="des">{{item.desc}}</span>
-                </el-row>
-                <el-row class="mb-8">
-                  <el-rate :max="item.maxScore" />
-                </el-row>
-              </div>
-              <!-- 多选题 -->
-              <div
-                class="cursoron"
-                v-if="item.type === 3"
-              >
-                <el-row class="mb-8">
-                  <span
-                    class="question"
-                    v-if="data.serial"
-                  >{{index + 1}}</span>
-                  <span class="question">{{item.question}}</span>
-                  <span
-                    class="question red"
-                    v-if="item.required"
-                  >*</span>
-                  【多选题】
-                </el-row>
-                <el-row class="mb-8">
-                  <span class="des">{{item.desc}}</span>
-                </el-row>
-                <el-row class="mb-8">
-                  <el-checkbox
-                    class="choice-block"
-                    v-for="(choice, idx) in item.choices"
-                    :key="idx"
-                    :label="choice.value"
-                  >{{choice.value}}</el-checkbox>
-                </el-row>
-              </div>
-              <!-- 单选题 -->
-              <div
-                class="cursoron"
-                v-if="item.type === 4"
-              >
-                <el-row class="mb-8">
-                  <span
-                    class="question"
-                    v-if="data.serial"
-                  >{{index + 1}}</span>
-                  <span class="question">{{item.question}}</span>
-                  <span
-                    class="question red"
-                    v-if="item.required"
-                  >*</span>
-                </el-row>
-                <el-row class="mb-8">
-                  <span class="des">{{item.desc}}</span>
-                </el-row>
-                <el-row class="mb-8">
-                  <el-radio
-                    class="choice-block"
-                    v-for="(choice, idx) in item.choices"
-                    :key="idx"
-                    :label="choice.value"
-                  >{{choice.value}}</el-radio>
-                </el-row>
-              </div>
-              <el-row>
-                <el-button
-                  type="primary"
-                  icon="el-icon-edit"
-                  size="small"
-                  circle
-                  @click.native="editQ(index, item)"
-                />
-                <el-button
-                  type="info"
-                  icon="el-icon-document-copy"
-                  size="small"
-                  circle
-                  @click.native="copyQ(item)"
-                />
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  size="small"
-                  circle
-                  @click.native="deleteQ(index)"
-                />
-              </el-row>
-              <el-divider class="mt-8" />
-            </div>
+              <transition-group>
+                <div
+                  v-for="(item, index) in data.questions"
+                  :key="index"
+                  class="cursoron"
+                >
+                  <!-- 填空题 -->
+                  <div v-if="item.type === 1">
+                    <el-row class="mb-8">
+                      <span
+                        class="question"
+                        v-if="data.serial"
+                      >{{index + 1}}</span>
+                      <span class="question">{{item.question}}</span>
+                      <span
+                        class="question red"
+                        v-if="item.required"
+                      >*</span>
+                    </el-row>
+                    <el-row class="mb-8">
+                      <span class="des">{{item.desc}}</span>
+                    </el-row>
+                    <el-row class="mb-8">
+                      <el-input
+                        type="textarea"
+                        autosize
+                        disabled
+                        placeholder="此处作答"
+                      />
+                    </el-row>
+                  </div>
+                  <!-- 评分题 -->
+                  <div
+                    class="cursoron"
+                    v-if="item.type === 2"
+                  >
+                    <el-row class="mb-8">
+                      <span
+                        class="question"
+                        v-if="data.serial"
+                      >{{index + 1}}</span>
+                      <span class="question">{{item.question}}</span>
+                      <span
+                        class="question red"
+                        v-if="item.required"
+                      >*</span>
+                    </el-row>
+                    <el-row class="mb-8">
+                      <span class="des">{{item.desc}}</span>
+                    </el-row>
+                    <el-row class="mb-8">
+                      <el-rate :max="item.maxScore" />
+                    </el-row>
+                  </div>
+                  <!-- 多选题 -->
+                  <div
+                    class="cursoron"
+                    v-if="item.type === 3"
+                  >
+                    <el-row class="mb-8">
+                      <span
+                        class="question"
+                        v-if="data.serial"
+                      >{{index + 1}}</span>
+                      <span class="question">{{item.question}}</span>
+                      <span
+                        class="question red"
+                        v-if="item.required"
+                      >*</span>
+                      【多选题】
+                    </el-row>
+                    <el-row class="mb-8">
+                      <span class="des">{{item.desc}}</span>
+                    </el-row>
+                    <el-row class="mb-8">
+                      <el-checkbox
+                        class="choice-block"
+                        v-for="(choice, idx) in item.choices"
+                        :key="idx"
+                        :label="choice.value"
+                      >{{choice.value}}</el-checkbox>
+                    </el-row>
+                  </div>
+                  <!-- 单选题 -->
+                  <div
+                    class="cursoron"
+                    v-if="item.type === 4"
+                  >
+                    <el-row class="mb-8">
+                      <span
+                        class="question"
+                        v-if="data.serial"
+                      >{{index + 1}}</span>
+                      <span class="question">{{item.question}}</span>
+                      <span
+                        class="question red"
+                        v-if="item.required"
+                      >*</span>
+                    </el-row>
+                    <el-row class="mb-8">
+                      <span class="des">{{item.desc}}</span>
+                    </el-row>
+                    <el-row class="mb-8">
+                      <el-radio
+                        class="choice-block"
+                        v-for="(choice, idx) in item.choices"
+                        :key="idx"
+                        :label="choice.value"
+                      >{{choice.value}}</el-radio>
+                    </el-row>
+                  </div>
+                  <el-row>
+                    <el-button
+                      type="primary"
+                      icon="el-icon-edit"
+                      size="small"
+                      circle
+                      @click.native="editQ(index, item)"
+                    />
+                    <el-button
+                      type="info"
+                      icon="el-icon-document-copy"
+                      size="small"
+                      circle
+                      @click.native="copyQ(item)"
+                    />
+                    <el-button
+                      type="danger"
+                      icon="el-icon-delete"
+                      size="small"
+                      circle
+                      @click.native="deleteQ(index)"
+                    />
+                  </el-row>
+                  <el-divider class="mt-8" />
+                </div>
+              </transition-group>
+            </draggable>
           </div>
         </div>
       </div>
@@ -557,16 +473,15 @@
             autocomplete="off"
           />
         </el-form-item>
-        <el-form-item>
-          <div
-            v-for="(item, index) in single.choices"
-            :key="index"
-          >
-            <div class="edit_choice">
-              <span>{{`选项${index+1}  `}}</span>
-              <input v-model="item.value" />
-            </div>
+        <div
+          v-for="(item, index) in single.choices"
+          :key="index"
+        >
+          <div class="edit_choice">
+            <span>{{`选项${index+1}  `}}</span>
+            <input v-model="item.value" />
           </div>
+        </div>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -605,59 +520,28 @@
 </template>
 
 <script>
-import { message } from '../util/inform'
-import survey from '../util/service/survey'
-import draggable from 'vuedraggable'
+import { message } from "../util/inform";
+import survey from "../util/service/survey";
+import draggable from "vuedraggable";
 export default {
-    components: {
-        draggable
-    },
-    data() {
-        return {
-            editIndex: -1,
-            titleEdit: false,
-            desEdit: false,
-            setEndtime: false,
-            datePickerOptions: {
-                disabledDate(time) {
-                    return time.getTime() <= Date.now();
-                },
-                shortcuts: [
-                    {
-                        text: '五天',
-                        onClick(picker) {
-                            picker.$emit('pick', Date.now() + 1000*3600*24*5);
-                        }
-                    },
-                    {
-                        text: '十天',
-                        onClick(picker) {
-                            picker.$emit('pick', Date.now() + 1000*3600*24*10);
-                        }
-                    }
-                ]
-            },
-            data: {
-                head: '请在此处输入问卷标题',
-                introduction: '请在此处输入问卷描述',
-                isReleased: 0,
-                serial: true, // 是否显示题号
-                questions: [],
-                startTime: '1629388800000',
-                endTime: ''
-            },
-            blank: {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true
-            },
-            mark: {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                maxScore: 5
+  components: {
+    draggable,
+  },
+  data() {
+    return {
+      editIndex: -1,
+      titleEdit: false,
+      desEdit: false,
+      setEndtime: false,
+      datePickerOptions: {
+        disabledDate(time) {
+          return time.getTime() <= Date.now();
+        },
+        shortcuts: [
+          {
+            text: "五天",
+            onClick(picker) {
+              picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 5);
             },
           },
           {
@@ -665,301 +549,328 @@ export default {
             onClick(picker) {
               picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 10);
             },
-            single: {
-                visible: false,
-                sequence: 4,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                choices: [{ value: '新增选项' }]
-            },
-            itemList: []
-        }
+          },
+        ],
+      },
+      data: {
+        head: "请在此处输入问卷标题",
+        introduction: "请在此处输入问卷描述",
+        isReleased: 0,
+        serial: true, // 是否显示题号
+        questions: [],
+        startTime: "1629388800000",
+        endTime: "",
+      },
+      blank: {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+      },
+      mark: {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        maxScore: 5,
+      },
+      multi: {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        choices: [{ value: "新增选项" }],
+      },
+      single: {
+        visible: false,
+        sequence: 4,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        choices: [{ value: "新增选项" }],
+      },
+      itemList: [],
+    };
+  },
+  methods: {
+    resetModel() {
+      this.blank = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+      };
+      this.mark = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        maxScore: 5,
+      };
+      this.multi = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        choices: [{ value: "新增选项" }],
+      };
+      this.single = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        choices: [{ value: "新增选项" }],
+      };
     },
-    methods: {
-        resetModel() {
-            this.blank = {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true
-            }
-            this.mark = {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                maxScore: 5
-            }
-            this.multi = {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                choices: [{ value: '新增选项' }]
-            }
-            this.single = {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                choices: [{ value: '新增选项' }]
-            }
-        },
-        addBlank() {
-            let q = {
-                type: 1,
-                desc: this.blank.desc,
-                question: this.blank.question,
-                required: this.blank.required
-            }
-            if (this.editIndex == -1) {
-                this.data.questions.push(q)
-            } else {
-                this.data.questions[this.editIndex] = q
-                this.editIndex = -1
-            }
-            this.resetModel()
-        },
-        addMark() {
-            let q = {
-                type: 2,
-                desc: this.mark.desc,
-                question: this.mark.question,
-                required: this.mark.required,
-                maxScore: this.mark.maxScore
-            }
-            if (this.editIndex == -1) {
-                this.data.questions.push(q)
-            } else {
-                this.data.questions[this.editIndex] = q
-                this.editIndex = -1
-            }
-            this.resetModel()
-        },
-        addMulti() {
-            let q = {
-                type: 3,
-                desc: this.multi.desc,
-                question: this.multi.question,
-                required: this.multi.required,
-                choices: this.multi.choices
-            }
-            if (this.editIndex == -1) {
-                this.data.questions.push(q)
-            } else {
-                this.data.questions[this.editIndex] = q
-                this.editIndex = -1
-            }
-            this.resetModel()
-        },
-        addSingle() {
-            let q = {
-                type: 4,
-                desc: this.single.desc,
-                question: this.single.question,
-                required: this.single.required,
-                choices: this.single.choices
-            }
-            if (this.editIndex == -1) {
-                this.data.questions.push(q)
-            } else {
-                this.data.questions[this.editIndex] = q
-                this.editIndex = -1
-            }
-            this.resetModel()
-        },
-        editQ(index, item) {
-            this.editIndex = index
-            switch(item.type) {
-                case 1:
-                    this.blank = {
-                        visible: true,
-                        question: item.question,
-                        desc: item.desc,
-                        required: item.required
-                    }
-                    break
-                case 2:
-                    this.mark = {
-                        visible: true,
-                        question: item.question,
-                        desc: item.desc,
-                        required: item.required,
-                        maxScore: item.maxScore
-                    }
-                    break
-                case 3:
-                    this.multi = {
-                        visible: true,
-                        question: item.question,
-                        desc: item.desc,
-                        required: item.required,
-                        choices: item.choices
-                    }
-                    break
-                case 4:
-                    this.single = {
-                        visible: true,
-                        question: item.question,
-                        desc: item.desc,
-                        required: item.required,
-                        choices: item.choices
-                    }
-                    break
-            }
-        },
-        copyQ(item) {
-            let q = JSON.parse(JSON.stringify(item))
-            this.data.questions.push(q)
-        },
-        deleteQ(index) {
-            this.data.questions.splice(index, 1)
-        },
-        onStart(){
-            this.drag=true;
-        },
-        onEnd() {
-            this.drag=false;
-        },
-        async submitQuestion() {
-            let formData
-            for (let i = 0; i < this.data.questions.length; i++) {
-                const item = this.data.questions[i]
-                switch (item.type) {
-                    case 1:
-                        formData = {
-                            question: item.question,
-                            desc: item.desc,
-                            required: Number(item.required)
-                        }
-                        await survey.createBlank(formData)
-                            .then((response) => {
-                                if (response.data.code === 20000) {
-                                    console.log('题目信息')
-                                    console.log(response.data)
-                                    this.itemList.push({
-                                        itemId: response.data.data.id,
-                                        itemOrder: i + 1,
-                                        itemType: 1
-                                    })
-                                    console.log(this.itemList)
-                                }
-                            })
-                        console.log(i + 'q')
-                        break
-                     case 2:
-                        formData = {
-                            question: item.question,
-                            desc: item.desc,
-                            maxScore: item.maxScore,
-                            required: Number(item.required)
-                        }
-                        await survey.createMark(formData)
-                            .then((response) => {
-                                if (response.data.code === 20000) {
-                                    this.itemList.push({
-                                        itemId: response.data.data.id,
-                                        itemOrder: i + 1,
-                                        itemType: 2
-                                    })
-                                }
-                            })
-                        console.log(i + 'q')
-                        break
-                    case 3:
-                        formData = {
-                            question: item.question,
-                            desc: item.desc,
-                            choices: [],
-                            required: Number(item.required)
-                        }
-                        item.choices.forEach(choice => {
-                            formData.choices.push(choice.value)
-                        })
-                        await survey.createMulti(formData)
-                            .then((response) => {
-                                if (response.data.code === 20000) {
-                                    this.itemList.push({
-                                        itemId: response.data.data.id,
-                                        itemOrder: i + 1,
-                                        itemType: 3
-                                    })
-                                }
-                            })
-                        console.log(i + 'q')
-                        break
-                    case 4:
-                        formData = {
-                            question: item.question,
-                            desc: item.desc,
-                            choices: [],
-                            required: Number(item.required)
-                        }
-                        item.choices.forEach(choice => {
-                            formData.choices.push(choice.value)
-                        })
-                        await survey.createSingle(formData)
-                            .then((response) => {
-                                if (response.data.code === 20000) {
-                                    this.itemList.push({
-                                        itemId: response.data.data.id,
-                                        itemOrder: i + 1,
-                                        itemType: 4
-                                    })
-                                }
-                            })
-                        console.log(i + 'q')
-                        break
-                }
-            }
-        },
-        async submitQuestionnare(submitData) {
-            survey.createQuestionnare(submitData)
-                .then((response) => {
-                    console.log(response)
-                    if (response.data.code === 20000) {
-                        message({
-                            message: response.data.msg,
-                            type: 'success'
-                        })
-                    } else {
-                        message({
-                            message: response.data.msg,
-                            type: 'warning'
-                        })
-                    }
-                })
-                .catch((error) => {
-                    message({
-                        message: error.message,
-                        type: 'error'
-                    })
-                })
-        },
-        async submit() {
-            if (this.setEndtime) {
-                if (this.data.endTime === '') {
-                    message({
-                        message: '请选择截止日期',
-                        type: 'warning'
-                    })
-                    return
-                }
-            }
-            await this.submitQuestion()
-            let submitData = {
-                endTime: this.setEndtime?this.data.endTime:'4785667200000',
-                head: this.data.head,
-                introduction: this.data.introduction,
-                isReleased: 0,
-                itemList: this.itemList,
-                serial: this.data.serial,
-                startTime: this.data.startTime
-            }
-            this.submitQuestionnare(submitData)
+    addBlank() {
+      let q = {
+        type: 1,
+        desc: this.blank.desc,
+        question: this.blank.question,
+        required: this.blank.required,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
+    },
+    addMark() {
+      let q = {
+        type: 2,
+        desc: this.mark.desc,
+        question: this.mark.question,
+        required: this.mark.required,
+        maxScore: this.mark.maxScore,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
+    },
+    addMulti() {
+      let q = {
+        type: 3,
+        desc: this.multi.desc,
+        question: this.multi.question,
+        required: this.multi.required,
+        choices: this.multi.choices,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
+    },
+    addSingle() {
+      let q = {
+        type: 4,
+        desc: this.single.desc,
+        question: this.single.question,
+        required: this.single.required,
+        choices: this.single.choices,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
+    },
+    editQ(index, item) {
+      this.editIndex = index;
+      switch (item.type) {
+        case 1:
+          this.blank = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+          };
+          break;
+        case 2:
+          this.mark = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+            maxScore: item.maxScore,
+          };
+          break;
+        case 3:
+          this.multi = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+            choices: item.choices,
+          };
+          break;
+        case 4:
+          this.single = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+            choices: item.choices,
+          };
+          break;
+      }
+    },
+    copyQ(item) {
+      let q = JSON.parse(JSON.stringify(item));
+      this.data.questions.push(q);
+    },
+    deleteQ(index) {
+      this.data.questions.splice(index, 1);
+    },
+    onStart() {
+      this.drag = true;
+    },
+    onEnd() {
+      this.drag = false;
+    },
+    async submitQuestion() {
+      let formData;
+      for (let i = 0; i < this.data.questions.length; i++) {
+        const item = this.data.questions[i];
+        switch (item.type) {
+          case 1:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              required: Number(item.required),
+            };
+            await survey.createBlank(formData).then((response) => {
+              if (response.data.code === 20000) {
+                console.log("题目信息");
+                console.log(response.data);
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 1,
+                });
+                console.log(this.itemList);
+              }
+            });
+            console.log(i + "q");
+            break;
+          case 2:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              maxScore: item.maxScore,
+              required: Number(item.required),
+            };
+            await survey.createMark(formData).then((response) => {
+              if (response.data.code === 20000) {
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 2,
+                });
+              }
+            });
+            console.log(i + "q");
+            break;
+          case 3:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              choices: [],
+              required: Number(item.required),
+            };
+            item.choices.forEach((choice) => {
+              formData.choices.push(choice.value);
+            });
+            await survey.createMulti(formData).then((response) => {
+              if (response.data.code === 20000) {
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 3,
+                });
+              }
+            });
+            console.log(i + "q");
+            break;
+          case 4:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              choices: [],
+              required: Number(item.required),
+            };
+            item.choices.forEach((choice) => {
+              formData.choices.push(choice.value);
+            });
+            await survey.createSingle(formData).then((response) => {
+              if (response.data.code === 20000) {
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 4,
+                });
+              }
+            });
+            console.log(i + "q");
+            break;
         }
-      });
+      }
+    },
+    async submitQuestionnare(submitData) {
+      survey
+        .createQuestionnare(submitData)
+        .then((response) => {
+          console.log(response);
+          if (response.data.code === 20000) {
+            message({
+              message: response.data.msg,
+              type: "success",
+            });
+          } else {
+            message({
+              message: response.data.msg,
+              type: "warning",
+            });
+          }
+        })
+        .catch((error) => {
+          message({
+            message: error.message,
+            type: "error",
+          });
+        });
+    },
+    async submit() {
+      if (this.setEndtime) {
+        if (this.data.endTime === "") {
+          message({
+            message: "请选择截止日期",
+            type: "warning",
+          });
+          return;
+        }
+      }
+      await this.submitQuestion();
+      let submitData = {
+        endTime: this.setEndtime ? this.data.endTime : "4785667200000",
+        head: this.data.head,
+        introduction: this.data.introduction,
+        isReleased: 0,
+        itemList: this.itemList,
+        serial: this.data.serial,
+        startTime: this.data.startTime,
+      };
+      this.submitQuestionnare(submitData);
     },
   },
   directives: {
