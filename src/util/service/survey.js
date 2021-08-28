@@ -1,13 +1,13 @@
 import axios from './index'
 
 export default {
-    getQuestionnare(id) {
+    getQuestionnare(code) {
         return axios({
             headers: {
                 contentType: 'application/x-www-form-urlencoded'
             },
             method: 'GET',
-            url: '/api/v1/questionnaire/detail/' + id,
+            url: '/api/v1/questionnaire/detail/' + code,
             timeout: 2000
         })
     },
@@ -34,6 +34,16 @@ export default {
             data: data
         })
     },
+    updateBlank(data) {
+        return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
+            method: 'PUT',
+            url: '/api/v1/topic/update/fill/blank',
+            data: data
+        })
+    },
     createMark(data) {
         return axios({
             headers: {
@@ -41,6 +51,16 @@ export default {
             },
             method: "post",
             url: "/api/v1/topic/create/mark",
+            data: data
+          })
+    },
+    updateMark(data) {
+        return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
+            method: "PUT",
+            url: "/api/v1/topic/update/mark",
             data: data
           })
     },
@@ -54,6 +74,16 @@ export default {
             data: data
         })
     },
+    updateMulti(data) {
+        return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
+            method: "PUT",
+            url: "/api/v1/topic/update/multi/choice",
+            data: data
+        })
+    },
     createSingle(data) {
         return axios({
             headers: {
@@ -64,14 +94,33 @@ export default {
             data: data
         })
     },
+    updateSingle(data) {
+        return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
+            method: "PUT",
+            url: "/api/v1/topic/update/single/choice",
+            data: data
+        })
+    },
     createQuestionnare(data) {
-        console.log(data)
         return axios({
             headers: {
                 token: JSON.parse(localStorage.getItem('userInfo')).token
             },
             method: 'POST',
             url: '/api/v1/questionnaire/create',
+            data: data
+        })
+    },
+    updateQuestionnare(data) {
+        return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
+            method: 'PUT',
+            url: '/api/v1/questionnaire/update',
             data: data
         })
     }

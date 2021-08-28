@@ -34,7 +34,7 @@
         </div>
         <div class="icon" style="float: right;margin-top: 20px;margin-bottom:10px;">
             <i @click="change(index)" v-bind:class="{ 'el-icon-video-pause': tableData[index]['value'], 'el-icon-video-play': !tableData[index]['value'] }" :title="tableData[index]['value_2']" style="margin-right:20px;color:blue;font-size:25px;cursor: pointer;"></i>
-            <i class="el-icon-edit" title="编辑问卷" style="margin-right:20px; font-size:25px;cursor:pointer;"></i>
+            <i class="el-icon-edit" @click="edit(index)" title="编辑问卷" style="margin-right:20px; font-size:25px;cursor:pointer;"></i>
             <i @click="Statistics(index)" class="el-icon-s-data" title="问卷数据统计" style="margin-right:20px;  font-size:25px;cursor: pointer;"></i>
             <i @click="Preview(index)" class="el-icon-view" title="预览问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
             <i @click="copyQu(index)" class="el-icon-document-copy" title="复制问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
@@ -85,6 +85,7 @@ export default {
         let value_2 = ""
         let state = ""
         list.getlist(listinit).then((res) => {
+            console.log(res)
             for (let item of res.data.data.records) {
                 if (item.isReleased == 1) {
                     value_2 = "关闭问卷"
@@ -103,7 +104,8 @@ export default {
                     value: item.isReleased == 1,
                     value_2: value_2,
                     state: state,
-                    code:item.code
+                    code:item.code,
+                    stamp:item.stamp
                 });
             }
             console.log(this.tableData)
@@ -124,6 +126,11 @@ export default {
             let s = date.getSeconds();
             s = s < 10 ? ('0' + s) : s;
             return y + '-' + MM + '-' + d + ' ' + h + ':' + m;
+        },
+        // 暂时默认是编辑方式一
+        edit(index) {
+            this.$store.commit('updateOperation', { id: this.tableData[index]['ID'], code: this.tableData[index]['code'], isReleased: this.tableData[index]['value'] })
+            this.$router.push('/edit')
         },
         Preview(index) {
             this.$router.push('/preview/1/' + this.tableData[index]['code'])
@@ -193,7 +200,8 @@ export default {
                         value: item.isReleased == 1,
                         value_2: value_2,
                         state: state,
-                        code:item.code
+                        code:item.code,
+                        stamp:item.stamp
                     });
                 }
             });
@@ -242,7 +250,8 @@ export default {
                                 value: item.isReleased == 1,
                                 value_2: value_2,
                                 state: state,
-                                code:item.code
+                                code:item.code,
+                                stamp:item.stamp
                             });
                         }
                     } else if (res.data.code == 20000 && res.data.data.total == 0) {
@@ -292,7 +301,8 @@ export default {
                         value: item.isReleased == 1,
                         value_2: value_2,
                         state: state,
-                        code:item.code
+                        code:item.code,
+                        stamp:item.stamp
                     });
                 }
             });
@@ -333,14 +343,13 @@ export default {
                                     value: item.isReleased == 1,
                                     value_2: value_2,
                                     state: state,
-                                    code:item.code
+                                    code:item.code,
+                                    stamp:item.stamp
                                 });
                             }
                         });
-
                     }
                 });
-
             } else {
                 list.openQu(this.tableData[index]['ID']).then((res) => {
                     console.log(res);
@@ -375,13 +384,13 @@ export default {
                                 value: item.isReleased == 1,
                                 value_2: value_2,
                                 state: state,
-                                code:item.code
+                                code:item.code,
+                                stamp:item.stamp
                             });
                         }
                     });
                 });
             }
-
         },
         copyQu(index) {
             list.copy(this.tableData[index]['ID']).then((res) => {
@@ -407,7 +416,8 @@ export default {
                                 ID: item.id,
                                 title: item.head,
                                 value: item.isReleased == 1,
-                                code:item.code
+                                code:item.code,
+                                stamp:item.stamp
                             });
                         }
                     });
@@ -426,25 +436,20 @@ export default {
 .text {
     font-size: 14px;
 }
-
 .item {
     margin-bottom: 18px;
 }
-
 .clearfix:before,
 .clearfix:after {
     display: table;
     content: "";
 }
-
 .clearfix:after {
     clear: both
 }
-
 .box-card {
     width: 1500px;
 }
-
 .description {
     display: inline-block;
 }

@@ -123,7 +123,7 @@
                                     <el-row>
                                         <el-button type="primary" icon="el-icon-edit" size="small" circle @click.native="editQ(index, item)"/>
                                         <el-button type="info" icon="el-icon-document-copy" size="small" circle @click.native="copyQ(item)"/>
-                                        <el-button type="danger" icon="el-icon-delete" size="small" circle @click.native="deleteQ(index)"/>
+                                        <el-button type="danger" :disabled="item.original" icon="el-icon-delete" size="small" circle @click.native="deleteQ(index)"/>
                                     </el-row>
                                     <el-divider class="mt-8"/>
                                 </div>
@@ -268,14 +268,14 @@
                 <el-form-item>
                     <div v-for="(item, index) in single.choices" :key="index">
                         <div class="edit_choice">
-                            <span>{{`选项${index+1}  `}}</span>
+                            <span>{{`选项${index+1}`}}</span>
                             <input v-model="item.value"/>
                         </div>
                     </div>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" class="el-icon-plus" size="small" circle @click="single.choices.push({ value: '新增选项' })"/>
-                    <el-button type="danger" class="el-icon-minus" size="small" circle @click="single.choices.pop()"/>
+                    <el-button type="primary" class="el-icon-plus" size="small" circle @click="single.choices.push({ value: '新增选项' + (single.choices.length+1) })"/>
+                    <el-button type="danger" :disabled="single.original" class="el-icon-minus" size="small" circle @click="single.choices.pop()"/>
                 </el-form-item>
                 <el-form-item>
                     <el-switch v-model="single.required" active-text="必答"/>
@@ -296,8 +296,80 @@ export default {
   components: {
     draggable,
   },
+  mounted() {
+    if (this.$store.state.operatingQ.code !== '') {
+      this.wholeEdit = true
+      survey
+        .getQuestionnare(this.$store.state.operatingQ.code)
+        .then((response) => {
+          console.log(response)
+          if (response.data.code === 20000) {
+            const data = response.data.data
+            this.data.head = data.head
+            this.data.introduction = data.introduction
+            this.data.serial = data.serial
+            this.id = data.id
+            for (const item of data.itemList) {
+              let q = undefined
+              switch (item.itemType) {
+                case 1:
+                  q = {
+                    type: 1,
+                    desc: item.desc,
+                    question: item.question,
+                    required: item.required?true:false,
+                    original: true,
+                    id: item.id
+                  }
+                  this.data.questions.push(q)
+                  console.log(q)
+                  break
+                case 2:
+                  q = {
+                    type: 2,
+                    desc: item.desc,
+                    question: item.question,
+                    required: item.required?true:false,
+                    maxScore: item.maxScore,
+                    original: true,
+                    id: item.id
+                  }
+                  this.data.questions.push(q)
+                  console.log(q)
+                  break
+                case 3:
+                case 4:
+                  q = {
+                    type: item.itemType,
+                    desc: item.desc,
+                    question: item.question,
+                    required: item.required?true:false,
+                    choices: [],
+                    original: true,
+                    id: item.id
+                  }
+                  item.choices.forEach(element => {
+                    q.choices.push({ value: element })
+                  })
+                  this.data.questions.push(q)
+                  console.log(q)
+                  break
+              }
+            }
+            console.log(this.data)
+          } else {
+              message({
+                  message: response.data.msg,
+                  type: 'error'
+              })
+          }
+        })
+    }
+  },
   data() {
     return {
+      wholeEdit: false,
+      id: '',
       editIndex: -1,
       titleEdit: false,
       desEdit: false,
@@ -337,6 +409,7 @@ export default {
         question: "请输入题目",
         desc: "",
         required: true,
+        original: false
       },
       mark: {
         visible: false,
@@ -344,20 +417,23 @@ export default {
         desc: "",
         required: true,
         maxScore: 5,
+        original: false
       },
       multi: {
         visible: false,
         question: "请输入题目",
         desc: "",
         required: true,
-        choices: [{ value: "新增选项" }],
+        choices: [{ value: "新增选项1" }],
+        original: false
       },
       single: {
         visible: false,
         question: "请输入题目",
         desc: "",
         required: true,
-        choices: [{ value: "新增选项" }],
+        choices: [{ value: "新增选项1" }],
+        original: false
       },
       itemList: [],
     };
@@ -368,28 +444,32 @@ export default {
         visible: false,
         question: "请输入题目",
         desc: "",
-        required: true
+        required: true,
+        original: false
       }
       this.mark = {
         visible: false,
         question: "请输入题目",
         desc: "",
         required: true,
-        maxScore: 5
+        maxScore: 5,
+        original: false
       }
       this.multi = {
         visible: false,
         question: "请输入题目",
         desc: "",
         required: true,
-        choices: [{ value: "新增选项" }]
+        choices: [{ value: "新增选项1" }],
+        original: false
       }
       this.single = {
         visible: false,
         question: "请输入题目",
         desc: "",
         required: true,
-        choices: [{ value: "新增选项" }]
+        choices: [{ value: "新增选项1" }],
+        original: false
       }
     },
     addBlank() {
@@ -398,6 +478,7 @@ export default {
         desc: this.blank.desc,
         question: this.blank.question,
         required: this.blank.required,
+        original: false
       }
       if (this.editIndex == -1) {
         this.data.questions.push(q);
@@ -413,7 +494,8 @@ export default {
         desc: this.mark.desc,
         question: this.mark.question,
         required: this.mark.required,
-        maxScore: this.mark.maxScore
+        maxScore: this.mark.maxScore,
+        original: false
       }
       if (this.editIndex == -1) {
         this.data.questions.push(q)
@@ -429,7 +511,8 @@ export default {
         desc: this.multi.desc,
         question: this.multi.question,
         required: this.multi.required,
-        choices: this.multi.choices
+        choices: this.multi.choices,
+        original: false
       };
       if (this.editIndex == -1) {
         this.data.questions.push(q)
@@ -445,7 +528,8 @@ export default {
         desc: this.single.desc,
         question: this.single.question,
         required: this.single.required,
-        choices: this.single.choices
+        choices: this.single.choices,
+        original: false
       };
       if (this.editIndex == -1) {
         this.data.questions.push(q)
@@ -464,6 +548,7 @@ export default {
             question: item.question,
             desc: item.desc,
             required: item.required,
+            original: item.original
           };
           break;
         case 2:
@@ -473,6 +558,7 @@ export default {
             desc: item.desc,
             required: item.required,
             maxScore: item.maxScore,
+            original: item.original
           };
           break;
         case 3:
@@ -482,6 +568,7 @@ export default {
             desc: item.desc,
             required: item.required,
             choices: item.choices,
+            original: item.original
           };
           break;
         case 4:
@@ -491,6 +578,7 @@ export default {
             desc: item.desc,
             required: item.required,
             choices: item.choices,
+            original: item.original
           };
           break;
       }
@@ -508,6 +596,18 @@ export default {
     onEnd() {
       this.drag = false;
     },
+    questionResponseHandle(response, index, type) {
+      console.log(response)
+      if (response.data.code === 20000) {
+        console.log(response.data);
+        this.itemList.push({
+          itemId: response.data.data.id,
+          itemOrder: index + 1,
+          itemType: type,
+        });
+        console.log(this.itemList);
+      }
+    },
     async submitQuestion() {
       let formData;
       for (let i = 0; i < this.data.questions.length; i++) {
@@ -518,19 +618,14 @@ export default {
               question: item.question,
               desc: item.desc,
               required: Number(item.required),
+              id: item.id
             };
-            await survey.createBlank(formData).then((response) => {
-              if (response.data.code === 20000) {
-                console.log("题目信息");
-                console.log(response.data);
-                this.itemList.push({
-                  itemId: response.data.data.id,
-                  itemOrder: i + 1,
-                  itemType: 1,
-                });
-                console.log(this.itemList);
-              }
-            });
+            if (item.original) {
+              await survey.updateBlank(formData).then((response) => {this.questionResponseHandle(response, i, 1)});
+              console.log('updateBlank');
+            } else {
+              await survey.createBlank(formData).then((response) => {this.questionResponseHandle(response, i, 1)});
+            }
             console.log(i + "q");
             break;
           case 2:
@@ -539,16 +634,13 @@ export default {
               desc: item.desc,
               maxScore: item.maxScore,
               required: Number(item.required),
+              id: item.id
             };
-            await survey.createMark(formData).then((response) => {
-              if (response.data.code === 20000) {
-                this.itemList.push({
-                  itemId: response.data.data.id,
-                  itemOrder: i + 1,
-                  itemType: 2,
-                });
-              }
-            });
+            if (item.original) {
+              await survey.updateMark(formData).then((response) => {this.questionResponseHandle(response, i, 2)});
+            } else {
+              await survey.createMark(formData).then((response) => {this.questionResponseHandle(response, i, 2)});
+            }
             console.log(i + "q");
             break;
           case 3:
@@ -557,19 +649,16 @@ export default {
               desc: item.desc,
               choices: [],
               required: Number(item.required),
+              id: item.id
             };
             item.choices.forEach((choice) => {
               formData.choices.push(choice.value);
             });
-            await survey.createMulti(formData).then((response) => {
-              if (response.data.code === 20000) {
-                this.itemList.push({
-                  itemId: response.data.data.id,
-                  itemOrder: i + 1,
-                  itemType: 3,
-                });
-              }
-            });
+            if (item.original) {
+              await survey.updateMulti(formData).then((response) => {this.questionResponseHandle(response, i, 3)});
+            } else {
+              await survey.createMulti(formData).then((response) => {this.questionResponseHandle(response, i, 3)});
+            }
             console.log(i + "q");
             break;
           case 4:
@@ -578,49 +667,42 @@ export default {
               desc: item.desc,
               choices: [],
               required: Number(item.required),
+              id: item.id
             };
             item.choices.forEach((choice) => {
               formData.choices.push(choice.value);
             });
-            await survey.createSingle(formData).then((response) => {
-              if (response.data.code === 20000) {
-                this.itemList.push({
-                  itemId: response.data.data.id,
-                  itemOrder: i + 1,
-                  itemType: 4,
-                });
-              }
-            });
+            if (item.original) {
+              await survey.updateSingle(formData).then((response) => {this.questionResponseHandle(response, i, 4)});
+            } else {
+              await survey.createSingle(formData).then((response) => {this.questionResponseHandle(response, i, 4)});
+            }
             console.log(i + "q");
             break;
         }
       }
     },
-    async submitQuestionnare(submitData) {
-      survey
-        .createQuestionnare(submitData)
-        .then((response) => {
-          console.log(response);
-          if (response.data.code === 20000) {
-            this.$store.commit('updateOperation', { id: response.data.data.id, code: response.data.data.code, isReleased: false })
-            this.$router.push('/publish')
-            message({
-              message: response.data.msg,
-              type: "success",
-            })
-          } else {
-            message({
-              message: response.data.msg,
-              type: "warning",
-            })
-          }
+    questionnareResponseHandle(response) {
+      console.log(response);
+      if (response.data.code === 20000) {
+        this.$store.commit('updateOperation', { id: response.data.data.id, code: response.data.data.code, isReleased: response.data.data.isReleased?true:false })
+        this.$router.push('/publish')
+        message({
+          message: response.data.msg,
+          type: "success",
         })
-        .catch((error) => {
-          message({
-            message: error.message,
-            type: "error",
-          })
+      } else {
+        message({
+          message: response.data.msg,
+          type: "warning",
         })
+      }
+    },
+    questionnareErrorHandle(error) {
+      message({
+        message: error.message,
+        type: 'error'
+      })
     },
     async submit() {
       if (this.setEndtime) {
@@ -641,17 +723,29 @@ export default {
         itemList: this.itemList,
         serial: this.data.serial,
         startTime: this.data.startTime,
-        stamp: 1 // 普通问卷
+        stamp: 1, // 普通问卷
+        maxNum: 9999999,
+        id: this.id
       }
-      this.submitQuestionnare(submitData)
-    },
-    directives: {
-        focus: {
-            inserted: function(el) {
-                el.children[0].focus()
-            }
-        }
+      if (this.wholeEdit) {
+        await survey
+          .updateQuestionnare(submitData)
+          .then((response) => {this.questionnareResponseHandle(response)})
+          .catch((error) => {this.errorResponseHandle(error)})
+      }else {
+        await survey
+          .createQuestionnare(submitData)
+          .then((response) => {this.questionnareResponseHandle(response)})
+          .catch((error) => {this.errorResponseHandle(error)})
+      }
     }
+  },
+  directives: {
+      focus: {
+          inserted: function(el) {
+              el.children[0].focus();
+          },
+      }
   }
 }
 </script>
