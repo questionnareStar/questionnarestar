@@ -289,9 +289,9 @@
 </template>
 
 <script>
-import { message } from "../util/inform";
-import survey from "../util/service/survey";
-import draggable from "vuedraggable";
+import { message } from "../util/inform"
+import survey from "../util/service/survey"
+import draggable from "vuedraggable"
 export default {
   components: {
     draggable,
@@ -354,7 +354,6 @@ export default {
       },
       single: {
         visible: false,
-        sequence: 4,
         question: "请输入题目",
         desc: "",
         required: true,
@@ -369,29 +368,29 @@ export default {
         visible: false,
         question: "请输入题目",
         desc: "",
-        required: true,
-      };
+        required: true
+      }
       this.mark = {
         visible: false,
         question: "请输入题目",
         desc: "",
         required: true,
-        maxScore: 5,
-      };
+        maxScore: 5
+      }
       this.multi = {
         visible: false,
         question: "请输入题目",
         desc: "",
         required: true,
-        choices: [{ value: "新增选项" }],
-      };
+        choices: [{ value: "新增选项" }]
+      }
       this.single = {
         visible: false,
         question: "请输入题目",
         desc: "",
         required: true,
-        choices: [{ value: "新增选项" }],
-      };
+        choices: [{ value: "新增选项" }]
+      }
     },
     addBlank() {
       let q = {
@@ -399,14 +398,14 @@ export default {
         desc: this.blank.desc,
         question: this.blank.question,
         required: this.blank.required,
-      };
+      }
       if (this.editIndex == -1) {
         this.data.questions.push(q);
       } else {
         this.data.questions[this.editIndex] = q;
-        this.editIndex = -1;
+        this.editIndex = -1
       }
-      this.resetModel();
+      this.resetModel()
     },
     addMark() {
       let q = {
@@ -414,15 +413,15 @@ export default {
         desc: this.mark.desc,
         question: this.mark.question,
         required: this.mark.required,
-        maxScore: this.mark.maxScore,
-      };
+        maxScore: this.mark.maxScore
+      }
       if (this.editIndex == -1) {
-        this.data.questions.push(q);
+        this.data.questions.push(q)
       } else {
-        this.data.questions[this.editIndex] = q;
+        this.data.questions[this.editIndex] = q
         this.editIndex = -1;
       }
-      this.resetModel();
+      this.resetModel()
     },
     addMulti() {
       let q = {
@@ -430,15 +429,15 @@ export default {
         desc: this.multi.desc,
         question: this.multi.question,
         required: this.multi.required,
-        choices: this.multi.choices,
+        choices: this.multi.choices
       };
       if (this.editIndex == -1) {
-        this.data.questions.push(q);
+        this.data.questions.push(q)
       } else {
-        this.data.questions[this.editIndex] = q;
-        this.editIndex = -1;
+        this.data.questions[this.editIndex] = q
+        this.editIndex = -1
       }
-      this.resetModel();
+      this.resetModel()
     },
     addSingle() {
       let q = {
@@ -446,13 +445,13 @@ export default {
         desc: this.single.desc,
         question: this.single.question,
         required: this.single.required,
-        choices: this.single.choices,
+        choices: this.single.choices
       };
       if (this.editIndex == -1) {
-        this.data.questions.push(q);
+        this.data.questions.push(q)
       } else {
-        this.data.questions[this.editIndex] = q;
-        this.editIndex = -1;
+        this.data.questions[this.editIndex] = q
+        this.editIndex = -1
       }
       this.resetModel();
     },
@@ -606,20 +605,20 @@ export default {
             message({
               message: response.data.msg,
               type: "success",
-            });
+            })
           } else {
             message({
               message: response.data.msg,
               type: "warning",
-            });
+            })
           }
         })
         .catch((error) => {
           message({
             message: error.message,
             type: "error",
-          });
-        });
+          })
+        })
     },
     async submit() {
       if (this.setEndtime) {
@@ -631,7 +630,7 @@ export default {
           return;
         }
       }
-      await this.submitQuestion();
+      await this.submitQuestion()
       let submitData = {
         endTime: this.setEndtime ? this.data.endTime : "4785667200000",
         head: this.data.head,
@@ -640,20 +639,22 @@ export default {
         itemList: this.itemList,
         serial: this.data.serial,
         startTime: this.data.startTime,
-      };
-      this.submitQuestionnare(submitData);
+        stamp: 1 // 普通问卷
+      }
+      this.submitQuestionnare(submitData)
     },
     directives: {
         focus: {
             inserted: function(el) {
-                el.children[0].focus();
-            },
+                el.children[0].focus()
+            }
         }
-    },
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style scoped="scoped">
 .p-20 {
     padding: 20px;
 }
