@@ -298,6 +298,7 @@ export default {
   },
   mounted() {
     if (this.$store.state.operatingQ.code !== '') {
+      console.log('mounted')
       this.wholeEdit = true
       survey
         .getQuestionnare(this.$store.state.operatingQ.code)
@@ -319,7 +320,7 @@ export default {
                     question: item.question,
                     required: item.required?true:false,
                     original: true,
-                    id: item.id
+                    id: item.topicId
                   }
                   this.data.questions.push(q)
                   console.log(q)
@@ -483,6 +484,7 @@ export default {
       if (this.editIndex == -1) {
         this.data.questions.push(q);
       } else {
+        q.original = this.data.questions[this.editIndex].original
         this.data.questions[this.editIndex] = q;
         this.editIndex = -1
       }
@@ -500,6 +502,7 @@ export default {
       if (this.editIndex == -1) {
         this.data.questions.push(q)
       } else {
+        q.original = this.data.questions[this.editIndex].original
         this.data.questions[this.editIndex] = q
         this.editIndex = -1;
       }
@@ -517,6 +520,7 @@ export default {
       if (this.editIndex == -1) {
         this.data.questions.push(q)
       } else {
+        q.original = this.data.questions[this.editIndex].original
         this.data.questions[this.editIndex] = q
         this.editIndex = -1
       }
@@ -534,6 +538,7 @@ export default {
       if (this.editIndex == -1) {
         this.data.questions.push(q)
       } else {
+        q.original = this.data.questions[this.editIndex].original
         this.data.questions[this.editIndex] = q
         this.editIndex = -1
       }
