@@ -29,9 +29,9 @@
             </div>
         </div>
         <div class="icon" style="float: right;margin-top: 20px;margin-bottom:10px;">
-            <i @click="Preview(index)" class="el-icon-view" title="预览问卷" style="margin-right:20px;font-size:25px"></i>
-            <i @click="Recovery(index)" class="el-icon-document-checked" title="恢复问卷" style="margin-right:20px;font-size:25px"></i>
-            <i @click="Delete(index)" class="el-icon-delete" title="删除问卷" style="margin-right:20px;font-size:25px"></i>
+            <i @click="Preview(index)" class="el-icon-view" title="预览问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
+            <i @click="Recovery(index)" class="el-icon-document-checked" title="恢复问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
+            <i @click="Delete(index)" class="el-icon-delete" title="删除问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
         </div>
     </el-card>
 </div>
