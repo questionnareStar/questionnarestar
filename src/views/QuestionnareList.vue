@@ -1,5 +1,5 @@
 <template>
-<div id="table">
+<div class="main">
     <el-card shadow="never">
         <el-row>
             <el-col :span="6">
@@ -14,46 +14,32 @@
             </el-col>
             <el-col :span="8">
                 <el-button type="primary" @click="Search(input)"> 搜索</el-button>
+                <el-button v-if="isSearch==true" type="primary" @click="outSearch()"> 退出搜索</el-button>
+                <i v-else></i>
             </el-col>
         </el-row>
     </el-card>
-    <el-table :data="tableData" :border="true" height="1000" style="width: 100%">
-        <el-table-column label="问卷ID" width="150">
-            <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.ID }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="问卷标题" width="250">
-            <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.title }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="创建日期" width="250">
-            <template slot-scope="scope">
-                <i class="el-icon-time"></i>
-                <span style="margin-left: 10px">{{ scope.row.date }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="问卷回收量" width="100">
-            <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.num }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="问卷发布状态" width="180">
-            <template slot-scope="scope">
-                <el-switch v-model="scope.row.value" @change="change(scope.row)" active-text="发布" inactive-text="关闭" active-color="#13ce66" inactive-color="#ff4949">
-                </el-switch>
-            </template>
-        </el-table-column>
-        <el-table-column label="操作" width="350">
-            <template slot-scope="scope">
-                <el-button type="primary" size="mini" @click="Preview(scope.$index, scope.row)">预览</el-button>
-                <el-button size="mini" type="primary" @click="Statistics(scope.$index, scope.row)">问卷统计</el-button>
-                <el-button size="mini" type="primary" @click="copyQu(scope.$index, scope.row)">复制问卷</el-button>
-                <el-button size="mini" type="danger" @click="Delete(scope.$index, scope.row)">删除</el-button>
-            </template>
-        </el-table-column>
-    </el-table>
+    <el-card class="box-card" shadow="always" style="float: right;margin-top: 20px;" v-for="(item,index) in tableData" :key="index">
+        <div slot="header" class="clearfix">
+            <span style=" font-weight: 900;">{{tableData[index]['title']}}</span>
+            <div class="description-container" style="float: right; ">
+                <div class="description" style="margin-right:20px   ;font-size: 16px; font-weight: 900;">id:{{tableData[index]["ID"]}}</div>
+                <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">创建时间:{{tableData[index]['time_1']}}</div>
+                <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">发布时间:{{tableData[index]['time_2']}}</div>
+                <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">截止时间:{{tableData[index]['time_3']}}</div>
+                <div class="description" style="margin-right:20px;color:green;  font-size: 16px; font-weight: 900;">{{tableData[index]['state']}}</div>
+                <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">答卷:{{tableData[index]['num']}}</div>
+            </div>
+        </div>
+        <div class="icon" style="float: right;margin-top: 20px;margin-bottom:10px;">
+            <i @click="change(index)" v-bind:class="{ 'el-icon-video-pause': tableData[index]['value'], 'el-icon-video-play': !tableData[index]['value'] }" :title="tableData[index]['value_2']" style="margin-right:20px;color:blue;font-size:25px"></i>
+            <i class="el-icon-edit" title="编辑问卷" style="margin-right:20px;  font-size:25px"></i>
+            <i @click="Statistics(index)" class="el-icon-s-data" title="问卷数据统计" style="margin-right:20px;  font-size:25px"></i>
+            <i @click="Preview(index)" class="el-icon-view" title="预览问卷" style="margin-right:20px;font-size:25px"></i>
+            <i @click="copyQu(index)" class="el-icon-document-copy" title="复制问卷" style="margin-right:20px;font-size:25px"></i>
+            <i @click="Delete(index)" class="el-icon-delete" title="删除问卷" style="margin-right:20px;font-size:25px"></i>
+        </div>
+    </el-card>
 </div>
 </template>
 
@@ -62,65 +48,66 @@ import list from "../util/service/list.js";
 import {
     message
 } from "../util/inform.js";
-
 export default {
-    mounted() {
-        localStorage.removeItem('input')
-          localStorage.removeItem('sort')
-        let listinit = {
-            current: 1,
-            size: 100000,
-        };
-        list.getlist(listinit).then((res) => {
-            console.log(res.data.data.records);
-            for (let item of res.data.data.records) {
-                let date = new Date(item.createTime);
-                let y = date.getFullYear();
-                let MM = date.getMonth() + 1;
-                MM = MM < 10 ? ('0' + MM) : MM;
-                let d = date.getDate();
-                d = d < 10 ? ('0' + d) : d;
-                let h = date.getHours();
-                h = h < 10 ? ('0' + h) : h;
-                let m = date.getMinutes();
-                m = m < 10 ? ('0' + m) : m;
-                let s = date.getSeconds();
-                s = s < 10 ? ('0' + s) : s;
-                this.tableData.push({
-                    date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
-                    num: item.writeNum,
-                    ID: item.id,
-                    title: item.head,
-                    value: item.isReleased == 1,
-                });
-            }
-        });
-    },
     data() {
         return {
             options: [{
-                    label: "按创建时间排序-增序",
+                    label: "创建时间较晚优先",
                     value: "3",
                 },
                 {
-                    label: "按创建时间排序-降序",
+                    label: "创建时间较早优先",
                     value: "0",
                 },
                 {
-                    label: "按问卷回收量排序-增序",
+                    label: "问卷回收量较少优先",
                     value: "4",
                 },
                 {
-                    label: "按问卷回收量排序-降序",
+                    label: "问卷回收量较多优先",
                     value: "1",
                 },
             ],
             option: "",
             input: "",
             tableData: [],
-        };
+            isSearch: false
+        }
     },
+    mounted() {
+        localStorage.removeItem('input')
+        localStorage.removeItem('sort')
+        let listinit = {
+            current: 1,
+            size: 100000,
+        };
+        let value_2 = ""
+        let state = ""
+        list.getlist(listinit).then((res) => {
+            console.log(res.data.data.records);
 
+            for (let item of res.data.data.records) {
+                if (item.isReleased == 1) {
+                    value_2 = "关闭问卷"
+                    state = "·已发布"
+                } else {
+                    value_2 = "发布问卷"
+                    state = "·未发布"
+                }
+                this.tableData.push({
+                    time_1: this.formatDate(item.createTime),
+                    time_2: this.formatDate(item.startTime),
+                    time_3: this.formatDate(item.endTime),
+                    num: item.writeNum,
+                    ID: item.id,
+                    title: item.head,
+                    value: item.isReleased == 1,
+                    value_2: value_2,
+                    state: state,
+                });
+            }
+        });
+    },
     methods: {
         formatDate(value) {
             let date = new Date(value);
@@ -135,151 +122,97 @@ export default {
             m = m < 10 ? ('0' + m) : m;
             let s = date.getSeconds();
             s = s < 10 ? ('0' + s) : s;
-            return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+            return y + '-' + MM + '-' + d + ' ' + h + ':' + m;
         },
-        Preview(index, row) {
-            console.log(index, row);
-            this.$router.push('/preview/1/' + row.ID)
+        Preview(index) {
+            this.$router.push('/preview/' + this.tableData[index]['ID'])
         },
-        Statistics(index, row) {
-            list.getStatistics(parseInt(row.ID)).then((res) => {
-                console.log(res);
-                localStorage.setItem('questionnaireID', JSON.stringify(row.ID))
-                localStorage.setItem('qutitle', JSON.stringify(row.title))
+        Statistics(index) {
+            list.getStatistics(parseInt(this.tableData[index]['ID'])).then((res) => {
+                localStorage.setItem('questionnaireID', JSON.stringify(this.tableData[index]['ID']))
+                localStorage.setItem('qutitle', JSON.stringify(this.tableData[index]['title']))
                 localStorage.setItem("statistics", JSON.stringify(res.data))
+            })
+            list.getStatisticsWhole(parseInt(this.tableData[index]['ID'])).then((res) => {
+                console.log(res);
+                localStorage.setItem("statisticsWhole", JSON.stringify(res.data))
                 this.$router.push("/statistics");
             })
         },
-        copyQu(index, row) {
-            list.copy(row.ID).then((res) => {
-                console.log(res);
-                if (res.data.code == 20000) {
-                    message({
-                        message: '复制成功',
-                        type: 'success'
-                    })
-                    this.tableData = [];
-                    let listinit = {
-                        current: 1,
-                        size: 100000,
-                    };
-                    list.getlist(listinit).then((res) => {
+        Delete(index) {
+            if (confirm('确定要删除吗?') == true) {
+                list.closeQu(this.tableData[index]['ID']).then((res) => {
+                    console.log(res);
+                    list.deleteQu(this.tableData[index]['ID']).then((res) => {
                         console.log(res);
-                        for (let item of res.data.data.records) {
-                            let date = new Date(item.createTime);
-                            let y = date.getFullYear();
-                            let MM = date.getMonth() + 1;
-                            MM = MM < 10 ? ('0' + MM) : MM;
-                            let d = date.getDate();
-                            d = d < 10 ? ('0' + d) : d;
-                            let h = date.getHours();
-                            h = h < 10 ? ('0' + h) : h;
-                            let m = date.getMinutes();
-                            m = m < 10 ? ('0' + m) : m;
-                            let s = date.getSeconds();
-                            s = s < 10 ? ('0' + s) : s;
-                            this.tableData.push({
-                                date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
-                                num: item.writeNum,
-                                ID: item.id,
-                                title: item.head,
-                                value: item.isReleased == 1,
-                            });
-                        }
-                    });
-                } else
-                    message({
-                        message: '复制失败',
-                        type: 'error'
+                        if (res.data.code == 20000) {
+                            message({
+                                message: '删除成功',
+                                type: 'success'
+                            })
+                            this.tableData.splice(index, 1);
+                        } else
+                            message({
+                                message: '删除失败',
+                                type: 'error'
+                            })
                     })
-            });
-        },
-        change(row) {
-            if (row.value == false) {
-                list.closeQu(row.ID).then((res) => {
-                    console.log(res);
-                     if (res.data.code == 20000) {
-                    message({
-                        message: '问卷关闭成功',
-                        type: 'success'
-                    })
-                } 
-                });
-            } else {
-                list.openQu(row.ID).then((res) => {
-                    console.log(res);
-                     if (res.data.code == 20000) {
-                    message({
-                        message: '问卷开启成功',
-                        type: 'success'
-                    })
-                } 
-                });
+                })
             }
         },
-        changeSelect() {
-            console.log(this.option);
-            localStorage.setItem('sort', JSON.stringify(this.option))
+        outSearch() {
+            this.input = ""
+            this.isSearch = "false"
+            localStorage.setItem('input', JSON.stringify(this.input))
             let listinit = {
                 current: 1,
                 size: 100000,
                 sortBy: JSON.parse(localStorage.getItem('sort')),
-                head:JSON.parse(localStorage.getItem('input')),
+                head: JSON.parse(localStorage.getItem('input')),
             };
+            let value_2 = ""
+            let state = ""
             list.getlist(listinit).then((res) => {
-                console.log(res);
                 this.tableData = [];
                 for (let item of res.data.data.records) {
-                    let date = new Date(item.createTime);
-                    let y = date.getFullYear();
-                    let MM = date.getMonth() + 1;
-                    MM = MM < 10 ? ('0' + MM) : MM;
-                    let d = date.getDate();
-                    d = d < 10 ? ('0' + d) : d;
-                    let h = date.getHours();
-                    h = h < 10 ? ('0' + h) : h;
-                    let m = date.getMinutes();
-                    m = m < 10 ? ('0' + m) : m;
-                    let s = date.getSeconds();
-                    s = s < 10 ? ('0' + s) : s;
+                    if (item.isReleased == 1) {
+                        value_2 = "关闭问卷"
+                        state = "·已发布"
+                    } else {
+                        value_2 = "发布问卷"
+                        state = "·未发布"
+                    }
                     this.tableData.push({
-                        date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
+                        time_1: this.formatDate(item.createTime),
+                        time_2: this.formatDate(item.startTime),
+                        time_3: this.formatDate(item.endTime),
                         num: item.writeNum,
                         ID: item.id,
-                        value: item.isReleased == 1,
                         title: item.head,
+                        value: item.isReleased == 1,
+                        value_2: value_2,
+                        state: state,
                     });
                 }
             });
         },
-        Delete(index, row) {
-              list.closeQu(row.ID).then((res) => {
-                    console.log(res);  
-                    list.deleteQu(row.ID).then((res) => {
-                console.log(res);
-                if (res.data.code == 20000) {
-                    message({
-                        message: '删除成功',
-                        type: 'success'
-                    })
-                    this.tableData.splice(index, 1);
-                } else
-                    message({
-                        message: '删除失败',
-                        type: 'error'
-                    })
-            })
-                })
-         
-        },
         Search(input) {
+            if (input == "") {
+                message({
+                    message: '输入为空！',
+                    type: 'error'
+                })
+            } else {
+                this.isSearch = true
+                let value_2 = ""
+                let state = ""
                 console.log(input);
                 localStorage.setItem('input', JSON.stringify(input))
                 let listinit = {
                     current: 1,
                     size: 100000,
-                sortBy: JSON.parse(localStorage.getItem('sort')),
-                head:JSON.parse(localStorage.getItem('input')),
+                    sortBy: JSON.parse(localStorage.getItem('sort')),
+                    head: JSON.parse(localStorage.getItem('input')),
                 };
                 list.getlist(listinit).then((res) => {
                     console.log(res);
@@ -290,24 +223,23 @@ export default {
                         })
                         this.tableData = [];
                         for (let item of res.data.data.records) {
-                            let date = new Date(item.createTime);
-                            let y = date.getFullYear();
-                            let MM = date.getMonth() + 1;
-                            MM = MM < 10 ? ('0' + MM) : MM;
-                            let d = date.getDate();
-                            d = d < 10 ? ('0' + d) : d;
-                            let h = date.getHours();
-                            h = h < 10 ? ('0' + h) : h;
-                            let m = date.getMinutes();
-                            m = m < 10 ? ('0' + m) : m;
-                            let s = date.getSeconds();
-                            s = s < 10 ? ('0' + s) : s;
+                            if (item.isReleased == 1) {
+                                value_2 = "关闭问卷"
+                                state = "·已发布"
+                            } else {
+                                value_2 = "发布问卷"
+                                state = "·未发布"
+                            }
                             this.tableData.push({
-                                date: y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s,
+                                time_1: this.formatDate(item.createTime),
+                                time_2: this.formatDate(item.startTime),
+                                time_3: this.formatDate(item.endTime),
                                 num: item.writeNum,
                                 ID: item.id,
-                                value: item.isReleased == 1,
                                 title: item.head,
+                                value: item.isReleased == 1,
+                                value_2: value_2,
+                                state: state,
                             });
                         }
                     } else if (res.data.code == 20000 && res.data.data.total == 0) {
@@ -323,18 +255,190 @@ export default {
                         this.tableData = [];
                     }
                 })
+            }
+        },
+        changeSelect() {
+            let value_2 = ""
+            let state = ""
+            console.log(this.option);
+            localStorage.setItem('sort', JSON.stringify(this.option))
+            let listinit = {
+                current: 1,
+                size: 100000,
+                sortBy: JSON.parse(localStorage.getItem('sort')),
+                head: JSON.parse(localStorage.getItem('input')),
+            };
+            list.getlist(listinit).then((res) => {
+                console.log(res);
+                this.tableData = [];
+                for (let item of res.data.data.records) {
+                    if (item.isReleased == 1) {
+                        value_2 = "关闭问卷"
+                        state = "·已发布"
+                    } else {
+                        value_2 = "发布问卷"
+                        state = "·未发布"
+                    }
+                    this.tableData.push({
+                        time_1: this.formatDate(item.createTime),
+                        time_2: this.formatDate(item.startTime),
+                        time_3: this.formatDate(item.endTime),
+                        num: item.writeNum,
+                        ID: item.id,
+                        title: item.head,
+                        value: item.isReleased == 1,
+                        value_2: value_2,
+                        state: state,
+                    });
+                }
+            });
+        },
+        change(index) {
+            let value_2 = ""
+            let state = ""
+            if (this.tableData[index]['value'] == true) {
+                list.closeQu(this.tableData[index]['ID']).then((res) => {
+                    console.log(res);
+                    if (res.data.code == 20000) {
+                        message({
+                            message: '问卷关闭成功',
+                            type: 'success'
+                        })
+                        this.tableData = [];
+                        let listinit = {
+                            current: 1,
+                            size: 100000,
+                        };
+                        list.getlist(listinit).then((res) => {
+                            console.log(res);
+                            for (let item of res.data.data.records) {
+                                if (item.isReleased == 1) {
+                                    value_2 = "关闭问卷"
+                                    state = "·已发布"
+                                } else {
+                                    value_2 = "发布问卷"
+                                    state = "·未发布"
+                                }
+                                this.tableData.push({
+                                    time_1: this.formatDate(item.createTime),
+                                    time_2: this.formatDate(item.startTime),
+                                    time_3: this.formatDate(item.endTime),
+                                    num: item.writeNum,
+                                    ID: item.id,
+                                    title: item.head,
+                                    value: item.isReleased == 1,
+                                    value_2: value_2,
+                                    state: state,
+                                });
+                            }
+                        });
+
+                    }
+                });
+
+            } else {
+                list.openQu(this.tableData[index]['ID']).then((res) => {
+                    console.log(res);
+                    if (res.data.code == 20000) {
+                        message({
+                            message: '问卷开启成功',
+                            type: 'success'
+                        })
+                    }
+                    this.tableData = [];
+                    let listinit = {
+                        current: 1,
+                        size: 100000,
+                    };
+                    list.getlist(listinit).then((res) => {
+                        console.log(res);
+                        for (let item of res.data.data.records) {
+                            if (item.isReleased == 1) {
+                                value_2 = "关闭问卷"
+                                state = "·已发布"
+                            } else {
+                                value_2 = "发布问卷"
+                                state = "·未发布"
+                            }
+                            this.tableData.push({
+                                time_1: this.formatDate(item.createTime),
+                                time_2: this.formatDate(item.startTime),
+                                time_3: this.formatDate(item.endTime),
+                                num: item.writeNum,
+                                ID: item.id,
+                                title: item.head,
+                                value: item.isReleased == 1,
+                                value_2: value_2,
+                                state: state,
+                            });
+                        }
+                    });
+                });
+            }
+
+        },
+        copyQu(index) {
+            list.copy(this.tableData[index]['ID']).then((res) => {
+                console.log(res);
+                if (res.data.code == 20000) {
+                    message({
+                        message: '复制成功',
+                        type: 'success'
+                    })
+                    this.tableData = [];
+                    let listinit = {
+                        current: 1,
+                        size: 100000,
+                    };
+                    list.getlist(listinit).then((res) => {
+                        console.log(res);
+                        for (let item of res.data.data.records) {
+                            this.tableData.push({
+                                time_1: this.formatDate(item.createTime),
+                                time_2: this.formatDate(item.startTime),
+                                time_3: this.formatDate(item.endTime),
+                                num: item.writeNum,
+                                ID: item.id,
+                                title: item.head,
+                                value: item.isReleased == 1,
+                            });
+                        }
+                    });
+                } else
+                    message({
+                        message: '复制失败',
+                        type: 'error'
+                    })
+            });
         },
     },
-};
+}
 </script>
 
 <style>
-.el-dropdown-link {
-    cursor: pointer;
-    color: #409eff;
+.text {
+    font-size: 14px;
 }
 
-.el-icon-arrow-down {
-    font-size: 12px;
+.item {
+    margin-bottom: 18px;
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+
+.clearfix:after {
+    clear: both
+}
+
+.box-card {
+    width: 1500px;
+}
+
+.description {
+    display: inline-block;
 }
 </style>
