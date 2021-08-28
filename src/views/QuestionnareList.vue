@@ -34,7 +34,7 @@
         </div>
         <div class="icon" style="float: right;margin-top: 20px;margin-bottom:10px;">
             <i @click="change(index)" v-bind:class="{ 'el-icon-video-pause': tableData[index]['value'], 'el-icon-video-play': !tableData[index]['value'] }" :title="tableData[index]['value_2']" style="margin-right:20px;color:blue;font-size:25px;cursor: pointer;"></i>
-            <i class="el-icon-edit" title="编辑问卷" style="margin-right:20px; font-size:25px;cursor:pointer;"></i>
+            <i class="el-icon-edit" @click="edit(index)" title="编辑问卷" style="margin-right:20px; font-size:25px;cursor:pointer;"></i>
             <i @click="Statistics(index)" class="el-icon-s-data" title="问卷数据统计" style="margin-right:20px;  font-size:25px;cursor: pointer;"></i>
             <i @click="Preview(index)" class="el-icon-view" title="预览问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
             <i @click="copyQu(index)" class="el-icon-document-copy" title="复制问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
@@ -124,6 +124,11 @@ export default {
             let s = date.getSeconds();
             s = s < 10 ? ('0' + s) : s;
             return y + '-' + MM + '-' + d + ' ' + h + ':' + m;
+        },
+        // 暂时默认是编辑方式一
+        edit(index) {
+            this.$store.commit('updateOperation', { id: this.tableData[index]['ID'], code: this.tableData[index]['code'], isReleased: this.tableData[index]['value'] })
+            this.$router.push('/edit')
         },
         Preview(index) {
             this.$router.push('/preview/1/' + this.tableData[index]['code'])
