@@ -876,6 +876,7 @@ export default {
         serial: this.data.serial,
         startTime: this.data.startTime,
         stamp: 1, // 普通问卷
+        maxNum:9999999,
       };
       this.submitQuestionnare(submitData);
     },

@@ -23,7 +23,7 @@ import Preview from '../views/Preview.vue'
 import Finish from '../views/Finish.vue'
 import TransitionPage from '../views/TransitionPage.vue'
 import CreateVotingSurvey from '../views/CreateVotingSurvey.vue'
-
+import VotingSurvey from '../views/VotingSurvey.vue';
 Vue.use(VueRouter)
 
 const MainChildRoutes = [{
@@ -75,6 +75,14 @@ const MainChildRoutes = [{
   //   }
   // },
   {
+    path:'voting',
+    name:'createvoting',
+    component:CreateVotingSurvey,
+    meta:{
+      sign:true
+    }
+  },
+  {
     path: '/trans',
     name: 'Trans',
     component: TransitionPage,
@@ -124,11 +132,6 @@ const routes = [{
     }
   },
   {
-    path:'/createvotingsurvey',
-    name:'createvotingsurvey',
-    component:CreateVotingSurvey,
-  },
-  {
     path: '/auth',
     name: 'AuthLayout',
     component: AuthLayout,
@@ -151,6 +154,14 @@ const routes = [{
     component: Questionnare,
     meta: {
       sign: false
+    }
+  },
+  {
+    path:'/votingsurvey/:id',
+    name:'VotingSurvey',
+    component: VotingSurvey,
+    meta:{
+      sign:false
     }
   },
   {

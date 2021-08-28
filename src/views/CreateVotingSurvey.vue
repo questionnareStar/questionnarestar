@@ -544,13 +544,11 @@ export default {
             onClick(picker) {
               picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 5);
             },
-            multi: {
-              visible: false,
-              sequence: 4,
-              question: "请输入题目",
-              desc: "",
-              required: true,
-              choices: [{ value: "新增选项" }],
+          },
+          {
+            text: "十天",
+            onClick(picker) {
+              picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 10);
             },
           },
         ],
@@ -563,6 +561,19 @@ export default {
         questions: [],
         startTime: "1629388800000",
         endTime: "",
+      },
+      blank: {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+      },
+      mark: {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        maxScore: 5,
       },
       multi: {
         visible: false,
@@ -583,6 +594,19 @@ export default {
   },
   methods: {
     resetModel() {
+      this.blank = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+      };
+      this.mark = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        maxScore: 5,
+      };
       this.multi = {
         visible: false,
         question: "请输入题目",
@@ -597,6 +621,37 @@ export default {
         required: true,
         choices: [{ value: "新增选项" }],
       };
+    },
+    addBlank() {
+      let q = {
+        type: 1,
+        desc: this.blank.desc,
+        question: this.blank.question,
+        required: this.blank.required,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
+    },
+    addMark() {
+      let q = {
+        type: 2,
+        desc: this.mark.desc,
+        question: this.mark.question,
+        required: this.mark.required,
+        maxScore: this.mark.maxScore,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
     },
     addMulti() {
       let q = {
@@ -648,6 +703,24 @@ export default {
             desc: item.desc,
             required: item.required,
             maxScore: item.maxScore,
+          };
+          break;
+        case 3:
+          this.multi = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+            choices: item.choices,
+          };
+          break;
+        case 4:
+          this.single = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+            choices: item.choices,
           };
           break;
       }
@@ -708,6 +781,48 @@ export default {
             });
             console.log(i + "q");
             break;
+          case 3:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              choices: [],
+              required: Number(item.required),
+            };
+            item.choices.forEach((choice) => {
+              formData.choices.push(choice.value);
+            });
+            await survey.createMulti(formData).then((response) => {
+              if (response.data.code === 20000) {
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 3,
+                });
+              }
+            });
+            console.log(i + "q");
+            break;
+          case 4:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              choices: [],
+              required: Number(item.required),
+            };
+            item.choices.forEach((choice) => {
+              formData.choices.push(choice.value);
+            });
+            await survey.createSingle(formData).then((response) => {
+              if (response.data.code === 20000) {
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 4,
+                });
+              }
+            });
+            console.log(i + "q");
+            break;
         }
       }
     },
@@ -760,7 +875,7 @@ export default {
         itemList: this.itemList,
         serial: this.data.serial,
         startTime: this.data.startTime,
-        stamp: 2, // 投票问卷
+        stamp: 1, // 普通问卷
       };
       this.submitQuestionnare(submitData);
     },
