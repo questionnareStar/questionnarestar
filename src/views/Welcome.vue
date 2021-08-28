@@ -2,11 +2,7 @@
   <div>
     <div class="container">
       <div class="intro">
-        <img
-          style="width:300px"
-          src="../assets/mainlogo.png"
-        />
-        <h1>问卷星球</h1>
+        <h2>问卷星球</h2>
       </div>
       <div id="wrapper">
         <h3> 问卷星球是一款在线问卷制作工具。通过它，您能够轻松完成问卷搜集调查。我们提供了多种问卷类型，满足您的各种需求。</h3>
@@ -21,19 +17,19 @@
           </el-carousel-item>
           <el-carousel-item>
             <div class="banner">投票问卷</div>
-            <img src="../assets/Questionlogo.png" />
+            <img src="../assets/问卷1.png" />
           </el-carousel-item>
           <el-carousel-item>
             <div class="banner">疫情打卡问卷</div>
-            <img src="../assets/Questionlogo.png" />
+            <img src="../assets/问卷2.png" />
           </el-carousel-item>
           <el-carousel-item>
             <div class="banner">考试问卷</div>
-            <img src="../assets/Questionlogo.png" />
+            <img src="../assets/问卷3.png" />
           </el-carousel-item>
           <el-carousel-item>
             <div class="banner">报名问卷</div>
-            <img src="../assets/Questionlogo.png" />
+            <img src="../assets/问卷4.png" />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -67,10 +63,11 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-image: url(../assets/winter-landscape.jpg);
+  background-image: url(../assets/R-C.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  position: fixed;
   width: 100%;
   height: 100%;
 }
@@ -101,17 +98,20 @@ export default {
   font-size: 25px;
   z-index: 100;
   color: #261a68;
-  font-family: 微軟正黑體;
+  font-family:微软雅黑（"Microsoft Yahei"） "Segoe UI";
 }
 .el-carousel__item img {
   height: 100%;
   max-width: 100%;
 }
-.el-carousel__item:nth-child(2n) {
+.el-carousel__item:nth-child(3n) {
   background-color: #925eb4;
 }
 
-.el-carousel__item:nth-child(2n + 1) {
+.el-carousel__item:nth-child(3n + 1) {
+  background-color: #9000ff;
+}
+.el-carousel__item:nth-child(3n + 2) {
   background-color: #493d52;
 }
 </style>

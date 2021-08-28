@@ -16,7 +16,7 @@
                         </router-link>
                     </li>
                     <li :class="`${isLogin() ? '' : 'disabled'} ${activeLink('edit') ? 'active' : ''}`">
-                        <router-link to="/edit">
+                        <router-link to="/trans">
                             <em class="el-icon-edit" />
                             <span>编辑问卷</span>
                         </router-link>
