@@ -601,10 +601,16 @@ export default {
             }
         },
         async submitQuestionnare(submitData) {
-            survey.createQuestionnare(submitData)
+            await survey.createQuestionnare(submitData)
                 .then((response) => {
                     console.log(response)
                     if (response.data.code === 20000) {
+                        if (response.data.code === 20000) {
+                            this.$store.commit('updateOperation', {
+                                id: response.data.id,
+                                code: response.data.code
+                            })
+                        }
                         message({
                             message: response.data.msg,
                             type: 'success'
