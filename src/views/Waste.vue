@@ -77,14 +77,14 @@ export default {
             size: 100000,
         };
         list.getwaste(listinit).then((res) => {
-            console.log(res.data.data.records);
-
             for (let item of res.data.data.records) {
                 this.tableData.push({
                     time_1: this.formatDate(item.createTime),
                     num: item.writeNum,
                     ID: item.id,
                     title: item.head,
+                    code: item.code,
+                    stamp: item.stamp
                 });
             }
         });
@@ -109,30 +109,26 @@ export default {
             this.$router.push('/preview/0/' + this.tableData[index]['code'])
         },
         Delete(index) {
-            if(confirm('确定要删除吗?(不可恢复)')==true){
+            if (confirm('确定要删除吗?(不可恢复)') == true) {
                 list.closeQu(this.tableData[index]['ID']).then((res) => {
-                console.log(res);
-                list.deleteDeath(this.tableData[index]['ID']).then((res) => {
                     console.log(res);
-                    if (res.data.code == 20000) {
-                        message({
-                            message: '删除成功',
-                            type: 'success'
-                        })
-                        this.tableData.splice(index, 1);
-                    } else
-                        message({
-                            message: '删除失败',
-                            type: 'error'
-                        })
+                    list.deleteDeath(this.tableData[index]['ID']).then((res) => {
+                        console.log(res);
+                        if (res.data.code == 20000) {
+                            message({
+                                message: '删除成功',
+                                type: 'success'
+                            })
+                            this.tableData.splice(index, 1);
+                        } else
+                            message({
+                                message: '删除失败',
+                                type: 'error'
+                            })
+                    })
                 })
-            })
-            this.judge=false
-            }
-            else{
-
-            }
-
+                this.judge = false
+            } else {}
         },
         Recovery(index) {
             list.recovery(this.tableData[index]['ID']).then((res) => {
@@ -168,6 +164,8 @@ export default {
                         num: item.writeNum,
                         ID: item.id,
                         title: item.head,
+                        code: item.code,
+                        stamp: item.stamp
                     });
                 }
             });
@@ -202,6 +200,8 @@ export default {
                                 num: item.writeNum,
                                 ID: item.id,
                                 title: item.head,
+                                code: item.code,
+                                stamp: item.stamp
                             });
                         }
                     } else if (res.data.code == 20000 && res.data.data.total == 0) {
@@ -237,11 +237,12 @@ export default {
                         num: item.writeNum,
                         ID: item.id,
                         title: item.head,
+                        code: item.code,
+                        stamp: item.stamp
                     });
                 }
             });
         },
-
     }
 }
 </script>
