@@ -9,6 +9,7 @@ import QuestionnareList from '../views/QuestionnareList.vue'
 import Waste from '../views/Waste.vue'
 import CreateQuestionnare from '../views/Createquestionnare.vue'
 import Edit from '../views/Edit.vue'
+import Publish from '../views/Publish.vue'
 import Welcome from '../views/Welcome.vue'
 // 用户登录注册视图
 import Login from '../views/Login.vue'
@@ -38,6 +39,12 @@ const MainChildRoutes = [
     name: 'edit',
     component: Edit,
     meta: { sign: true },
+  },
+  {
+    path: 'publish',
+    name: 'publish',
+    component: Publish,
+    meta: { sign: true }
   },
   {
     path: 'welcome',
