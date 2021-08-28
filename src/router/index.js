@@ -9,7 +9,6 @@ import AuthLayout from '../layout/AuthLayout.vue'
 // 用户主页面视图
 import QuestionnareList from '../views/QuestionnareList.vue'
 import Waste from '../views/Waste.vue'
-import CreateQuestionnare from '../views/Createquestionnare.vue'
 import Edit from '../views/Edit.vue'
 import CheckInEdit from '../views/CheckInEdit.vue'
 import Publish from '../views/Publish.vue'
@@ -19,7 +18,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 //问卷页面
 import Questionnare from '../views/Questionnare.vue'
-import LocateQuestionnare from '../views/LocateQuestionnare.vue'
+import CheckInQuestionnare from '../views/CheckInQuestionnare.vue'
 import Preview from '../views/Preview.vue'
 import Finish from '../views/Finish.vue'
 import TransitionPage from '../views/TransitionPage.vue'
@@ -149,7 +148,7 @@ const routes = [{
   {
     path: '/questionnare/:id',
     name: 'Questionnare',
-    component: LocateQuestionnare,
+    component: Questionnare,
     meta: {
       sign: false
     }
