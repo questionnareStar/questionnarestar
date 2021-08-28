@@ -1,6 +1,6 @@
 <template>
     <div class="backgroud">
-        <div class="survay-container">
+        <div class="survay-container shadow">
             <div class="title-container">
                 <h1>{{head}}</h1>
                 <p>{{introduction}}</p>
@@ -90,7 +90,7 @@ export default {
                         this.$alert('当前问卷未开放，无法提交', '错误', {
                             confirmButtonText: '确定',
                             callback: action => {
-                                this.$router.push('/auth/login')
+                                this.$router.push('/welcome')
                             }
                         })
                     }
@@ -136,35 +136,10 @@ export default {
         },
         onSubmit() {
             console.log('提交数据')
-            switch (this.type) {
-                case 0:
-                case 2:
-                    this.submit()
-                    break
-                case 1:
-                case 3:
-                    this.$prompt('请输入邀请码', '此问卷需要邀请码', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消'
-                    }).then(({ value }) => {
-                        this.codeSubmit(value)
-                    }).catch(() => {
-                        message({
-                            type: 'info',
-                            message: '取消提交'
-                        })
-                    })
-                    break
-                default:
-                    message({
-                        message: '未知错误',
-                        type: 'warning'
-                    })
-                    break;
-            }
+            this.submit()
         },
         submit() {
-            survey.submitSurvey(this.id, this.answers)
+            survey.submitSurvey(this.$route.params.id, this.answers)
                 .then((response) => {
                     console.log(response)
                     const data = response.data
@@ -187,30 +162,6 @@ export default {
                         type: 'warning'
                     })
                 })
-        },
-        async codeSubmit(value) {
-            // TODO: 待测试
-            let flag = false
-            await survey.validateAuthority(this.id, value)
-                .then((response) => {
-                    console.log(response)
-                    const data = response.data
-                    if (data.code === 20000) {
-                        flag = true
-                    } else {
-                        message({
-                            message: '邀请码错误',
-                            type: 'error'
-                        })
-                    }
-                })
-                .catch((error) => {
-                    message({
-                        message: error.message,
-                        type: 'warning'
-                    })
-                })
-            if (flag) this.submit()
         }
     }
 }
@@ -218,7 +169,6 @@ export default {
 
 <style scoped>
 .backgroud {
-    background-image: url(../assets/questionnare.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -268,5 +218,9 @@ export default {
 }
 .submit:hover {
     background-color: #6c9ac2;
+}
+.shadow {
+    border:1px darkslategray;
+    box-shadow: rgb(233, 231, 231) 2px 2px 10px 2px;
 }
 </style>

@@ -126,7 +126,7 @@ export default {
             return y + '-' + MM + '-' + d + ' ' + h + ':' + m;
         },
         Preview(index) {
-            this.$router.push('/preview/' + this.tableData[index]['ID'])
+            this.$router.push('/preview/1/' + this.tableData[index]['code'])
         },
         Statistics(index) {
             list.getStatistics(parseInt(this.tableData[index]['ID'])).then((res) => {

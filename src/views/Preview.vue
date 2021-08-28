@@ -3,7 +3,7 @@
         <div class="back-container">
             <el-button @click="back()">返回</el-button>
         </div>
-        <div class="survay-container">
+        <div class="survay-container shadow">
             <div class="title-container">
                 <h1>{{head}}</h1>
                 <p>{{introduction}}</p>
@@ -147,7 +147,6 @@ export default {
 
 <style scoped>
 .backgroud {
-    background-image: url(../assets/questionnare.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -197,5 +196,9 @@ export default {
 }
 .submit:hover {
     background-color: #6c9ac2;
+}
+.shadow {
+    border:1px darkslategray;
+    box-shadow: rgb(233, 231, 231) 2px 2px 10px 2px;
 }
 </style>
