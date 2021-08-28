@@ -19,7 +19,7 @@
     "normalize.css": "^8.0.1",
     "qrcode": "^1.4.4",
     "qrcode-npm": "0.0.3",
-    "qrcodejs2": "0.0.2",
+    "qrcodejs2": "^0.0.2",
     "v-charts": "^1.19.0",
     "vee-validate": "^3.4.11",
     "vue": "^2.6.11",
