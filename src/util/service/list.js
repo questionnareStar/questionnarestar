@@ -1,11 +1,3 @@
-/*
- * @Description:
- * @version:
- * @Author: 张怡健
- * @Date: 2021-08-22 15:40:09
- * @LastEditors: 张怡健
- * @LastEditTime: 2021-08-24 08:00:45
- */
 import axios from './index'
 
 export default {
@@ -113,3 +105,4 @@ export default {
         })
     },
 }
+
