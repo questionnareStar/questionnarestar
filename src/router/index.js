@@ -11,6 +11,7 @@ import QuestionnareList from '../views/QuestionnareList.vue'
 import Waste from '../views/Waste.vue'
 import CreateQuestionnare from '../views/Createquestionnare.vue'
 import Edit from '../views/Edit.vue'
+import CheckInEdit from '../views/CheckInEdit.vue'
 import Publish from '../views/Publish.vue'
 import Welcome from '../views/Welcome.vue'
 // 用户登录注册视图
@@ -18,6 +19,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 //问卷页面
 import Questionnare from '../views/Questionnare.vue'
+import LocateQuestionnare from '../views/LocateQuestionnare.vue'
 import Preview from '../views/Preview.vue'
 import Finish from '../views/Finish.vue'
 import TransitionPage from '../views/TransitionPage.vue'
@@ -65,14 +67,14 @@ const MainChildRoutes = [{
       sign: false
     }
   },
-  {
-    path: 'create',
-    name: 'create',
-    component: CreateQuestionnare,
-    meta: {
-      sign: true
-    }
-  },
+  // {
+  //   path: 'create',
+  //   name: 'create',
+  //   component: CreateQuestionnare,
+  //   meta: {
+  //     sign: true
+  //   }
+  // },
   {
     path: '/trans',
     name: 'Trans',
@@ -147,7 +149,7 @@ const routes = [{
   {
     path: '/questionnare/:id',
     name: 'Questionnare',
-    component: Questionnare,
+    component: LocateQuestionnare,
     meta: {
       sign: false
     }
