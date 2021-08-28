@@ -21,6 +21,7 @@ import Questionnare from '../views/Questionnare.vue'
 import Preview from '../views/Preview.vue'
 import Finish from '../views/Finish.vue'
 import TransitionPage from '../views/TransitionPage.vue'
+import CreateVotingSurvey from '../views/CreateVotingSurvey.vue'
 
 Vue.use(VueRouter)
 
@@ -120,6 +121,11 @@ const routes = [{
     meta: {
       sign: false
     }
+  },
+  {
+    path:'/createvotingsurvey',
+    name:'createvotingsurvey',
+    component:CreateVotingSurvey,
   },
   {
     path: '/auth',
