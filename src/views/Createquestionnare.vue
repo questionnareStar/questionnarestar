@@ -307,25 +307,23 @@ export default {
       var questionreturned = [];
       this.flag = true;
       let _this = this;
-      this.modelForm.question.forEach(function (item, index) {
-        // console.log(item);
-        //单选
-        if (item.type == 4) {
+      for (let i = 0; i < this.modelForm.question.length; i++) {
+        if (this.modelForm.question.type == 4) {
           var choice = [];
-          item.choices.forEach(function (items) {
-            choice.push(items.value);
-          });
+          for (let j = 0; j < this.modelForm.question[i].choices.length; j++) {
+            choice.push(this.modelForm.question[i].choices[j].value);
+          }
           console.log(choice);
           if (!(choice[0] === undefined && choice.length === 1)) {
-            choice.forEach(function (item) {
-              if (item === undefined || item === "") {
+            for (let j = 0; j < choice.length; j++) {
+              if (choice[j] === undefined || choice[j] === "") {
                 message({
                   message: "请填写选项",
                   type: "warning",
                 });
                 this.flag = false;
               }
-            });
+            }
           } else {
             this.flag = false;
           }
@@ -468,6 +466,10 @@ export default {
             }
           });
         }
+      }
+      this.modelForm.question.forEach(function (item, index) {
+        // console.log(item);
+        //单选
       });
       // 判断其他内容是否已填
       if (!this.modelForm.head || !this.modelForm.introduction) {

@@ -289,59 +289,28 @@
 </template>
 
 <script>
-import { message } from '../util/inform'
-import survey from '../util/service/survey'
-import draggable from 'vuedraggable'
+import { message } from "../util/inform";
+import survey from "../util/service/survey";
+import draggable from "vuedraggable";
 export default {
-    components: {
-        draggable
-    },
-    data() {
-        return {
-            editIndex: -1,
-            titleEdit: false,
-            desEdit: false,
-            setEndtime: false,
-            datePickerOptions: {
-                disabledDate(time) {
-                    return time.getTime() <= Date.now();
-                },
-                shortcuts: [
-                    {
-                        text: '五天',
-                        onClick(picker) {
-                            picker.$emit('pick', Date.now() + 1000*3600*24*5);
-                        }
-                    },
-                    {
-                        text: '十天',
-                        onClick(picker) {
-                            picker.$emit('pick', Date.now() + 1000*3600*24*10);
-                        }
-                    }
-                ]
-            },
-            data: {
-                head: '请在此处输入问卷标题',
-                introduction: '请在此处输入问卷描述',
-                isReleased: 0,
-                serial: true, // 是否显示题号
-                questions: [],
-                startTime: '1629388800000',
-                endTime: ''
-            },
-            blank: {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true
-            },
-            mark: {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                maxScore: 5
+  components: {
+    draggable,
+  },
+  data() {
+    return {
+      editIndex: -1,
+      titleEdit: false,
+      desEdit: false,
+      setEndtime: false,
+      datePickerOptions: {
+        disabledDate(time) {
+          return time.getTime() <= Date.now();
+        },
+        shortcuts: [
+          {
+            text: "五天",
+            onClick(picker) {
+              picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 5);
             },
             multi: {
               visible: false,
@@ -351,306 +320,328 @@ export default {
               required: true,
               choices: [{ value: '新增选项' }]
             },
-            single: {
-                visible: false,
-                sequence: 4,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                choices: [{ value: '新增选项' }]
-            },
-            itemList: []
-        }
+          },
+        ],
+      },
+      data: {
+        head: "请在此处输入问卷标题",
+        introduction: "请在此处输入问卷描述",
+        isReleased: 0,
+        serial: true, // 是否显示题号
+        questions: [],
+        startTime: "1629388800000",
+        endTime: "",
+      },
+      blank: {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+      },
+      mark: {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        maxScore: 5,
+      },
+      multi: {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        choices: [{ value: "新增选项" }],
+      },
+      single: {
+        visible: false,
+        sequence: 4,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        choices: [{ value: "新增选项" }],
+      },
+      itemList: [],
+    };
+  },
+  methods: {
+    resetModel() {
+      this.blank = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+      };
+      this.mark = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        maxScore: 5,
+      };
+      this.multi = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        choices: [{ value: "新增选项" }],
+      };
+      this.single = {
+        visible: false,
+        question: "请输入题目",
+        desc: "",
+        required: true,
+        choices: [{ value: "新增选项" }],
+      };
     },
-    methods: {
-        resetModel() {
-            this.blank = {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true
-            }
-            this.mark = {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                maxScore: 5
-            }
-            this.multi = {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                choices: [{ value: '新增选项' }]
-            }
-            this.single = {
-                visible: false,
-                question: '请输入题目',
-                desc: '',
-                required: true,
-                choices: [{ value: '新增选项' }]
-            }
-        },
-        addBlank() {
-            let q = {
-                type: 1,
-                desc: this.blank.desc,
-                question: this.blank.question,
-                required: this.blank.required
-            }
-            if (this.editIndex == -1) {
-                this.data.questions.push(q)
-            } else {
-                this.data.questions[this.editIndex] = q
-                this.editIndex = -1
-            }
-            this.resetModel()
-        },
-        addMark() {
-            let q = {
-                type: 2,
-                desc: this.mark.desc,
-                question: this.mark.question,
-                required: this.mark.required,
-                maxScore: this.mark.maxScore
-            }
-            if (this.editIndex == -1) {
-                this.data.questions.push(q)
-            } else {
-                this.data.questions[this.editIndex] = q
-                this.editIndex = -1
-            }
-            this.resetModel()
-        },
-        addMulti() {
-            let q = {
-                type: 3,
-                desc: this.multi.desc,
-                question: this.multi.question,
-                required: this.multi.required,
-                choices: this.multi.choices
-            }
-            if (this.editIndex == -1) {
-                this.data.questions.push(q)
-            } else {
-                this.data.questions[this.editIndex] = q
-                this.editIndex = -1
-            }
-            this.resetModel()
-        },
-        addSingle() {
-            let q = {
-                type: 4,
-                desc: this.single.desc,
-                question: this.single.question,
-                required: this.single.required,
-                choices: this.single.choices
-            }
-            if (this.editIndex == -1) {
-                this.data.questions.push(q)
-            } else {
-                this.data.questions[this.editIndex] = q
-                this.editIndex = -1
-            }
-            this.resetModel()
-        },
-        editQ(index, item) {
-            this.editIndex = index
-            switch(item.type) {
-                case 1:
-                    this.blank = {
-                        visible: true,
-                        question: item.question,
-                        desc: item.desc,
-                        required: item.required
-                    }
-                    break
-                case 2:
-                    this.mark = {
-                        visible: true,
-                        question: item.question,
-                        desc: item.desc,
-                        required: item.required,
-                        maxScore: item.maxScore
-                    }
-                    break
-                case 3:
-                    this.multi = {
-                        visible: true,
-                        question: item.question,
-                        desc: item.desc,
-                        required: item.required,
-                        choices: item.choices
-                    }
-                    break
-                case 4:
-                    this.single = {
-                        visible: true,
-                        question: item.question,
-                        desc: item.desc,
-                        required: item.required,
-                        choices: item.choices
-                    }
-                    break
-            }
-        },
-        copyQ(item) {
-            let q = JSON.parse(JSON.stringify(item))
-            this.data.questions.push(q)
-        },
-        deleteQ(index) {
-            this.data.questions.splice(index, 1)
-        },
-        onStart(){
-            this.drag=true;
-        },
-        onEnd() {
-            this.drag=false;
-        },
-        async submitQuestion() {
-            let formData
-            for (let i = 0; i < this.data.questions.length; i++) {
-                const item = this.data.questions[i]
-                switch (item.type) {
-                    case 1:
-                        formData = {
-                            question: item.question,
-                            desc: item.desc,
-                            required: Number(item.required)
-                        }
-                        await survey.createBlank(formData)
-                            .then((response) => {
-                                if (response.data.code === 20000) {
-                                    console.log('题目信息')
-                                    console.log(response.data)
-                                    this.itemList.push({
-                                        itemId: response.data.data.id,
-                                        itemOrder: i + 1,
-                                        itemType: 1
-                                    })
-                                    console.log(this.itemList)
-                                }
-                            })
-                        console.log(i + 'q')
-                        break
-                     case 2:
-                        formData = {
-                            question: item.question,
-                            desc: item.desc,
-                            maxScore: item.maxScore,
-                            required: Number(item.required)
-                        }
-                        await survey.createMark(formData)
-                            .then((response) => {
-                                if (response.data.code === 20000) {
-                                    this.itemList.push({
-                                        itemId: response.data.data.id,
-                                        itemOrder: i + 1,
-                                        itemType: 2
-                                    })
-                                }
-                            })
-                        console.log(i + 'q')
-                        break
-                    case 3:
-                        formData = {
-                            question: item.question,
-                            desc: item.desc,
-                            choices: [],
-                            required: Number(item.required)
-                        }
-                        item.choices.forEach(choice => {
-                            formData.choices.push(choice.value)
-                        })
-                        await survey.createMulti(formData)
-                            .then((response) => {
-                                if (response.data.code === 20000) {
-                                    this.itemList.push({
-                                        itemId: response.data.data.id,
-                                        itemOrder: i + 1,
-                                        itemType: 3
-                                    })
-                                }
-                            })
-                        console.log(i + 'q')
-                        break
-                    case 4:
-                        formData = {
-                            question: item.question,
-                            desc: item.desc,
-                            choices: [],
-                            required: Number(item.required)
-                        }
-                        item.choices.forEach(choice => {
-                            formData.choices.push(choice.value)
-                        })
-                        await survey.createSingle(formData)
-                            .then((response) => {
-                                if (response.data.code === 20000) {
-                                    this.itemList.push({
-                                        itemId: response.data.data.id,
-                                        itemOrder: i + 1,
-                                        itemType: 4
-                                    })
-                                }
-                            })
-                        console.log(i + 'q')
-                        break
-                }
-            }
-        },
-        async submitQuestionnare(submitData) {
-            await survey.createQuestionnare(submitData)
-                .then((response) => {
-                    console.log(response)
-                    if (response.data.code === 20000) {
-                        if (response.data.code === 20000) {
-                            this.$store.commit('updateOperation', {
-                                id: response.data.id,
-                                code: response.data.code
-                            })
-                        }
-                        message({
-                            message: response.data.msg,
-                            type: 'success'
-                        })
-                    } else {
-                        message({
-                            message: response.data.msg,
-                            type: 'warning'
-                        })
-                    }
-                })
-                .catch((error) => {
-                    message({
-                        message: error.message,
-                        type: 'error'
-                    })
-                })
-        },
-        async submit() {
-            if (this.setEndtime) {
-                if (this.data.endTime === '') {
-                    message({
-                        message: '请选择截止日期',
-                        type: 'warning'
-                    })
-                    return
-                }
-            }
-            await this.submitQuestion()
-            let submitData = {
-                endTime: this.setEndtime?this.data.endTime:'4785667200000',
-                head: this.data.head,
-                introduction: this.data.introduction,
-                isReleased: 0,
-                itemList: this.itemList,
-                serial: this.data.serial,
-                startTime: this.data.startTime
-            }
-            this.submitQuestionnare(submitData)
+    addBlank() {
+      let q = {
+        type: 1,
+        desc: this.blank.desc,
+        question: this.blank.question,
+        required: this.blank.required,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
+    },
+    addMark() {
+      let q = {
+        type: 2,
+        desc: this.mark.desc,
+        question: this.mark.question,
+        required: this.mark.required,
+        maxScore: this.mark.maxScore,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
+    },
+    addMulti() {
+      let q = {
+        type: 3,
+        desc: this.multi.desc,
+        question: this.multi.question,
+        required: this.multi.required,
+        choices: this.multi.choices,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
+    },
+    addSingle() {
+      let q = {
+        type: 4,
+        desc: this.single.desc,
+        question: this.single.question,
+        required: this.single.required,
+        choices: this.single.choices,
+      };
+      if (this.editIndex == -1) {
+        this.data.questions.push(q);
+      } else {
+        this.data.questions[this.editIndex] = q;
+        this.editIndex = -1;
+      }
+      this.resetModel();
+    },
+    editQ(index, item) {
+      this.editIndex = index;
+      switch (item.type) {
+        case 1:
+          this.blank = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+          };
+          break;
+        case 2:
+          this.mark = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+            maxScore: item.maxScore,
+          };
+          break;
+        case 3:
+          this.multi = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+            choices: item.choices,
+          };
+          break;
+        case 4:
+          this.single = {
+            visible: true,
+            question: item.question,
+            desc: item.desc,
+            required: item.required,
+            choices: item.choices,
+          };
+          break;
+      }
+    },
+    copyQ(item) {
+      let q = JSON.parse(JSON.stringify(item));
+      this.data.questions.push(q);
+    },
+    deleteQ(index) {
+      this.data.questions.splice(index, 1);
+    },
+    onStart() {
+      this.drag = true;
+    },
+    onEnd() {
+      this.drag = false;
+    },
+    async submitQuestion() {
+      let formData;
+      for (let i = 0; i < this.data.questions.length; i++) {
+        const item = this.data.questions[i];
+        switch (item.type) {
+          case 1:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              required: Number(item.required),
+            };
+            await survey.createBlank(formData).then((response) => {
+              if (response.data.code === 20000) {
+                console.log("题目信息");
+                console.log(response.data);
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 1,
+                });
+                console.log(this.itemList);
+              }
+            });
+            console.log(i + "q");
+            break;
+          case 2:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              maxScore: item.maxScore,
+              required: Number(item.required),
+            };
+            await survey.createMark(formData).then((response) => {
+              if (response.data.code === 20000) {
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 2,
+                });
+              }
+            });
+            console.log(i + "q");
+            break;
+          case 3:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              choices: [],
+              required: Number(item.required),
+            };
+            item.choices.forEach((choice) => {
+              formData.choices.push(choice.value);
+            });
+            await survey.createMulti(formData).then((response) => {
+              if (response.data.code === 20000) {
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 3,
+                });
+              }
+            });
+            console.log(i + "q");
+            break;
+          case 4:
+            formData = {
+              question: item.question,
+              desc: item.desc,
+              choices: [],
+              required: Number(item.required),
+            };
+            item.choices.forEach((choice) => {
+              formData.choices.push(choice.value);
+            });
+            await survey.createSingle(formData).then((response) => {
+              if (response.data.code === 20000) {
+                this.itemList.push({
+                  itemId: response.data.data.id,
+                  itemOrder: i + 1,
+                  itemType: 4,
+                });
+              }
+            });
+            console.log(i + "q");
+            break;
         }
+      }
+    },
+    async submitQuestionnare(submitData) {
+      survey
+        .createQuestionnare(submitData)
+        .then((response) => {
+          console.log(response);
+          if (response.data.code === 20000) {
+            message({
+              message: response.data.msg,
+              type: "success",
+            });
+          } else {
+            message({
+              message: response.data.msg,
+              type: "warning",
+            });
+          }
+        })
+        .catch((error) => {
+          message({
+            message: error.message,
+            type: "error",
+          });
+        });
+    },
+    async submit() {
+      if (this.setEndtime) {
+        if (this.data.endTime === "") {
+          message({
+            message: "请选择截止日期",
+            type: "warning",
+          });
+          return;
+        }
+      }
+      await this.submitQuestion();
+      let submitData = {
+        endTime: this.setEndtime ? this.data.endTime : "4785667200000",
+        head: this.data.head,
+        introduction: this.data.introduction,
+        isReleased: 0,
+        itemList: this.itemList,
+        serial: this.data.serial,
+        startTime: this.data.startTime,
+      };
+      this.submitQuestionnare(submitData);
     },
     directives: {
         focus: {
