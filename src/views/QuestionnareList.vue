@@ -1,3 +1,4 @@
+
 <template>
 <div class="main">
     <el-card shadow="never">
@@ -32,12 +33,12 @@
             </div>
         </div>
         <div class="icon" style="float: right;margin-top: 20px;margin-bottom:10px;">
-            <i @click="change(index)" v-bind:class="{ 'el-icon-video-pause': tableData[index]['value'], 'el-icon-video-play': !tableData[index]['value'] }" :title="tableData[index]['value_2']" style="margin-right:20px;color:blue;font-size:25px"></i>
-            <i class="el-icon-edit" title="编辑问卷" style="margin-right:20px;  font-size:25px"></i>
-            <i @click="Statistics(index)" class="el-icon-s-data" title="问卷数据统计" style="margin-right:20px;  font-size:25px"></i>
-            <i @click="Preview(index)" class="el-icon-view" title="预览问卷" style="margin-right:20px;font-size:25px"></i>
-            <i @click="copyQu(index)" class="el-icon-document-copy" title="复制问卷" style="margin-right:20px;font-size:25px"></i>
-            <i @click="Delete(index)" class="el-icon-delete" title="删除问卷" style="margin-right:20px;font-size:25px"></i>
+            <i @click="change(index)" v-bind:class="{ 'el-icon-video-pause': tableData[index]['value'], 'el-icon-video-play': !tableData[index]['value'] }" :title="tableData[index]['value_2']" style="margin-right:20px;color:blue;font-size:25px;cursor: pointer;"></i>
+            <i class="el-icon-edit" title="编辑问卷" style="margin-right:20px; font-size:25px;cursor:pointer;"></i>
+            <i @click="Statistics(index)" class="el-icon-s-data" title="问卷数据统计" style="margin-right:20px;  font-size:25px;cursor: pointer;"></i>
+            <i @click="Preview(index)" class="el-icon-view" title="预览问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
+            <i @click="copyQu(index)" class="el-icon-document-copy" title="复制问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
+            <i @click="Delete(index)" class="el-icon-delete" title="删除问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
         </div>
     </el-card>
 </div>
@@ -84,8 +85,6 @@ export default {
         let value_2 = ""
         let state = ""
         list.getlist(listinit).then((res) => {
-            console.log(res.data.data.records);
-
             for (let item of res.data.data.records) {
                 if (item.isReleased == 1) {
                     value_2 = "关闭问卷"
@@ -104,8 +103,10 @@ export default {
                     value: item.isReleased == 1,
                     value_2: value_2,
                     state: state,
+                    code:item.code
                 });
             }
+            console.log(this.tableData)
         });
     },
     methods: {
@@ -192,6 +193,7 @@ export default {
                         value: item.isReleased == 1,
                         value_2: value_2,
                         state: state,
+                        code:item.code
                     });
                 }
             });
@@ -240,6 +242,7 @@ export default {
                                 value: item.isReleased == 1,
                                 value_2: value_2,
                                 state: state,
+                                code:item.code
                             });
                         }
                     } else if (res.data.code == 20000 && res.data.data.total == 0) {
@@ -289,6 +292,7 @@ export default {
                         value: item.isReleased == 1,
                         value_2: value_2,
                         state: state,
+                        code:item.code
                     });
                 }
             });
@@ -329,6 +333,7 @@ export default {
                                     value: item.isReleased == 1,
                                     value_2: value_2,
                                     state: state,
+                                    code:item.code
                                 });
                             }
                         });
@@ -370,6 +375,7 @@ export default {
                                 value: item.isReleased == 1,
                                 value_2: value_2,
                                 state: state,
+                                code:item.code
                             });
                         }
                     });
@@ -401,6 +407,7 @@ export default {
                                 ID: item.id,
                                 title: item.head,
                                 value: item.isReleased == 1,
+                                code:item.code
                             });
                         }
                     });
