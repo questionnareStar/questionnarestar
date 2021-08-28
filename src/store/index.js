@@ -8,13 +8,15 @@ export default new Vuex.Store({
   state: {
     operatingQ: {
       id: '',
-      code: ''
+      code: '',
+      isReleased: false
     }
   },
   mutations: {
     updateOperation(state, data) {
       state.operatingQ.id = data.id
       state.operatingQ.code = data.code
+      state.operatingQ.isReleased = data.isReleased
     }
   },
   actions: {}

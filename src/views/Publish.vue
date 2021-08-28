@@ -1,27 +1,29 @@
 <template>
-    <div class="row">
+    <div class="row noscroll">
         <div class="col-md-6 col-md-offset-3">
             <div class="p-20 mt-20 shadow">
-                <div v-if="published" class="link-text">
+                <div class="link-text">
                     <el-row>
                         <h3 class="header-text">问卷链接<em class="el-icon-link "/></h3>
                         <div class="line-box">
                             <el-input :value="link" :disabled="true"/>
                         </div>
                         <div class="btn-box">
-                            <el-button>复制</el-button>
-                            <el-button>打开</el-button>
+                            <el-button type="primary" round @click.native="copy()">复制</el-button>
+                            <el-button @click.native="openPage()">打开</el-button>
                         </div>
                     </el-row>
                 </div>
-                <div v-if="published" class="flex">
+                <div class="flex">
                     <div class="qrcode-box-inner center">
                         <div id="qrcode"/>
                     </div>
-                </div>
-                <div class="flex">
-                    <div class="center p-20">
-                        <el-button>发布</el-button>
+                    <div class="flex downbtn">
+                        <el-button type="primary" round @click.native="download()">下载二维码</el-button>
+                    </div>
+                    <div class="flex downbtn">
+                        <el-button v-if="!operation.isReleased" type="success" round @click.native="publish()">发布</el-button>
+                        <el-button v-else type="info" round disabled>已发布</el-button>
                     </div>
                 </div>
             </div>
@@ -31,30 +33,85 @@
 
 <script>
 import QRCode from 'qrcodejs2'
+import { message } from "../util/inform";
+import list from '../util/service/list';
 export default {
+    created() {
+    },
     mounted() {
-        let qrcode = new QRCode('qrcode',{
+        let qrcode = new QRCode('qrcode', {
             width: 200,
             height: 200,
-            text: 'http://localhost:8080/questionnare/' + this.operation.code // 设置二维码内容或跳转地址
+            text: this.link // 设置二维码内容和跳转地址
         })
         console.log(this.operation)
     },
     computed: {
         operation() {
             return this.$store.state.operatingQ
+        },
+        link() {
+            return 'http://localhost:8080/questionnare/' + this.operation.code
         }
     },
-    data() {
-        return {
-            published: true,
-            link: 'http://localhost:8080/questionnare/' + '1234a'
+    methods: {
+        copy() {
+            var input = document.createElement('input');
+            input.setAttribute('id', 'input_for_copyText');
+            input.value = this.link;
+            document.getElementsByTagName('body')[0].appendChild(input);
+            document.getElementById('input_for_copyText').select();
+            document.execCommand('copy');
+            document.getElementById('input_for_copyText').remove();
+            message({
+                message: '复制成功',
+                type: 'success'
+            })
+        },
+        openPage() {
+            window.open(this.link, '_blank');
+        },
+        download() {
+            var img = document.getElementById('qrcode').lastChild
+            var url = img.src;
+            var a = document.createElement('a')
+            var event = new MouseEvent('click')
+            a.download = '问卷二维码'
+            a.href = url
+            a.dispatchEvent(event)
+        },
+        publish() {
+            list
+                .openQu(this.operation.id)
+                .then((response) => {
+                    if (response.data.code === 20000) {
+                        this.$store.commit('updateOperation', { id: this.operation.id, code: this.operation.code, isReleased: true })
+                        message({
+                            message: '发布成功',
+                            type: 'success'
+                        })
+                    } else {
+                        message({
+                            message: response.data.msg,
+                            type: 'error'
+                        })
+                    }
+                })
+                .catch((error) => {
+                    message({
+                        message: error.message,
+                        type: 'error'
+                    })
+                })
         }
     }
 }
 </script>
 
 <style scoped="scoped">
+.noscroll {
+    overflow: hidden;
+}
 .mt-20 {
     margin-top: 20px;
 }
@@ -63,13 +120,13 @@ export default {
 }
 .shadow {
     border:1px darkslategray;
-    box-shadow: rgb(233, 231, 231) 2px 2px 10px 1px;
+    box-shadow: rgb(233, 231, 231) 2px 2px 10px 2px;
 }
 .center {
     margin: 0 auto;
 }
 .flex {
-    width: 100%;
+    /* width: 100% !important; */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -96,5 +153,10 @@ export default {
     display: inline;
     width: 35%;
     float: right;
+}
+.downbtn {
+    width: 50%;
+    margin: auto;
+    padding-top: 20px;
 }
 </style>

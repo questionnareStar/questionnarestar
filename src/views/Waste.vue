@@ -106,7 +106,7 @@ export default {
             return y + '-' + MM + '-' + d + ' ' + h + ':' + m;
         },
         Preview(index) {
-            this.$router.push('/preview/' + this.tableData[index]['ID'])
+            this.$router.push('/preview/0/' + this.tableData[index]['code'])
         },
         Delete(index) {
             if(confirm('确定要删除吗?(不可恢复)')==true){
