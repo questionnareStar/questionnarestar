@@ -13,6 +13,7 @@ import Edit from '../views/Edit.vue'
 import CheckInEdit from '../views/CheckInEdit.vue'
 import Publish from '../views/Publish.vue'
 import Welcome from '../views/Welcome.vue'
+import TransitionPage from '../views/TransitionPage.vue'
 // 用户登录注册视图
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
@@ -21,7 +22,6 @@ import Questionnare from '../views/Questionnare.vue'
 import CheckInQuestionnare from '../views/CheckInQuestionnare.vue'
 import Preview from '../views/Preview.vue'
 import Finish from '../views/Finish.vue'
-import TransitionPage from '../views/TransitionPage.vue'
 import CreateVotingSurvey from '../views/CreateVotingSurvey.vue'
 
 Vue.use(VueRouter)
@@ -43,14 +43,6 @@ const MainChildRoutes = [{
     },
   },
   {
-    path: 'edit',
-    name: 'edit',
-    component: Edit,
-    meta: {
-      sign: true
-    },
-  },
-  {
     path: 'publish',
     name: 'publish',
     component: Publish,
@@ -66,20 +58,28 @@ const MainChildRoutes = [{
       sign: false
     }
   },
-  // {
-  //   path: 'create',
-  //   name: 'create',
-  //   component: CreateQuestionnare,
-  //   meta: {
-  //     sign: true
-  //   }
-  // },
   {
-    path: '/trans',
-    name: 'Trans',
+    path: 'create',
+    name: 'create',
     component: TransitionPage,
     meta: {
-      sign: false
+      sign: true
+    }
+  },
+  {
+    path: '/normal/edit',
+    name: 'edit',
+    component: Edit,
+    meta: {
+      sign: true
+    }
+  },
+  {
+    path: '/checkin/edit',
+    name: 'edit',
+    component: CheckInEdit,
+    meta: {
+      sign: true
     }
   }
 ]
@@ -110,9 +110,11 @@ const AuthChildRoutes = [{
   }
 ]
 
-const QuestionnareChildRoutes = [{
-  path: ''
-}]
+const QuestionnareChildRoutes = [
+  {
+    path: '/normal/:id',
+  }
+]
 
 const routes = [{
     path: '/',
@@ -146,12 +148,18 @@ const routes = [{
     }
   },
   {
-    path: '/questionnare/:id',
+    path: '/questionnare/normal/:id',
     name: 'Questionnare',
     component: Questionnare,
     meta: {
       sign: false
     }
+  },
+  {
+    path: '/questionnare/checkin/:id',
+    name: 'QuestionnareCheckin',
+    component: CheckInQuestionnare,
+    meta: { sign: false }
   },
   {
     // 0 为回收站， 1 为列表

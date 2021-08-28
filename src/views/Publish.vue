@@ -50,8 +50,26 @@ export default {
         operation() {
             return this.$store.state.operatingQ
         },
+        stamp() {
+            return this.$store.state.stamp
+        },
         link() {
-            return 'http://localhost:8080/questionnare/' + this.operation.code
+            let str = 'http://localhost:8080/questionnare/'
+            let type
+            switch (this.stamp) {
+                case 1:
+                    type = 'normal/'
+                    break
+                case 2:
+                    type = 'vote/'
+                    break
+                case 3:
+                    type = 'signfor/'
+                    break
+                case 4:
+                    type = 'checkin/'
+            }
+            return str + type + this.operation.code
         }
     },
     methods: {
