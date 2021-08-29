@@ -171,7 +171,7 @@
                 <el-input v-model="mark.desc" placeholder="此处输入题目描述" autocomplete="off" />
             </el-form-item>
             <el-form-item>
-                <el-input-number v-model="mark.maxScore" :min="2" :max="20" label="最大分数" />
+                最大分数<el-input-number v-model="mark.maxScore" :min="2" :max="20" label="最大分数" />
             </el-form-item>
             <el-form-item>
                 <el-switch v-model="mark.required" active-text="必答" />
