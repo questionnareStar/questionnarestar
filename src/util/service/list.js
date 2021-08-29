@@ -110,7 +110,7 @@ export default {
                 "token": JSON.parse(localStorage.getItem('userInfo')).token
             },
             method: 'POST',
-            url: '/api/v1/statics/answer/number'+"?questionnaireId="+"data",
+            url: '/api/v1/statics/answer/number'+"?questionnaireId="+data,
             questionnaireId: data
         })
     },
