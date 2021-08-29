@@ -2,8 +2,9 @@
     <div class="backgroud">
         <div class="back-container">
             <el-button @click="back()">返回</el-button>
+            <el-button @click="getPdf(head)">导出为pdf</el-button>
         </div>
-        <div class="survay-container shadow">
+        <div id="pdfDom" class="survay-container shadow">
             <div class="title-container">
                 <h1>{{head}}</h1>
                 <p>{{introduction}}</p>
@@ -14,7 +15,7 @@
                         <blank-question
                             v-if="item.itemType == 1"
                             @getAnswer="updateAnswer"
-                            :id="item.id"
+                            :id="item.topicId"
                             :serial="serial"
                             :sequence="item.sequence"
                             :question="item.question"
@@ -147,6 +148,7 @@ export default {
 
 <style scoped>
 .backgroud {
+    background-color: rgb(198, 255, 248);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -165,6 +167,9 @@ export default {
     flex-direction: column;
     justify-content:center;
     align-items:center;
+}
+.title-container {
+    margin-bottom: 40px;
 }
 .question-container {
     width: 80%;

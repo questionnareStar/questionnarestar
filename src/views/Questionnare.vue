@@ -11,7 +11,7 @@
                         <blank-question
                             v-if="item.itemType == 1"
                             @getAnswer="updateAnswer"
-                            :id="item.id"
+                            :id="item.topicId"
                             :serial="serial"
                             :sequence="item.sequence"
                             :question="item.question"
@@ -169,6 +169,7 @@ export default {
 
 <style scoped>
 .backgroud {
+    background-color: rgb(198, 255, 248);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -187,6 +188,9 @@ export default {
     flex-direction: column;
     justify-content:center;
     align-items:center;
+}
+.title-container {
+    margin-bottom: 40px;
 }
 .question-container {
     width: 80%;
@@ -221,6 +225,6 @@ export default {
 }
 .shadow {
     border:1px darkslategray;
-    box-shadow: rgb(233, 231, 231) 2px 2px 10px 2px;
+    box-shadow: rgb(233, 232, 231) 2px 2px 10px 2px;
 }
 </style>
