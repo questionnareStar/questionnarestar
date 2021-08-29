@@ -23,7 +23,6 @@
         <div slot="header" class="clearfix">
             <span style=" font-weight: 900;">{{tableData[index]['title']}}</span>
             <div class="description-container" style="float: right; ">
-                <div class="description" style="margin-right:20px   ;font-size: 16px; font-weight: 900;">id:{{tableData[index]["ID"]}}</div>
                 <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">创建时间:{{tableData[index]['time_1']}}</div>
                 <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">答卷:{{tableData[index]['num']}}</div>
             </div>
