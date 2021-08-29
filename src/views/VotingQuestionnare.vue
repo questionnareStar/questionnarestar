@@ -426,7 +426,7 @@
             class="el-icon-plus"
             size="small"
             circle
-            @click="multi.choices.push({ value: '新增选项' })"
+            @click="multi.choices.push({ value: '新增选项' + (multi.choices.length+1) })"
           />
           <el-button
             type="danger"
@@ -635,19 +635,11 @@ export default {
             onClick(picker) {
               picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 5);
             },
-            multi: {
-              visible: false,
-              sequence: 4,
-              question: "请输入题目",
-              desc: "",
-              required: true,
-              choices: [{ value: "新增选项" }],
-            },
           },
         ],
       },
       data: {
-        head: "请在此处输入问卷标题",
+        head: "投票问卷",
         introduction: "请在此处输入问卷描述",
         isReleased: 0,
         serial: true, // 是否显示题号
