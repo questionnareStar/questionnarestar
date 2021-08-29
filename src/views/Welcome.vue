@@ -29,14 +29,14 @@
             <div
               class="banner"
               @click="click3()"
-            >疫情打卡问卷</div>
+            >报名问卷</div>
             <img src="../assets/问卷2.png" />
           </el-carousel-item>
           <el-carousel-item>
             <div
               class="banner"
               @click="click4()"
-            >报名问卷</div>
+            >疫情打卡问卷</div>
             <img src="../assets/问卷4.png" />
           </el-carousel-item>
         </el-carousel>
