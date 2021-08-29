@@ -65,7 +65,7 @@ export default {
       if (isLogin()) {
         this.$router.push('/normal/edit')
       } else {
-        message({
+        this.$message({
           message: "请先登录",
           type: "error",
         });
@@ -76,7 +76,7 @@ export default {
       if (isLogin()) {
         this.$router.push("/voting/create");
       } else {
-        message({
+        this.$message({
           message: "请先登录",
           type: "error",
         });
@@ -87,7 +87,7 @@ export default {
       if (isLogin()) {
         this.$router.push("/registration/create");
       } else {
-        message({
+        this.$message({
           message: "请先登录",
           type: "error",
         });
@@ -98,7 +98,7 @@ export default {
       if (isLogin()) {
         this.$router.push("/checkin/edit");
       } else {
-        message({
+        this.$message({
           message: "请先登录",
           type: "error",
         });
