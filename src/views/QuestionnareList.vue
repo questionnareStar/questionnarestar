@@ -251,7 +251,7 @@ export default {
             } else if (this.tableData[index]['stamp'] == 4) {
                 this.$router.push('/checkin/edit')
             } else {
-                this.$router.push('/edit')
+                this.$router.push('/vote/edit')
             }
 
         },
@@ -259,15 +259,21 @@ export default {
            switch (this.tableData[index]['stamp']) {
                 case 1:
                     this.$router.push('/preview/normal/1/' + this.tableData[index]['code'])
+                    break
+                case 2:
+                    this.$router.push('/preview/vote/1/' + this.tableData[index]['code'])
+                    break
                 case 3:
                     this.$router.push('/preview/signfor/1/' + this.tableData[index]['code'])
+                    break
                 case 4:
                     this.$router.push('/preview/checkin/1/' + this.tableData[index]['code'])
+                    break
             }
         },
         Statistics(index) {
             list.getStatistics(parseInt(this.tableData[index]['ID'])).then((res) => {
-                console.log(res) 
+                console.log(res)
                  console.log("上面是统计数据")
                 localStorage.setItem('questionnaireID', JSON.stringify(this.tableData[index]['ID']))
                 localStorage.setItem('qutitle', JSON.stringify(this.tableData[index]['title']))

@@ -532,21 +532,6 @@ export default {
     draggable,
   },
   mounted() {
-    let q3 = {
-      type: 4,
-      desc: "仅供参考",
-      question: "模板问题",
-      required: true,
-      choices: [
-        {
-          value: "选项一",
-        },
-        {
-          value: "选项二",
-        },
-      ],
-    };
-    this.data.questions.push(q3)
     if (this.$store.state.operatingQ.code !== "") {
       console.log("mounted");
       this.wholeEdit = true;
@@ -666,7 +651,21 @@ export default {
         introduction: "请在此处输入问卷描述",
         isReleased: 0,
         serial: true, // 是否显示题号
-        questions: [],
+        questions: [
+          {
+            type: 4,
+            desc: "模板问题",
+            question: "仅供参考",
+            required: true,
+            choices: [
+              { value: "1" },
+              { value: "2" },
+              { value: "3" },
+              { value: "4" },
+            ],
+            original: false,
+          },
+        ],
         startTime: "1629388800000",
         endTime: "",
       },

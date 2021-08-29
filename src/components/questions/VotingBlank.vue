@@ -37,7 +37,16 @@
 
 <script>
 export default {
-  props: ["id", "serial", "sequence", "question", "required", "description"],
+  props: [
+    "id",
+    "serial",
+    "sequence",
+    "question",
+    "required",
+    "description",
+    "num",
+    "numlength",
+  ],
   data() {
     return {
       answers: [],

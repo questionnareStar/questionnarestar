@@ -28,6 +28,7 @@ import CheckinPreview from '../views/CheckInPreview.vue'
 import Finish from '../views/Finish.vue'
 import VotingQuestionnare from '../views/VotingQuestionnare.vue'
 import VotingSurvey from '../views/VotingSurvey.vue';
+import VotingPreview from '../views/VotingPreview.vue'
 import CreateRegistration from '../views/CreateRegistration.vue'
 import EditRegistration from '../views/EditRegistration.vue'
 import QuestionnareSign from '../views/QuestionnareSign.vue'
@@ -109,6 +110,14 @@ const MainChildRoutes = [{
     path: '/normal/edit',
     name: 'edit',
     component: Edit,
+    meta: {
+      sign: true
+    }
+  },
+  {
+    path: '/vote/edit',
+    name: 'edit',
+    component: VotingEdit,
     meta: {
       sign: true
     }
@@ -237,16 +246,28 @@ const routes = [{
     }
   },
   {
+    path: '/preview/vote/:from/:id',
+    name: 'Preview',
+    component: VotingPreview,
+    meta: {
+      sign: true
+    }
+  },
+  {
     path: '/preview/checkin/:from/:id',
     name: 'Preview',
     component: CheckinPreview,
-    meta: { sign: true }
+    meta: {
+      sign: true
+    }
   },
   {
     path: '/preview/signfor/:from/:id',
     name: 'Preview',
     component: Preview,
-    meta: { sign: true }
+    meta: {
+      sign: true
+    }
   },
   {
     path: '/finish',
