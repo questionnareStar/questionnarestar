@@ -11,6 +11,16 @@ export default {
             timeout: 2000
         })
     },
+    submitSurveyLogin(id, data) {
+        return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
+            method: 'POST',
+            url: '/api/v1/questionnaire/fillIn/' + id,
+            data: data
+        })
+    },
     submitSurvey(id, data) {
         return axios({
             method: 'POST',
@@ -114,7 +124,7 @@ export default {
             data: data
         })
     },
-   createQuestionnareLogin(data) {
+    createQuestionnareLogin(data) {
         return axios({
             headers: {
                 token: JSON.parse(localStorage.getItem('userInfo')).token
