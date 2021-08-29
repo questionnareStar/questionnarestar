@@ -579,11 +579,11 @@ export default {
 
                     list.getlist(listinit).then((res) => {
                         console.log(res);
-                        showendTime = true
+                        for (let item of res.data.data.records) {
+                               showendTime = true
                         if (item.endTime == "4785667200000") {
                             showendTime = false
                         }
-                        for (let item of res.data.data.records) {
                             this.tableData.unshift({
                                 time_1: this.formatDate(item.createTime),
                                 time_2: this.formatDate(item.startTime),
