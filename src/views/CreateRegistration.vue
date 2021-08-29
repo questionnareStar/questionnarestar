@@ -594,7 +594,7 @@ export default {
         },
         async submitQuestionnare(submitData) {
             survey
-                .createQuestionnare(submitData)
+                .createQuestionnareLogin(submitData)
                 .then((response) => {
                     console.log(response);
                     if (response.data.code === 20000) {
