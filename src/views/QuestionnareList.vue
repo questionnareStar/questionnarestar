@@ -158,7 +158,7 @@ export default {
             return this.$store.state.stamp
         },
         link() {
-            let str = 'http://localhost:8080/questionnare/'
+            let str = 'http://47.93.216.213:8081/questionnare/'
             let type
             switch (this.stamp) {
                 case 1:
