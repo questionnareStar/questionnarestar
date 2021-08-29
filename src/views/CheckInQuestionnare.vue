@@ -189,7 +189,7 @@ export default {
 
 <style scoped>
 .backgroud {
-    background-color: rgb(198, 255, 248);
+    background-color: rgb(240, 245, 243);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
