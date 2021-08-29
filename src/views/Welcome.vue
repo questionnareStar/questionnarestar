@@ -12,23 +12,31 @@
           height="300px"
         >
           <el-carousel-item>
-            <div class="banner">普通问卷</div>
+            <div
+              class="banner"
+              @click="click1()"
+            >普通问卷</div>
             <img src="../assets/Questionlogo.png" />
           </el-carousel-item>
           <el-carousel-item>
-            <div class="banner">投票问卷</div>
+            <div
+              class="banner"
+              @click="click2()"
+            >投票问卷</div>
             <img src="../assets/问卷1.png" />
           </el-carousel-item>
           <el-carousel-item>
-            <div class="banner">疫情打卡问卷</div>
+            <div
+              class="banner"
+              @click="click3()"
+            >疫情打卡问卷</div>
             <img src="../assets/问卷2.png" />
           </el-carousel-item>
           <el-carousel-item>
-            <div class="banner">考试问卷</div>
-            <img src="../assets/问卷3.png" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <div class="banner">报名问卷</div>
+            <div
+              class="banner"
+              @click="click4()"
+            >报名问卷</div>
             <img src="../assets/问卷4.png" />
           </el-carousel-item>
         </el-carousel>
@@ -52,6 +60,49 @@ export default {
   methods: {
     isLogin() {
       return isLogin();
+    },
+    click1() {
+      if (isLogin()) {
+        this.$router.push('/normal/edit')
+      } else {
+        message({
+          message: "请先登录",
+          type: "error",
+        });
+      }
+    },
+
+    click2() {
+      if (isLogin()) {
+        this.$router.push("/voting/create");
+      } else {
+        message({
+          message: "请先登录",
+          type: "error",
+        });
+      }
+    },
+
+    click3() {
+      if (isLogin()) {
+        this.$router.push("/registration/create");
+      } else {
+        message({
+          message: "请先登录",
+          type: "error",
+        });
+      }
+    },
+
+    click4() {
+      if (isLogin()) {
+        this.$router.push("/checkin/edit");
+      } else {
+        message({
+          message: "请先登录",
+          type: "error",
+        });
+      }
     },
   },
 };
@@ -98,7 +149,7 @@ export default {
   font-size: 25px;
   z-index: 100;
   color: #261a68;
-  font-family:微软雅黑（"Microsoft Yahei"） "Segoe UI";
+  font-family: 微软雅黑（ "Microsoft Yahei" ） "Segoe UI";
 }
 .el-carousel__item img {
   height: 100%;
