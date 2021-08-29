@@ -199,7 +199,7 @@
                 </div>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" class="el-icon-plus" size="small" circle @click="multi.choices.push({ value: '新增选项' })" />
+                <el-button type="primary" class="el-icon-plus" size="small" circle @click="multi.choices.push({ value: '新增选项' + (multi.choices.length+1) })" />
                 <el-button type="danger" class="el-icon-minus" size="small" circle @click="multi.choices.pop()" />
             </el-form-item>
             <el-form-item>
@@ -354,16 +354,6 @@ export default {
                     text: "五天",
                     onClick(picker) {
                         picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 5);
-                    },
-                    multi: {
-                        visible: false,
-                        sequence: 4,
-                        question: '请输入题目',
-                        desc: '',
-                        required: true,
-                        choices: [{
-                            value: '新增选项'
-                        }]
                     },
                 }, ],
             },

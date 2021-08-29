@@ -171,7 +171,7 @@
                 <el-input v-model="mark.desc" placeholder="此处输入题目描述" autocomplete="off" />
             </el-form-item>
             <el-form-item>
-                最大分数<el-input-number v-model="mark.maxScore" :min="2" :max="20" label="最大分数" />
+                最大分数：<el-input-number v-model="mark.maxScore" :min="2" :max="20" label="最大分数" />
             </el-form-item>
             <el-form-item>
                 <el-switch v-model="mark.required" active-text="必答" />
@@ -199,7 +199,7 @@
                 </div>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" class="el-icon-plus" size="small" circle @click="multi.choices.push({ value: '新增选项' })" />
+                <el-button type="primary" class="el-icon-plus" size="small" circle @click="multi.choices.push({ value: '新增选项' + (multi.choices.length+1) })" />
                 <el-button type="danger" class="el-icon-minus" size="small" circle @click="multi.choices.pop()" />
             </el-form-item>
             <el-form-item>
@@ -228,7 +228,7 @@
                 </div>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" class="el-icon-plus" size="small" circle @click="single.choices.push({ value: '新增选项' })" />
+                <el-button type="primary" class="el-icon-plus" size="small" circle @click="single.choices.push({ value: '新增选项' + (single.choices.length+1) })" />
                 <el-button type="danger" class="el-icon-minus" size="small" circle @click="single.choices.pop()" />
             </el-form-item>
             <el-form-item>
@@ -295,17 +295,11 @@ export default {
                         onClick(picker) {
                             picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 5);
                         },
-                    },
-                    {
-                        text: "十天",
-                        onClick(picker) {
-                            picker.$emit("pick", Date.now() + 1000 * 3600 * 24 * 10);
-                        },
-                    },
+                    }
                 ],
             },
             data: {
-                head: "请在此处输入问卷标题",
+                head: "报名问卷",
                 introduction: "请在此处输入问卷描述",
                 isReleased: 0,
                 serial: true, // 是否显示题号
