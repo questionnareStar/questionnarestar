@@ -495,7 +495,7 @@ export default {
                                 if (item.endTime == "4785667200000") {
                                     showendTime = false
                                 }
-                                this.tableData.unshift({
+                                this.tableData.push({
                                     time_1: this.formatDate(item.createTime),
                                     time_2: this.formatDate(item.startTime),
                                     time_3: this.formatDate(item.endTime),
@@ -543,7 +543,7 @@ export default {
                             if (item.endTime == "4785667200000") {
                                 showendTime = false
                             }
-                            this.tableData.unshift({
+                            this.tableData.push({
                                 time_1: this.formatDate(item.createTime),
                                 time_2: this.formatDate(item.startTime),
                                 time_3: this.formatDate(item.endTime),
