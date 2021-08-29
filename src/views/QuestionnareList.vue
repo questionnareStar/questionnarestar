@@ -41,10 +41,10 @@
             <i @click="Delete(index)" class="el-icon-delete" title="删除问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
         </div>
     </el-card>
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+    <el-dialog title="提示" :visible.sync="dialogVisible">
         <div class="row noscroll">
-            <div class="col-md-6 col-md-offset-3">
-                <div class="p-20 mt-20 shadow">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="p-20 mt-20">
                     <div class="link-text">
                         <el-row>
                             <h3 class="header-text">问卷链接<em class="el-icon-link " /></h3>
@@ -61,6 +61,9 @@
                         <div class="qrcode-box-inner center">
                             <div id="qrcode" />
                         </div>
+                    </div>
+                    <div class="flex downbtn">
+                        <el-button type="primary" round @click.native="download()">下载二维码</el-button>
                     </div>
                 </div>
             </div>
@@ -99,7 +102,9 @@ export default {
             input: "",
             tableData: [],
             isSearch: false,
-            dialogVisible: false
+            dialogVisible: false,
+            qrcode: undefined,
+            img: undefined
         }
     },
     mounted() {
@@ -135,14 +140,8 @@ export default {
                     stamp: item.stamp
                 });
             }
-            console.log(this.tableData)
+            // console.log(this.tableData)
         });
-        let qrcode = new QRCode('qrcode', {
-            width: 200,
-            height: 200,
-            text: this.link // 设置二维码内容和跳转地址
-        })
-        console.log(this.link)
     },
     computed: {
         operation() {
@@ -195,6 +194,23 @@ export default {
             })
             this.$store.commit('setStamp', this.tableData[index]['stamp'])
             this.dialogVisible = true
+            this.$nextTick(() => {
+                if (this.qrcode === undefined) {
+                    this.qrcode = new QRCode(document.getElementById("qrcode"), { width: 200, height: 200 })
+                }
+                this.img = document.getElementById('qrcode').lastChild
+                this.qrcode.clear()
+                this.qrcode.makeCode(this.link)
+                console.log(this.qrcode)
+            })
+        },
+        download() {
+            var url = this.img.src;
+            var a = document.createElement('a')
+            var event = new MouseEvent('click')
+            a.download = '问卷二维码'
+            a.href = url
+            a.dispatchEvent(event)
         },
         formatDate(value) {
             let date = new Date(value);
@@ -558,5 +574,39 @@ export default {
 
 .description {
     display: inline-block;
+}
+
+
+/** 弹窗样式 */
+.link-text {
+    margin-bottom: 20px;
+}
+.line-box {
+    display: inline;
+    width: 60%;
+    float: left;
+}
+.btn-box {
+    display: inline;
+    width: 35%;
+    float: right;
+}
+.flex {
+    /* width: 100% !important; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.qrcode-box-inner {
+    width: 200px;
+    height: 200px;
+}
+.center {
+    margin: 0 auto;
+}
+.downbtn {
+    width: 50%;
+    margin: auto;
+    padding-top: 20px;
 }
 </style>

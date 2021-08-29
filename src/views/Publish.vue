@@ -44,7 +44,7 @@ export default {
             height: 200,
             text: this.link // 设置二维码内容和跳转地址
         })
-        console.log(this.operation)
+        console.log(qrcode)
     },
     computed: {
         operation() {
