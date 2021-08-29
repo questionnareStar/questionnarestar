@@ -1,11 +1,3 @@
-/*
- * @Description: 
- * @version: 
- * @Author: 张怡健
- * @Date: 2021-08-22 15:40:09
- * @LastEditors: 张怡健
- * @LastEditTime: 2021-08-28 10:24:07
- */
 import axios from './index'
 
 export default {
@@ -118,19 +110,44 @@ export default {
                 "token": JSON.parse(localStorage.getItem('userInfo')).token
             },
             method: 'POST',
-            url: '/api/v1/statics/answer/number'+"?questionnaireId="+"11",
+            url: '/api/v1/statics/answer/number'+"?questionnaireId="+"data",
             questionnaireId: data
         })
     },
     getStatisticsDetail(data1,data2){
         return axios({
+            method: 'POST',
+            url: '/api/v1/statics/answer/detail'+"?questionnaireId="+data1+"&recordId="+data2,
+            data:data1
+        })
+    },
+    getStatisticsDetail(data1,data2){
+        return axios({
+            method: 'POST',
+            url: '/api/v1/statics/answer/detail'+"?questionnaireId="+data1+"&recordId="+data2,
+            data:data1
+        })
+    },
+    getQuID(data) {
+        return axios({
             headers: {
+                contentType: 'application/x-www-form-urlencoded',
+                "token": JSON.parse(localStorage.getItem('userInfo')).token
+            },
+            method: 'GET',
+            url: '/api/v1/apply/questionnaire/detail/' + data,
+            timeout: 10000
+        })
+    },
+    getcross(data1,data2,data3,data4,data5){
+        return axios({
+            headers: {
+                contentType: 'application/x-www-form-urlencoded',
                 "token": JSON.parse(localStorage.getItem('userInfo')).token
             },
             method: 'POST',
-            url: '/api/v1/statics/answer/detail',
-            questionnaireId:data1,
-            recordId:data2
+            url: '/api/v1/statics/cross/analysis'+"?questionnaireId="+data1+"&type1="+data2+"&question1Id="+data3+"&type2="+data4+"&question2Id="+data5,
+            timeout: 10000
         })
     }
 }
