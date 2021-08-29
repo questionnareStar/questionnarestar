@@ -130,20 +130,28 @@ export default {
         // 暂时默认是编辑方式一
         edit(index) {
             this.$store.commit('updateOperation', { id: this.tableData[index]['ID'], code: this.tableData[index]['code'], isReleased: this.tableData[index]['value'] })
-            this.$router.push('/edit')
+              if(this.tableData[index]['stamp']==3){
+               this.$router.push('/registration/edit')
+           }
+           else
+           this.$router.push('/edit')
         },
         Preview(index) {
             this.$router.push('/preview/1/' + this.tableData[index]['code'])
         },
         Statistics(index) {
-            list.getStatistics(parseInt(this.tableData[index]['ID'])).then((res) => {
+           list.getStatistics(parseInt(this.tableData[index]['ID'])).then((res) => {
                 localStorage.setItem('questionnaireID', JSON.stringify(this.tableData[index]['ID']))
                 localStorage.setItem('qutitle', JSON.stringify(this.tableData[index]['title']))
                 localStorage.setItem("statistics", JSON.stringify(res.data))
             })
             list.getStatisticsWhole(parseInt(this.tableData[index]['ID'])).then((res) => {
-                console.log(res);
                 localStorage.setItem("statisticsWhole", JSON.stringify(res.data))
+               
+            })
+            list.getQuID(this.tableData[index]['code']).then((res)=>{
+               localStorage.setItem("questionDetail", JSON.stringify(res.data.data))
+                console.log(JSON.parse(localStorage.getItem('questionDetail'))) 
                 this.$router.push("/statistics");
             })
         },
