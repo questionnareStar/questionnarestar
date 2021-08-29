@@ -78,7 +78,7 @@ const MainChildRoutes = [{
   },
   {
     path: '/registration/create',
-    name: 'create',
+    name: 'edit',
     component: CreateRegistration,
     meta: {
       sign: true
