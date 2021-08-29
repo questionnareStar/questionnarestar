@@ -1,9 +1,13 @@
 <template>
 <div>
+    <div class="output">
+        <el-tooltip effect="dark" content="导出数据" placement="top-start">
+            <el-button type="primary" class="el-icon-download" circle @click="output()"/>
+        </el-tooltip>
+    </div>
     <el-card class="box-card" shadow="always">
         <el-page-header @back="goBack" v-bind:content="'------------------------------------------------------------------------------------'+title+'------------------------------------------------------------------------------------'">
         </el-page-header>
-
     </el-card>
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
         <el-menu-item index="1">总体数据</el-menu-item>
@@ -162,10 +166,11 @@
 
 <script>
 import list from "../util/service/list.js";
+import axios from '../util/service/index'
 import {
     message
 } from "../util/inform.js";
-
+import { export_json_to_excel } from '../util/vendor/Export2Excel'
 export default {
     mounted() {
         let detal = ""
@@ -175,8 +180,7 @@ export default {
         for (let item of JSON.parse(localStorage.getItem('questionDetail')).itemList) {
             quDetail.unshift(item)
         }
-
-        console.log(quDetail)
+        this.quDetail = quDetail
         let i = 1
         let format = ""
         for (let item of wholeData.rawRecords) {
@@ -186,23 +190,6 @@ export default {
                 userAccount: item.userAccount
             })
         }
-        //     list.getStatisticsDetail(JSON.parse(localStorage.getItem('questionnaireID')), item.recordId).then((res) => {
-        //       console.log("")
-        //    })
-        /* for (let item of this.rawRecords) {
-             list.getStatisticsDetail(JSON.parse(localStorage.getItem('questionnaireID')), item.recordId).then((res) => {
-                 console.log(res)
-                 for (let key of res.data.questionAnswers) {
-                     detal = detal + "题目:" + key.question + ",回答:" + key.userAnswer + ";"
-                 }
-                 this.DetailDate.rows.push({
-                     日期: this.formatDateM(item.answerTime),
-                     用户名: item.userAccount,
-                     回答: detal
-                 })
-             })
-         }*/
-        // console.log(this.DetailDate.rows)
         this.whole = 0
         for (let item of wholeData.answerNumbers) {
             this.chartData.rows.push({
@@ -230,9 +217,7 @@ export default {
             i = i + 1
         }
         i = 0
-        console.log(data.questions)
         for (let item of data.questions) {
-
             i = i + 1
             if (item.type == 1)
                 continue
@@ -254,7 +239,6 @@ export default {
                 type: item.type,
                 Quid: quDetail[i - 1].topicId
             })
-
         }
     },
     methods: {
@@ -451,17 +435,91 @@ export default {
 
         formatJson(filterVal, jsonData) {
             return jsonData.map(v => filterVal.map(j => v[j]))
-        }
+        },
+        formatDate(value) {
+            let date = new Date(value);
+            let y = date.getFullYear();
+            let MM = date.getMonth() + 1;
+            MM = MM < 10 ? ('0' + MM) : MM;
+            let d = date.getDate();
+            d = d < 10 ? ('0' + d) : d;
+            let h = date.getHours();
+            h = h < 10 ? ('0' + h) : h;
+            let m = date.getMinutes();
+            m = m < 10 ? ('0' + m) : m;
+            let s = date.getSeconds();
+            s = s < 10 ? ('0' + s) : s;
+            return y + '-' + MM + '-' + d + ' ' + h + ':' + m;
+        },
+        async output() {
+            let wholeData = JSON.parse(localStorage.getItem('statisticsWhole')).data
+            let rawRecords = wholeData.rawRecords
+            // console.log('每人答题记录')
+            // console.log(rawRecords)
+            // console.log('问卷详情')
+            // console.log(wholeData)
+            let columnNames = ['账号', '填写时间']
+            let columnValues = ['userAccount', 'answerTime']
+            let content = []
+            for (let i = 0; i < rawRecords.length; i++) {
+                const element = rawRecords[i]
+                await axios({
+                    method: 'POST',
+                    url: '/api/v1/statics/answer/detail'+"?questionnaireId="+wholeData.questionnaire.id+"&recordId="+element.recordId
+                })
+                    .then((response) => {
+                        const data = response.data.data
+                        let str = '{"userAccount":"'
+                        str += data.account
+                        str += '","answerTime":"'
+                        str += this.formatDate(element.answerTime)
+                        str += '",'
+                        for (let index = 0; index < data.questionAnswers.length; index++) {
+                            const item = data.questionAnswers[index];
+                            if (columnNames.length-3 < index) {
+                                columnNames[index+2] = '【问题' + (index+1) + '】' + item.question
+                                columnValues[index+2] = 'question' + (index+1)
+                            }
 
+                            str += '"question'
+                            str += (index + 1)
+                            str += '":['
+                            for (let j = 0; j < item.userAnswer.length; j++) {
+                                let answer = item.userAnswer[j]
+                                str += '"'
+                                str += answer
+                                if (j < item.userAnswer.length - 1)
+                                    str += '",'
+                            }
+                            str += '"]'
+                            if (index < data.questionAnswers.length - 1)
+                                str += ','
+                        }
+                        str += '}'
+                        content.push(JSON.parse(str))
+                    })
+            }
+            console.log(content)
+            console.log(columnNames)
+            console.log(columnValues)
+            // const {
+            //     export_json_to_excel
+            // } = require('../util/vendor/Export2Excel')
+            const tHeader = columnNames
+            const filterVal = columnValues
+            const list = content
+            const data = this.formatJson(filterVal, list)
+            export_json_to_excel(tHeader, data, this.title)
+        }
     },
 
     data() {
         return {
-              chartExtend: {
-        legend: {
-          show: false
-        }
-      },
+            chartExtend: {
+                legend: {
+                show: false
+                }
+            },
 
             crossdata: [],
             i: 0,
@@ -503,6 +561,8 @@ export default {
                     row3: '112',
                 },
             ],
+
+            quDetail: [],
 
             options: [],
             option: "",
@@ -705,6 +765,12 @@ export default {
 .dataout {
     position: relative;
     bottom: 25px;
+}
+.output {
+    position: fixed;
+    right: 30px;
+    top: 30px;
+    z-index: 100;
 }
 </style>
 

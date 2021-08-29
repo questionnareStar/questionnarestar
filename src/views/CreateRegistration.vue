@@ -649,11 +649,11 @@ export default {
             };
             this.submitQuestionnare(submitData);
         },
-        directives: {
-            focus: {
-                inserted: function (el) {
-                    el.children[0].focus();
-                },
+    },
+    directives: {
+        focus: {
+            inserted: function (el) {
+                el.children[0].focus();
             },
         },
     },
