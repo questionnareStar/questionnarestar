@@ -7,9 +7,11 @@
       ></el-image>
       <router-link to="/normal/edit">
         <button>普通问卷</button>
-      </router-link>
+       </router-link>
       <button>投票问卷</button>
+       <router-link to="/registration/create">
       <button>报名问卷</button>
+      </router-link>
       <router-link to="/checkin/edit">
         <button>疫情打卡问卷</button>
       </router-link>
