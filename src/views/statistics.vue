@@ -1,15 +1,14 @@
 <template>
 <div>
     <el-card class="box-card" shadow="always">
-        <el-page-header @back="goBack" v-bind:content="'--------------------------------'+title+'--------------------------------'">
+        <el-page-header @back="goBack" v-bind:content="'------------------------------------------------------------------------------------'+title+'------------------------------------------------------------------------------------'">
         </el-page-header>
-        <el-button class="dataout" style="float: right; " type="text" @click="exportDataWhole">点此导出统计数据</el-button>
 
     </el-card>
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
         <el-menu-item index="1">总体数据</el-menu-item>
-        <el-menu-item index="2">各题数据</el-menu-item>
-        <el-menu-item index="3">交叉分析</el-menu-item>
+        <el-menu-item @click="s()" index="2">各题数据</el-menu-item>
+        <el-menu-item @click="d()" index="3">交叉分析</el-menu-item>
     </el-menu>
     <div v-if="activeIndex==1">
         <el-row class="monitor-header-two" :gutter="20">
@@ -102,7 +101,7 @@
                                 <span style="margin-left: 10px">{{ scope.row.id }}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="------------------------------------------------------------------------------------------------------------题目回答-----------------------------------------------------------------------------------------------------------------------" width="1500px">
+                        <el-table-column label="---------------------------------------------------------------------------------------------------------------------------------------------------题目回答--------------------------------------------------------------------------------------------------------------------------------------------------------------" width="1500px">
                             <template slot-scope="scope">
                                 <span style="margin-left: 10px">{{ scope.row.answer }}</span>
                             </template>
@@ -152,7 +151,8 @@
                             </el-col>
                         </el-row>
                     </el-card>
-                    <ve-ring :data="chartData1" :colors="colors"></ve-ring>
+                    <ve-ring :data="chartData1" :colors="colors" height="2500px" :settings="chartSettings" :extend="chartExtend" width="1500px">
+                                    </ve-ring>
                 </div>
             </el-col>
         </el-row>
@@ -171,7 +171,11 @@ export default {
         let detal = ""
         let wholeData = JSON.parse(localStorage.getItem('statisticsWhole')).data
         let data = JSON.parse(localStorage.getItem('statistics')).data
-        let quDetail = JSON.parse(localStorage.getItem('questionDetail')).itemList
+        let quDetail = []
+        for (let item of JSON.parse(localStorage.getItem('questionDetail')).itemList) {
+            quDetail.unshift(item)
+        }
+
         console.log(quDetail)
         let i = 1
         let format = ""
@@ -182,9 +186,9 @@ export default {
                 userAccount: item.userAccount
             })
         }
-         list.getStatisticsDetail(JSON.parse(localStorage.getItem('questionnaireID')), item.recordId).then((res) => {
-             console.log("")
-         })
+        //     list.getStatisticsDetail(JSON.parse(localStorage.getItem('questionnaireID')), item.recordId).then((res) => {
+        //       console.log("")
+        //    })
         /* for (let item of this.rawRecords) {
              list.getStatisticsDetail(JSON.parse(localStorage.getItem('questionnaireID')), item.recordId).then((res) => {
                  console.log(res)
@@ -213,7 +217,7 @@ export default {
                 format = "题目" + i + ":" + item.topic + "[" + "填空题]"
             else if (item.type == 2)
                 format = "题目" + i + ":" + item.topic + "[" + "评分题]"
-            else if (item.type == 3)
+            else if (item.type == 4)
                 format = "题目" + i + ":" + item.topic + "[" + "单选题]"
             else
                 format = "题目" + i + ":" + item.topic + "[" + "多选题]"
@@ -225,14 +229,16 @@ export default {
             })
             i = i + 1
         }
-        console.log(this.options)
-        i = 1
+        i = 0
+        console.log(data.questions)
         for (let item of data.questions) {
+
+            i = i + 1
             if (item.type == 1)
                 continue
             else if (item.type == 2)
                 continue
-            else if (item.type == 3)
+            else if (item.type == 4)
                 format = "题目" + i + ":" + item.topic + "[" + "单选题]"
             else
                 format = "题目" + i + ":" + item.topic + "[" + "多选题]"
@@ -248,7 +254,7 @@ export default {
                 type: item.type,
                 Quid: quDetail[i - 1].topicId
             })
-            i = i + 1
+
         }
     },
     methods: {
@@ -268,7 +274,7 @@ export default {
             m = m < 10 ? ('0' + m) : m;
             let s = date.getSeconds();
             s = s < 10 ? ('0' + s) : s;
-            return y + '-' + MM + '-' + d + ' ' + h + ':' + m;
+            return y + '-' + MM + '-' + d + ' ';
         },
         formatDateM(value) {
             let date = new Date(value);
@@ -317,21 +323,53 @@ export default {
         },
         changeSelect1() {
             this.message1 = this.options1[this.option1.substring(2, 3) - "0" - 1]
+            console.log("message1")
+            console.log(this.message1)
         },
         changeSelect2() {
             this.message2 = this.options2[this.option2.substring(2, 3) - "0" - 1]
+            console.log("message2")
+            console.log(this.message2)
+        },
+        s() {
+            this.changeSelect()
+        },
+        d() {
+            this.colors = []
+            this.submit()
         },
         submit() {
-            this.chartData1.rows=[]
+            this.chartData1.rows = []
             this.data = []
+            this.colors=[]
+               if(this.option1==""&&this.option2!=""){
+                 message({
+                message: '题目1为空！',
+                type: 'error'
+            })
+            return
+            }
+            if(this.option2==""&&this.option1!=""){
+                 message({
+                message: '题目2为空！',
+                type: 'error'
+            })
+            return
+            }
+            if(this.option1==this.option2&&this.option1!=""){
+                 message({
+                message: '选择的题目重复！',
+                type: 'error'
+            })
+            return
+            }
             list.getcross(JSON.parse(localStorage.getItem('questionnaireID')), this.message1.type, this.message1.Quid, this.message2.type, this.message2.Quid).then((res) => {
                 console.log("交叉分析")
+                console.log(res)
                 this.data = res.data.data
-                console.log(this.data)
-
                 this.i = 0
                 this.j = 0
-                let q=1
+                let q = 1
                 for (let item of this.data.analysisResult) {
                     console.log(item)
                     for (let key of item) {
@@ -340,8 +378,8 @@ export default {
                             num: item[this.j],
                         })
                         this.j++
-                         this.colors[q - 1] = this.colorMax[q - 1]
-                         q++
+                        this.colors[q - 1] = this.colorMax[q - 1]
+                        q++
                     }
                     this.i++
                     this.j = 0
@@ -419,6 +457,12 @@ export default {
 
     data() {
         return {
+              chartExtend: {
+        legend: {
+          show: false
+        }
+      },
+
             crossdata: [],
             i: 0,
             j: 0,
@@ -470,7 +514,7 @@ export default {
             choicenum: 0,
             quID: 2,
             quesNum: 1,
-            colorMax: ['#F141AF', '#F85E1F', '#000000', '#A52A2A', '#9830FA', '#0C99FD', '#25D9B4', '#1AA2FC', '#7FFF00', '#DC143C', '#00BFFF', '#FFA07A', "#FFD700", "#4B0082", "#F08080",'#B8860B','#556B2F','#FF8C00','#FF1493','#8B0000'],
+            colorMax: ['#F141AF', '#F85E1F', '#000000', '#A52A2A', '#9830FA', '#0C99FD', '#25D9B4', '#1AA2FC', '#7FFF00', '#DC143C', '#00BFFF', '#FFA07A', "#FFD700", "#4B0082", "#F08080", '#B8860B', '#556B2F', '#FF8C00', '#FF1493', '#8B0000'],
             colors: [],
             scaleData: {
                 columns: ['类目', '填写量', "内容"],
@@ -514,7 +558,7 @@ export default {
 }
 
 .monitor-cart-name-left {
-    width: 500px;
+    width: 600px;
     height: 100%;
     /* background: blueviolet; */
     line-height: 42px;
@@ -645,7 +689,7 @@ export default {
 .select {
     position: relative;
     right: 60px;
-    top: 8px;
+    bottom: 5px;
 }
 
 .ch {
@@ -655,7 +699,7 @@ export default {
 
 .el-button {
     position: relative;
-    top: 6px;
+    bottom: 5px;
 }
 
 .dataout {
@@ -663,3 +707,4 @@ export default {
     bottom: 25px;
 }
 </style>
+
