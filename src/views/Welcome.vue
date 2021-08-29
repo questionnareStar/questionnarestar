@@ -5,7 +5,7 @@
         <h2>问卷星球</h2>
       </div>
       <div id="wrapper">
-        <h3> 问卷星球是一款在线问卷制作工具。通过它，您能够轻松完成问卷搜集调查。我们提供了多种问卷类型，满足您的各种需求。</h3>
+        <h3> 问卷星球是一款在线问卷制作工具。通过它，您能够轻松完成问卷搜集调查。我们提供了多种问卷类型，满足您的各种需求。登陆后点击图片文字开始编辑问卷。</h3>
         <el-carousel
           :interval="4000"
           type="card"
@@ -16,28 +16,28 @@
               class="banner"
               @click="click1()"
             >普通问卷</div>
-            <img src="../assets/Questionlogo.png" />
+            <img src="../assets/bag.png" />
           </el-carousel-item>
           <el-carousel-item>
             <div
               class="banner"
               @click="click2()"
             >投票问卷</div>
-            <img src="../assets/问卷1.png" />
+            <img src="../assets/reportbar.png" />
           </el-carousel-item>
           <el-carousel-item>
             <div
               class="banner"
               @click="click3()"
-            >报名问卷</div>
-            <img src="../assets/问卷2.png" />
+            >疫情打卡问卷</div>
+            <img src="../assets/time.png" />
           </el-carousel-item>
           <el-carousel-item>
             <div
               class="banner"
               @click="click4()"
-            >疫情打卡问卷</div>
-            <img src="../assets/问卷4.png" />
+            >报名问卷</div>
+            <img src="../assets/agreement.png" />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -153,16 +153,6 @@ export default {
 }
 .el-carousel__item img {
   height: 100%;
-  max-width: 100%;
-}
-.el-carousel__item:nth-child(3n) {
-  background-color: #925eb4;
-}
-
-.el-carousel__item:nth-child(3n + 1) {
-  background-color: #9000ff;
-}
-.el-carousel__item:nth-child(3n + 2) {
-  background-color: #493d52;
+  max-width: 50%;
 }
 </style>
