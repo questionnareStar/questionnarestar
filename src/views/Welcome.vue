@@ -63,7 +63,7 @@ export default {
     },
     click1() {
       if (isLogin()) {
-        this.$router.push('/normal/edit')
+        this.$router.push("/normal/edit");
       } else {
         this.$message({
           message: "请先登录",
@@ -85,7 +85,7 @@ export default {
 
     click3() {
       if (isLogin()) {
-        this.$router.push("/registration/create");
+        this.$router.push("/checkin/edit");
       } else {
         this.$message({
           message: "请先登录",
@@ -96,7 +96,7 @@ export default {
 
     click4() {
       if (isLogin()) {
-        this.$router.push("/checkin/edit");
+        this.$router.push("/registration/create");
       } else {
         this.$message({
           message: "请先登录",

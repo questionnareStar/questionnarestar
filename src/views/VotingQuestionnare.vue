@@ -532,6 +532,21 @@ export default {
     draggable,
   },
   mounted() {
+    this.questions.push([
+      {
+        type: 4,
+        desc: "模板问题",
+        question: "仅供参考",
+        required: true,
+        choices: [
+          { value: "1" },
+          { value: "2" },
+          { value: "3" },
+          { value: "4" },
+        ],
+        original: false,
+      },
+    ]);
     if (this.$store.state.operatingQ.code !== "") {
       console.log("mounted");
       this.wholeEdit = true;

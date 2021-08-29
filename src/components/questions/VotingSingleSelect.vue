@@ -28,7 +28,8 @@
             v-for="(item, index) in choices"
             :key="index"
             :label="item"
-          >{{item}}     目前获得了{{num[numlength-sequence][index]}}票</el-radio>
+          >{{item}} &emsp;&emsp;<font color="red"><b>目前获得了{{num[numlength-sequence][index]}}票</b></font>
+          </el-radio>
         </el-radio-group>
       </el-row>
       <el-row class="red mb-8">
@@ -49,7 +50,7 @@ export default {
     "description",
     "choices",
     "num",
-    "numlength"
+    "numlength",
   ],
   data() {
     return {

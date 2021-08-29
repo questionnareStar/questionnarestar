@@ -29,7 +29,8 @@
             v-for="(item, index) in choices"
             :key="index"
             :label="item"
-          >{{item}}      目前获得了{{num[numlength-sequence][index]}}票</el-checkbox>
+          >{{item}} &emsp;&emsp;<font color="red"><b>目前获得了{{num[numlength-sequence][index]}}票</b></font>
+          </el-checkbox>
         </el-checkbox-group>
       </el-row>
       <el-row class="red mb-8">
@@ -53,7 +54,7 @@ export default {
     "description",
     "choices",
     "num",
-    "numlength"
+    "numlength",
   ],
   data() {
     return {
