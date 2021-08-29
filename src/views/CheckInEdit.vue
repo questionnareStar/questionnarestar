@@ -360,6 +360,10 @@ export default {
             this.data.introduction = data.introduction
             this.data.serial = data.serial
             this.id = data.id
+            if (data.endTime !== '4785667200000') {
+              this.setEndtime = true
+              this.data.endTime = data.endTime
+            }
             for (const item of data.itemList) {
               let q = undefined
               switch (item.itemType) {
