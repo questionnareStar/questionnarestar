@@ -249,6 +249,8 @@ export default {
             switch (this.tableData[index]['stamp']) {
                 case 1:
                     this.$router.push('/preview/normal/1/' + this.tableData[index]['code'])
+                case 3:
+                    this.$router.push('/preview/signfor/1/' + this.tableData[index]['code'])
                 case 4:
                     this.$router.push('/preview/checkin/1/' + this.tableData[index]['code'])
             }

@@ -224,6 +224,12 @@ const routes = [{
     meta: { sign: true }
   },
   {
+    path: '/preview/signfor/:from/:id',
+    name: 'Preview',
+    component: Preview,
+    meta: { sign: true }
+  },
+  {
     path: '/finish',
     name: 'Finish',
     component: Finish,
