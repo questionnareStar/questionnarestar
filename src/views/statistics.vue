@@ -469,6 +469,7 @@ export default {
                 })
                     .then((response) => {
                         const data = response.data.data
+                        // console.log(response)
                         let str = '{"userAccount":"'
                         str += data.account
                         str += '","answerTime":"'
@@ -476,11 +477,14 @@ export default {
                         str += '",'
                         for (let index = 0; index < data.questionAnswers.length; index++) {
                             const item = data.questionAnswers[index];
+                            // console.log(item)
                             if (columnNames.length-3 < index) {
                                 columnNames[index+2] = '【问题' + (index+1) + '】' + item.question
                                 columnValues[index+2] = 'question' + (index+1)
                             }
-
+                            if (item.type == 2) {
+                                item.userAnswer = [''+item.score]
+                            }
                             str += '"question'
                             str += (index + 1)
                             str += '":['
