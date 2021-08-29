@@ -28,7 +28,7 @@
             v-for="(item, index) in choices"
             :key="index"
             :label="item"
-          >{{item}}目前获得了{{num[sequence-1][index]}}票</el-radio>
+          >{{item}}     目前获得了{{num[sequence-1][index]}}票</el-radio>
         </el-radio-group>
       </el-row>
       <el-row class="red mb-8">

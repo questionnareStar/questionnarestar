@@ -11,6 +11,7 @@ import QuestionnareList from '../views/QuestionnareList.vue'
 import Waste from '../views/Waste.vue'
 import Edit from '../views/Edit.vue'
 import CheckInEdit from '../views/CheckInEdit.vue'
+import VotingEdit from '../views/VotingEdit.vue'
 import Publish from '../views/Publish.vue'
 import Welcome from '../views/Welcome.vue'
 import TransitionPage from '../views/TransitionPage.vue'
@@ -22,7 +23,7 @@ import Questionnare from '../views/Questionnare.vue'
 import CheckInQuestionnare from '../views/CheckInQuestionnare.vue'
 import Preview from '../views/Preview.vue'
 import Finish from '../views/Finish.vue'
-import CreateVotingSurvey from '../views/CreateVotingSurvey.vue'
+import VotingQuestionnare from '../views/VotingQuestionnare.vue'
 import VotingSurvey from '../views/VotingSurvey.vue';
 import CreateRegistration from '../views/CreateRegistration.vue'
 import EditRegistration from '../views/EditRegistration.vue'
@@ -64,6 +65,22 @@ const MainChildRoutes = [{
     path: 'create',
     name: 'create',
     component: TransitionPage,
+    meta: {
+      sign: true
+    }
+  },
+  {
+    path: '/voting/create',
+    name: 'create',
+    component: VotingQuestionnare,
+    meta: {
+      sign: true
+    }
+  },
+  {
+    path: '/voting/edit',
+    name: 'create',
+    component: VotingEdit,
     meta: {
       sign: true
     }
@@ -128,11 +145,9 @@ const AuthChildRoutes = [{
   }
 ]
 
-const QuestionnareChildRoutes = [
-  {
-    path: '/normal/:id',
-  }
-]
+const QuestionnareChildRoutes = [{
+  path: '/normal/:id',
+}]
 
 const routes = [{
     path: '/',
@@ -172,13 +187,25 @@ const routes = [{
     path: '/questionnare/signfor/:id',
     name: 'QuestionnareRegistration',
     component: Questionnare,
-    meta: { sign: false }
+    meta: {
+      sign: false
+    }
+  },
+  {
+    path: '/questionnare/vote/:id',
+    name: 'QuestionnareVoting',
+    component: VotingSurvey,
+    meta: {
+      sign: false
+    }
   },
   {
     path: '/questionnare/checkin/:id',
     name: 'QuestionnareCheckin',
     component: CheckInQuestionnare,
-    meta: { sign: false }
+    meta: {
+      sign: false
+    }
   },
   {
     // 0 为回收站， 1 为列表
@@ -222,4 +249,3 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
-

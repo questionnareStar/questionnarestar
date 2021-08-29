@@ -48,22 +48,26 @@
   </div>
 </template>
 <script>
-import jpg1 from '../assets/问卷1.png'
-import jpg2 from '../assets/问卷2.png'
-import jpg3 from '../assets/问卷3.png'
-import jpg4 from '../assets/问卷4.png'
-import jpg5 from '../assets/Questionlogo.png'
+import jpg1 from "../assets/问卷1.png";
+import jpg2 from "../assets/问卷2.png";
+import jpg3 from "../assets/问卷3.png";
+import jpg4 from "../assets/问卷4.png";
+import jpg5 from "../assets/Questionlogo.png";
 
 export default {
   mounted() {
-    this.$store.commit('updateOperation', {id: '', code: '', isReleased: false })
+    this.$store.commit("updateOperation", {
+      id: "",
+      code: "",
+      isReleased: false,
+    });
   },
-  data:function(){
+  data: function () {
     return {
-      imgUrl1: jpg1
-    }
-  }
-}
+      imgUrl1: jpg1,
+    };
+  },
+};
 </script>
 
 <style scoped>

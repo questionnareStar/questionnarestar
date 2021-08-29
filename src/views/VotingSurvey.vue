@@ -49,7 +49,7 @@
               :required="item.required"
               :description="item.description"
               :choices="item.choices"
-              :num="this.numlist"
+              :num="numlist"
             />
             <voting-single-select
               v-if="item.itemType == 4"
@@ -61,7 +61,7 @@
               :required="item.required"
               :description="item.description"
               :choices="item.choices"
-              :num="this.numlist"
+              :num="numlist"
             />
           </div>
           <div class="foot-container">
@@ -83,7 +83,7 @@ import VotingMultiSelect from "../components/questions/VotingMultiSelect.vue";
 import VotingSingleSelect from "../components/questions/VotingSingleSelect.vue";
 import { message } from "../util/inform";
 import survey from "../util/service/survey";
-import checkNum from "../util/service/checkNum";
+import axios from "axios"
 /**
  * 3: 多选题
  * 4: 单选题
@@ -131,20 +131,26 @@ export default {
           type: "warning",
         });
       });
-    checkNum.getAnswerNum(id).then((response) => {
+    axios({
+      headers: {
+        contentType: "application/x-www-form-urlencoded",
+      },
+      method: "GET",
+      url: "/api/v1/questionnaire/find/answer/" + id,
+      data: id,
+    }).then((response) => {
       console.log(response);
-      if (response.data.code === 20000) {
-        const data = response.data.data;
-        for (let i = 0; i < data.length; i++) {
-          var templist = [];
-          for (let j = 0; j < data[i].choices.length; j++) {
-            templist.push(data[i].choices[j].num);
-          }
-          this.numlist.push(templist);
-          console.log(templist);
+      const data = response.data.data;
+      console.log(data);
+      for (let i = 0; i < data.length; i++) {
+        var templist = [];
+        for (let j = 0; j < data[i].choices.length; j++) {
+          templist.push(data[i].choices[j].num);
         }
-        console.log(numlist);
+        this.numlist.push(templist);
+        console.log(templist);
       }
+      console.log(numlist);
     });
   },
   data() {

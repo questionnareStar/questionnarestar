@@ -29,7 +29,7 @@
             v-for="(item, index) in choices"
             :key="index"
             :label="item"
-          >{{item}}目前获得了{{num[sequence-1][index]}}票</el-checkbox>
+          >{{item}}      目前获得了{{num[sequence-1][index]}}票</el-checkbox>
         </el-checkbox-group>
       </el-row>
       <el-row class="red mb-8">
