@@ -24,6 +24,8 @@ import Preview from '../views/Preview.vue'
 import Finish from '../views/Finish.vue'
 import CreateVotingSurvey from '../views/CreateVotingSurvey.vue'
 import VotingSurvey from '../views/VotingSurvey.vue';
+import CreateRegistration from '../views/CreateRegistration.vue'
+import EditRegistration from '../views/EditRegistration.vue'
 Vue.use(VueRouter)
 
 const MainChildRoutes = [{
@@ -62,6 +64,22 @@ const MainChildRoutes = [{
     path: 'create',
     name: 'create',
     component: TransitionPage,
+    meta: {
+      sign: true
+    }
+  },
+  {
+    path: '/registration/edit',
+    name: 'edit',
+    component: EditRegistration,
+    meta: {
+      sign: true
+    }
+  },
+  {
+    path: '/registration/create',
+    name: 'create',
+    component: CreateRegistration,
     meta: {
       sign: true
     }
@@ -151,6 +169,12 @@ const routes = [{
     }
   },
   {
+    path: '/questionnare/signfor/:id',
+    name: 'QuestionnareRegistration',
+    component: Questionnare,
+    meta: { sign: false }
+  },
+  {
     path: '/questionnare/checkin/:id',
     name: 'QuestionnareCheckin',
     component: CheckInQuestionnare,
@@ -198,3 +222,4 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+
