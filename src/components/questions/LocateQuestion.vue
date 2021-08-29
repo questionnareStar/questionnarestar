@@ -48,17 +48,23 @@ export default {
   },
   methods: {
     getLocation() {
-        let geolocation = location.initMap("map-container"); //定位
-        AMap.event.addListener(geolocation, "complete", result => {
-            this.answers.push(result.formattedAddress)
-            console.log(result)
-        });
-        let data = {
-            answerList: this.answers,
-            itemType: 1,
-            topicId: this.$props.id,
-        };
-        this.$emit("getAnswer", data);
+        this.$confirm('此操作将获取您的位置信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let geolocation = location.initMap("map-container"); //定位
+          AMap.event.addListener(geolocation, "complete", result => {
+              this.answers.push(result.formattedAddress)
+              console.log(result)
+          });
+          let data = {
+              answerList: this.answers,
+              itemType: 1,
+              topicId: this.$props.id,
+          };
+          this.$emit("getAnswer", data);
+        })
     }
   },
 };
