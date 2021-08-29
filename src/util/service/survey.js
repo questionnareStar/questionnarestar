@@ -114,6 +114,16 @@ export default {
             data: data
         })
     },
+   createQuestionnareLogin(data) {
+        return axios({
+            headers: {
+                token: JSON.parse(localStorage.getItem('userInfo')).token
+            },
+            method: 'POST',
+            url: '/api/v1/questionnaire/create/login',
+            data: data
+        })
+    },
     updateQuestionnare(data) {
         return axios({
             headers: {
