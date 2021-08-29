@@ -246,7 +246,12 @@ export default {
 
         },
         Preview(index) {
-            this.$router.push('/preview/1/' + this.tableData[index]['code'])
+            switch (this.tableData[index]['stamp']) {
+                case 1:
+                    this.$router.push('/preview/normal/1/' + this.tableData[index]['code'])
+                case 4:
+                    this.$router.push('/preview/checkin/1/' + this.tableData[index]['code'])
+            }
         },
         Statistics(index) {
             list.getStatistics(parseInt(this.tableData[index]['ID'])).then((res) => {

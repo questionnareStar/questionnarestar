@@ -1,6 +1,10 @@
 <template>
     <div class="backgroud">
-        <div class="survay-container shadow">
+        <div class="back-container">
+            <el-button @click="back()">返回</el-button>
+            <el-button @click="getPdf(head)">导出为pdf</el-button>
+        </div>
+        <div id="pdfDom" class="survay-container shadow">
             <div class="title-container">
                 <h1>{{head}}</h1>
                 <p>{{introduction}}</p>
@@ -88,30 +92,21 @@ export default {
         const id = this.$route.params.id
         survey.getQuestionnare(id)
             .then((response) => {
-                console.log(response)
                 if (response.data.code === 20000) {
                     const data = response.data.data
-                    if (data.isReleased) {
-                        this.head = data.head
-                        this.introduction = data.introduction
-                        this.itemList = data.itemList
-                        this.serial = data.serial
-                        this.id = data.id
-                        this.type = data.type
-                        for (const item of this.itemList) {
-                            let str = String(item.question)
-                            if (str.indexOf(locStr) != -1) {
-                                item.question = str.substring(10)
-                                item.itemType = 7
-                            }
+                    this.head = data.head
+                    this.introduction = data.introduction
+                    this.itemList = data.itemList
+                    this.serial = data.serial
+                    this.id = data.id
+                    this.type = data.type
+                    for (const item of this.itemList) {
+                        let str = String(item.question)
+                        if (str.indexOf(locStr) != -1) {
+                            item.question = str.substring(10)
+                            item.itemType = 7
                         }
-                    } else {
-                        this.$alert('当前问卷未开放，无法提交', '错误', {
-                            confirmButtonText: '确定',
-                            callback: action => {
-                                this.$router.push('/welcome')
-                            }
-                        })
+                        console.log(item)
                     }
                 } else {
                     message({
@@ -155,33 +150,17 @@ export default {
             console.log(this.answers)
         },
         onSubmit() {
-            console.log('提交数据')
-            this.submit()
+            message({
+                message: '预览不能提交问卷',
+                type: 'warning'
+            })
         },
-        submit() {
-            survey.submitSurvey(this.$route.params.id, this.answers)
-                .then((response) => {
-                    console.log(response)
-                    const data = response.data
-                    if (data.code === 20000) {
-                        message({
-                            message: '提交成功',
-                            type: 'success'
-                        })
-                        this.$router.push('/finish')
-                    } else {
-                        message({
-                            message: data.msg,
-                            type: 'error'
-                        })
-                    }
-                })
-                .catch((error) => {
-                    message({
-                        message: error.message,
-                        type: 'warning'
-                    })
-                })
+        back() {
+            if (this.$route.params.from == 1) {
+                this.$router.replace('/list')
+            } else {
+                this.$router.replace('/waste')
+            }
         }
     }
 }

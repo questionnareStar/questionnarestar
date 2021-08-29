@@ -22,6 +22,7 @@ import Register from '../views/Register.vue'
 import Questionnare from '../views/Questionnare.vue'
 import CheckInQuestionnare from '../views/CheckInQuestionnare.vue'
 import Preview from '../views/Preview.vue'
+import CheckinPreview from '../views/CheckInPreview.vue'
 import Finish from '../views/Finish.vue'
 import VotingQuestionnare from '../views/VotingQuestionnare.vue'
 import VotingSurvey from '../views/VotingSurvey.vue';
@@ -209,12 +210,18 @@ const routes = [{
   },
   {
     // 0 为回收站， 1 为列表
-    path: '/preview/:from/:id',
+    path: '/preview/normal/:from/:id',
     name: 'Preview',
     component: Preview,
     meta: {
       sign: true
     }
+  },
+  {
+    path: '/preview/checkin/:from/:id',
+    name: 'Preview',
+    component: CheckinPreview,
+    meta: { sign: true }
   },
   {
     path: '/finish',
