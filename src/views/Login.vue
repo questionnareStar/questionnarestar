@@ -16,7 +16,8 @@
         <el-button type="primary" @click="login()">登录</el-button>
         <el-divider/>
         <div class="other-choice">
-            <span @click="changeLoginMode()">验证码登录</span>
+            <span v-if="isPassMode" @click="changeLoginMode()">验证码登录</span>
+            <span v-else @click="changeLoginMode()">密码登录</span>
             <el-divider direction="vertical"/>
             <span @click="toRegister()">注册账号</span>
         </div>
