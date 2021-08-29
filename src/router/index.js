@@ -18,6 +18,8 @@ import TransitionPage from '../views/TransitionPage.vue'
 // 用户登录注册视图
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
+import submitRegister from '../views/submitRegister.vue'
+import submitLogin from '../views/submitLogin.vue'
 //问卷页面
 import Questionnare from '../views/Questionnare.vue'
 import CheckInQuestionnare from '../views/CheckInQuestionnare.vue'
@@ -28,6 +30,7 @@ import VotingQuestionnare from '../views/VotingQuestionnare.vue'
 import VotingSurvey from '../views/VotingSurvey.vue';
 import CreateRegistration from '../views/CreateRegistration.vue'
 import EditRegistration from '../views/EditRegistration.vue'
+import QuestionnareSign from '../views/QuestionnareSign.vue'
 Vue.use(VueRouter)
 
 const MainChildRoutes = [{
@@ -137,6 +140,22 @@ const AuthChildRoutes = [{
     },
   },
   {
+    path: 'submitregister',
+    name: 'submitregister',
+    component: submitRegister,
+    meta: {
+      sign: false
+    },
+  },
+  {
+    path: 'submitlogin',
+    name: 'submitlogin',
+    component: submitLogin,
+    meta: {
+      sign: false
+    },
+  },
+  {
     path: 'validate/:id',
     name: 'validate',
     component: Login,
@@ -187,7 +206,7 @@ const routes = [{
   {
     path: '/questionnare/signfor/:id',
     name: 'QuestionnareRegistration',
-    component: Questionnare,
+    component: QuestionnareSign,
     meta: {
       sign: false
     }
