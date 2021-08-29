@@ -120,10 +120,10 @@
                         <el-date-picker v-model="data.endTime" type="date" placeholder="选择日期" :picker-options="datePickerOptions" />
                     </el-row>
                     <el-row class="mb-8" v-if="setLimit">
-                       <p3>限制填写次数为：{{this.Limitnum}}</p3>
+                        <p3>限制填写次数为：{{this.Limitnum}}</p3>
                     </el-row>
                     <el-row class="mb-8" v-if="!setLimit">
-                     <p3>无填写次数限制</p3>
+                        <p3>无填写次数限制</p3>
                     </el-row>
                     <el-row class="mb-8 p-5">
                         <el-button type="primary" @click.native="submit()">提交</el-button>
@@ -266,6 +266,10 @@ export default {
                         this.data.introduction = data.introduction
                         this.data.serial = data.serial
                         this.id = data.id
+                        if (data.endTime !== '4785667200000') {
+                            this.setEndtime = true
+                            this.data.endTime = data.endTime
+                        }
                         if (data.maxNum == 9999999) {
                             this.setLimit = false
                             this.Limitnum = 9999999
@@ -378,7 +382,7 @@ export default {
                 desc: "",
                 required: true,
                 original: false,
-        id: undefined
+                id: undefined
             },
             mark: {
                 visible: false,
@@ -387,7 +391,7 @@ export default {
                 required: true,
                 maxScore: 5,
                 original: false,
-        id: undefined
+                id: undefined
             },
             multi: {
                 visible: false,
@@ -398,7 +402,7 @@ export default {
                     value: "新增选项1"
                 }],
                 original: false,
-        id: undefined
+                id: undefined
             },
             single: {
                 visible: false,
@@ -409,18 +413,16 @@ export default {
                     value: "新增选项1"
                 }],
                 original: false,
-        id: undefined
+                id: undefined
             },
             itemList: [],
         };
     },
     methods: {
-        changeMaxnum(){
-         if(this.setLimit==true){
-         }
-         else{
-             this.Limitnum=9999999
-         }
+        changeMaxnum() {
+            if (this.setLimit == true) {} else {
+                this.Limitnum = 9999999
+            }
         },
         resetModel() {
             this.blank = {
@@ -429,7 +431,7 @@ export default {
                 desc: "",
                 required: true,
                 original: false,
-        id: undefined
+                id: undefined
             }
             this.mark = {
                 visible: false,
@@ -438,7 +440,7 @@ export default {
                 required: true,
                 maxScore: 5,
                 original: false,
-        id: undefined
+                id: undefined
             }
             this.multi = {
                 visible: false,
@@ -449,7 +451,7 @@ export default {
                     value: "新增选项1"
                 }],
                 original: false,
-        id: undefined
+                id: undefined
             }
             this.single = {
                 visible: false,
@@ -460,7 +462,7 @@ export default {
                     value: "新增选项1"
                 }],
                 original: false,
-        id: undefined
+                id: undefined
             }
         },
         addBlank() {
@@ -470,7 +472,7 @@ export default {
                 question: this.blank.question,
                 required: this.blank.required,
                 original: false,
-        id: this.blank.id
+                id: this.blank.id
             }
             if (this.editIndex == -1) {
                 this.data.questions.push(q);
@@ -489,7 +491,7 @@ export default {
                 required: this.mark.required,
                 maxScore: this.mark.maxScore,
                 original: false,
-        id: this.mark.id
+                id: this.mark.id
             }
             if (this.editIndex == -1) {
                 this.data.questions.push(q)
@@ -508,7 +510,7 @@ export default {
                 required: this.multi.required,
                 choices: this.multi.choices,
                 original: false,
-        id: this.multi.id
+                id: this.multi.id
             };
             if (this.editIndex == -1) {
                 this.data.questions.push(q)
@@ -527,7 +529,7 @@ export default {
                 required: this.single.required,
                 choices: this.single.choices,
                 original: false,
-        id: this.single.id
+                id: this.single.id
             };
             if (this.editIndex == -1) {
                 this.data.questions.push(q)
@@ -548,7 +550,7 @@ export default {
                         desc: item.desc,
                         required: item.required,
                         original: item.original,
-            id: item.id
+                        id: item.id
                     };
                     break;
                 case 2:
@@ -559,7 +561,7 @@ export default {
                         required: item.required,
                         maxScore: item.maxScore,
                         original: item.original,
-            id: item.id
+                        id: item.id
                     };
                     break;
                 case 3:
@@ -570,7 +572,7 @@ export default {
                         required: item.required,
                         choices: item.choices,
                         original: item.original,
-            id: item.id
+                        id: item.id
                     };
                     break;
                 case 4:
@@ -581,7 +583,7 @@ export default {
                         required: item.required,
                         choices: item.choices,
                         original: item.original,
-            id: item.id
+                        id: item.id
                     };
                     break;
             }
@@ -709,7 +711,7 @@ export default {
                     code: response.data.data.code,
                     isReleased: response.data.data.isReleased ? true : false
                 })
-                 this.$store.commit('setStamp', 3)
+                this.$store.commit('setStamp', 3)
                 this.$router.push('/publish')
                 message({
                     message: response.data.msg,
@@ -864,3 +866,4 @@ span.red {
     top: 100px;
 }
 </style>
+
