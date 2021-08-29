@@ -361,7 +361,7 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-input-number
+          最大分数：<el-input-number
             v-model="mark.maxScore"
             :min="2"
             :max="20"

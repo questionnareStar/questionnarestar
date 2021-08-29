@@ -20,8 +20,8 @@
       </el-row>
       <el-row class="question-choices">
         <el-rate
+          :max="maxScore"
           v-model="answers[0]"
-          :maxScore="maxScore"
           @change="onchange()"
         />
       </el-row>
