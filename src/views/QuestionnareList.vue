@@ -1,4 +1,3 @@
-
 <template>
 <div class="main">
     <el-card shadow="never">
@@ -37,14 +36,41 @@
             <i class="el-icon-edit" @click="edit(index)" title="编辑问卷" style="margin-right:20px; font-size:25px;cursor:pointer;"></i>
             <i @click="Statistics(index)" class="el-icon-s-data" title="问卷数据统计" style="margin-right:20px;  font-size:25px;cursor: pointer;"></i>
             <i @click="Preview(index)" class="el-icon-view" title="预览问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
+            <i @click="showlink(index)" class="el-icon-link" title="问卷链接" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
             <i @click="copyQu(index)" class="el-icon-document-copy" title="复制问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
             <i @click="Delete(index)" class="el-icon-delete" title="删除问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
         </div>
     </el-card>
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+        <div class="row noscroll">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="p-20 mt-20 shadow">
+                    <div class="link-text">
+                        <el-row>
+                            <h3 class="header-text">问卷链接<em class="el-icon-link " /></h3>
+                            <div class="line-box">
+                                <el-input :value="link" :disabled="true" />
+                            </div>
+                            <div class="btn-box">
+                                <el-button type="primary" round @click.native="copy()">复制</el-button>
+                                <el-button @click.native="openPage()">打开</el-button>
+                            </div>
+                        </el-row>
+                    </div>
+                    <div class="flex">
+                        <div class="qrcode-box-inner center">
+                            <div id="qrcode" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
 <script>
+import QRCode from 'qrcodejs2'
 import list from "../util/service/list.js";
 import {
     message
@@ -53,11 +79,11 @@ export default {
     data() {
         return {
             options: [{
-                    label: "创建时间较晚优先",
+                    label: "创建时间较早优先",
                     value: "3",
                 },
                 {
-                    label: "创建时间较早优先",
+                    label: "创建时间较晚优先",
                     value: "0",
                 },
                 {
@@ -72,7 +98,8 @@ export default {
             option: "",
             input: "",
             tableData: [],
-            isSearch: false
+            isSearch: false,
+            dialogVisible: false
         }
     },
     mounted() {
@@ -104,14 +131,71 @@ export default {
                     value: item.isReleased == 1,
                     value_2: value_2,
                     state: state,
-                    code:item.code,
-                    stamp:item.stamp
+                    code: item.code,
+                    stamp: item.stamp
                 });
             }
             console.log(this.tableData)
         });
+        let qrcode = new QRCode('qrcode', {
+            width: 200,
+            height: 200,
+            text: this.link // 设置二维码内容和跳转地址
+        })
+        console.log(this.link)
+    },
+    computed: {
+        operation() {
+            return this.$store.state.operatingQ
+        },
+        stamp() {
+            return this.$store.state.stamp
+        },
+        link() {
+            let str = 'http://localhost:8080/questionnare/'
+            let type
+            switch (this.stamp) {
+                case 1:
+                    type = 'normal/'
+                    break
+                case 2:
+                    type = 'vote/'
+                    break
+                case 3:
+                    type = 'signfor/'
+                    break
+                case 4:
+                    type = 'checkin/'
+            }
+            return str + type + this.operation.code
+        }
     },
     methods: {
+        copy() {
+            var input = document.createElement('input');
+            input.setAttribute('id', 'input_for_copyText');
+            input.value = this.link;
+            document.getElementsByTagName('body')[0].appendChild(input);
+            document.getElementById('input_for_copyText').select();
+            document.execCommand('copy');
+            document.getElementById('input_for_copyText').remove();
+            message({
+                message: '复制成功',
+                type: 'success'
+            })
+        },
+        openPage() {
+            window.open(this.link, '_blank');
+        },
+        showlink(index) {
+            this.$store.commit('updateOperation', {
+                id: this.tableData[index]['ID'],
+                code: this.tableData[index]['code'],
+                isReleased: this.tableData[index]['value']
+            })
+            this.$store.commit('setStamp', this.tableData[index]['stamp'])
+            this.dialogVisible = true
+        },
         formatDate(value) {
             let date = new Date(value);
             let y = date.getFullYear();
@@ -129,29 +213,38 @@ export default {
         },
         // 暂时默认是编辑方式一
         edit(index) {
-            this.$store.commit('updateOperation', { id: this.tableData[index]['ID'], code: this.tableData[index]['code'], isReleased: this.tableData[index]['value'] })
-              if(this.tableData[index]['stamp']==3){
-               this.$router.push('/registration/edit')
-           }
-           else
-           this.$router.push('/edit')
+            this.$store.commit('updateOperation', {
+                id: this.tableData[index]['ID'],
+                code: this.tableData[index]['code'],
+                isReleased: this.tableData[index]['value']
+            })
+            if (this.tableData[index]['stamp'] == 3) {
+                this.$router.push('/registration/edit')
+            } else if (this.tableData[index]['stamp'] == 1) {
+                this.$router.push('/normal/edit')
+            } else if (this.tableData[index]['stamp'] == 4) {
+                this.$router.push('/checkin/edit')
+            } else {
+                this.$router.push('/edit')
+            }
+
         },
         Preview(index) {
             this.$router.push('/preview/1/' + this.tableData[index]['code'])
         },
         Statistics(index) {
-           list.getStatistics(parseInt(this.tableData[index]['ID'])).then((res) => {
+            list.getStatistics(parseInt(this.tableData[index]['ID'])).then((res) => {
                 localStorage.setItem('questionnaireID', JSON.stringify(this.tableData[index]['ID']))
                 localStorage.setItem('qutitle', JSON.stringify(this.tableData[index]['title']))
                 localStorage.setItem("statistics", JSON.stringify(res.data))
             })
             list.getStatisticsWhole(parseInt(this.tableData[index]['ID'])).then((res) => {
                 localStorage.setItem("statisticsWhole", JSON.stringify(res.data))
-               
+
             })
-            list.getQuID(this.tableData[index]['code']).then((res)=>{
-               localStorage.setItem("questionDetail", JSON.stringify(res.data.data))
-                console.log(JSON.parse(localStorage.getItem('questionDetail'))) 
+            list.getQuID(this.tableData[index]['code']).then((res) => {
+                localStorage.setItem("questionDetail", JSON.stringify(res.data.data))
+                console.log(JSON.parse(localStorage.getItem('questionDetail')))
                 this.$router.push("/statistics");
             })
         },
@@ -208,8 +301,8 @@ export default {
                         value: item.isReleased == 1,
                         value_2: value_2,
                         state: state,
-                        code:item.code,
-                        stamp:item.stamp
+                        code: item.code,
+                        stamp: item.stamp
                     });
                 }
             });
@@ -258,8 +351,8 @@ export default {
                                 value: item.isReleased == 1,
                                 value_2: value_2,
                                 state: state,
-                                code:item.code,
-                                stamp:item.stamp
+                                code: item.code,
+                                stamp: item.stamp
                             });
                         }
                     } else if (res.data.code == 20000 && res.data.data.total == 0) {
@@ -309,8 +402,8 @@ export default {
                         value: item.isReleased == 1,
                         value_2: value_2,
                         state: state,
-                        code:item.code,
-                        stamp:item.stamp
+                        code: item.code,
+                        stamp: item.stamp
                     });
                 }
             });
@@ -351,8 +444,8 @@ export default {
                                     value: item.isReleased == 1,
                                     value_2: value_2,
                                     state: state,
-                                    code:item.code,
-                                    stamp:item.stamp
+                                    code: item.code,
+                                    stamp: item.stamp
                                 });
                             }
                         });
@@ -392,8 +485,8 @@ export default {
                                 value: item.isReleased == 1,
                                 value_2: value_2,
                                 state: state,
-                                code:item.code,
-                                stamp:item.stamp
+                                code: item.code,
+                                stamp: item.stamp
                             });
                         }
                     });
@@ -424,8 +517,8 @@ export default {
                                 ID: item.id,
                                 title: item.head,
                                 value: item.isReleased == 1,
-                                code:item.code,
-                                stamp:item.stamp
+                                code: item.code,
+                                stamp: item.stamp
                             });
                         }
                     });
@@ -444,20 +537,25 @@ export default {
 .text {
     font-size: 14px;
 }
+
 .item {
     margin-bottom: 18px;
 }
+
 .clearfix:before,
 .clearfix:after {
     display: table;
     content: "";
 }
+
 .clearfix:after {
     clear: both
 }
+
 .box-card {
     width: 1500px;
 }
+
 .description {
     display: inline-block;
 }
