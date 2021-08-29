@@ -19,20 +19,19 @@
             </el-col>
         </el-row>
     </el-card>
-    <el-card class="box-card" shadow="always" style="float: right;margin-top: 20px;" v-for="(item,index) in tableData" :key="index">
+    <el-card class="box-card" body-style="color:rgb(0, 100, 128)" shadow="always" style="float: right;margin-top: 20px;" v-for="(item,index) in tableData" :key="index">
         <div slot="header" class="clearfix">
             <span style=" font-weight: 900;">{{tableData[index]['title']}}</span>
             <div class="description-container" style="float: right; ">
-                <div class="description" style="margin-right:20px   ;font-size: 16px; font-weight: 900;">id:{{tableData[index]["ID"]}}</div>
-                <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">创建时间:{{tableData[index]['time_1']}}</div>
-                <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">发布时间:{{tableData[index]['time_2']}}</div>
-                <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">截止时间:{{tableData[index]['time_3']}}</div>
-                <div class="description" style="margin-right:20px;color:green;  font-size: 16px; font-weight: 900;">{{tableData[index]['state']}}</div>
+                <div class="description" style="margin-right:20px;font-size: 16px; font-weight: 900;">创建时间:{{tableData[index]['time_1']}}</div>
+                <div class="description" v-if="tableData[index]['value']" style="margin-right:20px;font-size: 16px; font-weight: 900;">发布时间:{{tableData[index]['time_2']}}</div>
+                <div class="description" v-if="tableData[index]['showendTime']" style="margin-right:20px;font-size: 16px; font-weight: 900;">截止时间:{{tableData[index]['time_3']}}</div>
+                <div v-bind:class="{ 'description-1': tableData[index]['value'], 'description-2': !tableData[index]['value'] }" >{{tableData[index]['state']}}</div>
                 <div class="description" style="margin-right:20px  ;font-size: 16px; font-weight: 900;">答卷:{{tableData[index]['num']}}</div>
             </div>
         </div>
         <div class="icon" style="float: right;margin-top: 20px;margin-bottom:10px;">
-            <i @click="change(index)" v-bind:class="{ 'el-icon-video-pause': tableData[index]['value'], 'el-icon-video-play': !tableData[index]['value'] }" :title="tableData[index]['value_2']" style="margin-right:20px;color:blue;font-size:25px;cursor: pointer;"></i>
+            <i @click="change(index)" v-bind:class="{ 'el-icon-video-pause': tableData[index]['value'], 'el-icon-video-play': !tableData[index]['value'] }" :title="tableData[index]['value_2']" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
             <i class="el-icon-edit" @click="edit(index)" title="编辑问卷" style="margin-right:20px; font-size:25px;cursor:pointer;"></i>
             <i @click="Statistics(index)" class="el-icon-s-data" title="问卷数据统计" style="margin-right:20px;  font-size:25px;cursor: pointer;"></i>
             <i @click="Preview(index)" class="el-icon-view" title="预览问卷" style="margin-right:20px;font-size:25px;cursor: pointer;"></i>
@@ -44,7 +43,7 @@
     <el-dialog title="提示" :visible.sync="dialogVisible">
         <div class="row noscroll">
             <div class="col-md-8 col-md-offset-2">
-                <div class="p-20 mt-20">
+                <div class="p-20 mt-20 ">
                     <div class="link-text">
                         <el-row>
                             <h3 class="header-text">问卷链接<em class="el-icon-link " /></h3>
@@ -110,12 +109,14 @@ export default {
     mounted() {
         localStorage.removeItem('input')
         localStorage.removeItem('sort')
+        localStorage.setItem('sort', JSON.stringify("0"))
         let listinit = {
             current: 1,
             size: 100000,
         };
         let value_2 = ""
         let state = ""
+        let showendTime = false
         list.getlist(listinit).then((res) => {
             console.log(res)
             for (let item of res.data.data.records) {
@@ -126,7 +127,11 @@ export default {
                     value_2 = "发布问卷"
                     state = "·未发布"
                 }
-                this.tableData.push({
+                showendTime = true
+                if (item.endTime == "4785667200000") {
+                    showendTime = false
+                }
+                this.tableData.unshift({
                     time_1: this.formatDate(item.createTime),
                     time_2: this.formatDate(item.startTime),
                     time_3: this.formatDate(item.endTime),
@@ -137,11 +142,13 @@ export default {
                     value_2: value_2,
                     state: state,
                     code: item.code,
-                    stamp: item.stamp
+                    stamp: item.stamp,
+                    showendTime: showendTime
                 });
             }
             // console.log(this.tableData)
         });
+
     },
     computed: {
         operation() {
@@ -196,7 +203,10 @@ export default {
             this.dialogVisible = true
             this.$nextTick(() => {
                 if (this.qrcode === undefined) {
-                    this.qrcode = new QRCode(document.getElementById("qrcode"), { width: 200, height: 200 })
+                    this.qrcode = new QRCode(document.getElementById("qrcode"), {
+                        width: 200,
+                        height: 200
+                    })
                 }
                 this.img = document.getElementById('qrcode').lastChild
                 this.qrcode.clear()
@@ -246,7 +256,7 @@ export default {
 
         },
         Preview(index) {
-            switch (this.tableData[index]['stamp']) {
+           switch (this.tableData[index]['stamp']) {
                 case 1:
                     this.$router.push('/preview/normal/1/' + this.tableData[index]['code'])
                 case 3:
@@ -257,15 +267,19 @@ export default {
         },
         Statistics(index) {
             list.getStatistics(parseInt(this.tableData[index]['ID'])).then((res) => {
+                console.log(res) 
+                 console.log("上面是统计数据")
                 localStorage.setItem('questionnaireID', JSON.stringify(this.tableData[index]['ID']))
                 localStorage.setItem('qutitle', JSON.stringify(this.tableData[index]['title']))
                 localStorage.setItem("statistics", JSON.stringify(res.data))
             })
             list.getStatisticsWhole(parseInt(this.tableData[index]['ID'])).then((res) => {
+                console.log(res)
                 localStorage.setItem("statisticsWhole", JSON.stringify(res.data))
 
             })
             list.getQuID(this.tableData[index]['code']).then((res) => {
+                console.log(res)
                 localStorage.setItem("questionDetail", JSON.stringify(res.data.data))
                 console.log(JSON.parse(localStorage.getItem('questionDetail')))
                 this.$router.push("/statistics");
@@ -304,6 +318,7 @@ export default {
             };
             let value_2 = ""
             let state = ""
+            let showendTime = false
             list.getlist(listinit).then((res) => {
                 this.tableData = [];
                 for (let item of res.data.data.records) {
@@ -313,6 +328,10 @@ export default {
                     } else {
                         value_2 = "发布问卷"
                         state = "·未发布"
+                    }
+                    showendTime = true
+                    if (item.endTime == "4785667200000") {
+                        showendTime = false
                     }
                     this.tableData.push({
                         time_1: this.formatDate(item.createTime),
@@ -325,12 +344,14 @@ export default {
                         value_2: value_2,
                         state: state,
                         code: item.code,
-                        stamp: item.stamp
+                        stamp: item.stamp,
+                        showendTime: showendTime
                     });
                 }
             });
         },
         Search(input) {
+            let showendTime = false
             if (input == "") {
                 message({
                     message: '输入为空！',
@@ -364,6 +385,10 @@ export default {
                                 value_2 = "发布问卷"
                                 state = "·未发布"
                             }
+                            showendTime = true
+                            if (item.endTime == "4785667200000") {
+                                showendTime = false
+                            }
                             this.tableData.push({
                                 time_1: this.formatDate(item.createTime),
                                 time_2: this.formatDate(item.startTime),
@@ -375,7 +400,8 @@ export default {
                                 value_2: value_2,
                                 state: state,
                                 code: item.code,
-                                stamp: item.stamp
+                                stamp: item.stamp,
+                                showendTime: showendTime
                             });
                         }
                     } else if (res.data.code == 20000 && res.data.data.total == 0) {
@@ -394,9 +420,9 @@ export default {
             }
         },
         changeSelect() {
+            let showendTime = false
             let value_2 = ""
             let state = ""
-            console.log(this.option);
             localStorage.setItem('sort', JSON.stringify(this.option))
             let listinit = {
                 current: 1,
@@ -415,6 +441,10 @@ export default {
                         value_2 = "发布问卷"
                         state = "·未发布"
                     }
+                    showendTime = true
+                    if (item.endTime == "4785667200000") {
+                        showendTime = false
+                    }
                     this.tableData.push({
                         time_1: this.formatDate(item.createTime),
                         time_2: this.formatDate(item.startTime),
@@ -426,12 +456,14 @@ export default {
                         value_2: value_2,
                         state: state,
                         code: item.code,
-                        stamp: item.stamp
+                        stamp: item.stamp,
+                        showendTime: showendTime
                     });
                 }
             });
         },
         change(index) {
+            let showendTime = false
             let value_2 = ""
             let state = ""
             if (this.tableData[index]['value'] == true) {
@@ -446,6 +478,8 @@ export default {
                         let listinit = {
                             current: 1,
                             size: 100000,
+                            sortBy: JSON.parse(localStorage.getItem('sort')),
+                            head: JSON.parse(localStorage.getItem('input')),
                         };
                         list.getlist(listinit).then((res) => {
                             console.log(res);
@@ -457,7 +491,11 @@ export default {
                                     value_2 = "发布问卷"
                                     state = "·未发布"
                                 }
-                                this.tableData.push({
+                                showendTime = true
+                                if (item.endTime == "4785667200000") {
+                                    showendTime = false
+                                }
+                                this.tableData.unshift({
                                     time_1: this.formatDate(item.createTime),
                                     time_2: this.formatDate(item.startTime),
                                     time_3: this.formatDate(item.endTime),
@@ -468,7 +506,8 @@ export default {
                                     value_2: value_2,
                                     state: state,
                                     code: item.code,
-                                    stamp: item.stamp
+                                    stamp: item.stamp,
+                                    showendTime: showendTime
                                 });
                             }
                         });
@@ -487,6 +526,8 @@ export default {
                     let listinit = {
                         current: 1,
                         size: 100000,
+                        sortBy: JSON.parse(localStorage.getItem('sort')),
+                        head: JSON.parse(localStorage.getItem('input')),
                     };
                     list.getlist(listinit).then((res) => {
                         console.log(res);
@@ -498,7 +539,11 @@ export default {
                                 value_2 = "发布问卷"
                                 state = "·未发布"
                             }
-                            this.tableData.push({
+                            showendTime = true
+                            if (item.endTime == "4785667200000") {
+                                showendTime = false
+                            }
+                            this.tableData.unshift({
                                 time_1: this.formatDate(item.createTime),
                                 time_2: this.formatDate(item.startTime),
                                 time_3: this.formatDate(item.endTime),
@@ -509,7 +554,8 @@ export default {
                                 value_2: value_2,
                                 state: state,
                                 code: item.code,
-                                stamp: item.stamp
+                                stamp: item.stamp,
+                                showendTime: showendTime
                             });
                         }
                     });
@@ -517,6 +563,7 @@ export default {
             }
         },
         copyQu(index) {
+            let showendTime = false
             list.copy(this.tableData[index]['ID']).then((res) => {
                 console.log(res);
                 if (res.data.code == 20000) {
@@ -529,10 +576,15 @@ export default {
                         current: 1,
                         size: 100000,
                     };
+
                     list.getlist(listinit).then((res) => {
                         console.log(res);
+                        showendTime = true
+                        if (item.endTime == "4785667200000") {
+                            showendTime = false
+                        }
                         for (let item of res.data.data.records) {
-                            this.tableData.push({
+                            this.tableData.unshift({
                                 time_1: this.formatDate(item.createTime),
                                 time_2: this.formatDate(item.startTime),
                                 time_3: this.formatDate(item.endTime),
@@ -541,7 +593,8 @@ export default {
                                 title: item.head,
                                 value: item.isReleased == 1,
                                 code: item.code,
-                                stamp: item.stamp
+                                stamp: item.stamp,
+                                showendTime: showendTime
                             });
                         }
                     });
@@ -575,42 +628,65 @@ export default {
     clear: both
 }
 
-.box-card {
+.box-card{
     width: 1500px;
+    color: rgb(0, 100, 128);
 }
+
 
 .description {
     display: inline-block;
 }
 
+.description-1 {
+    display: inline-block;
+    margin-right: 20px;
+    color: green;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.description-2 {
+    display: inline-block;
+    margin-right: 20px;
+    color: red;
+    font-size: 16px;
+    font-weight: 900;
+}
 
 /** 弹窗样式 */
 .link-text {
     margin-bottom: 20px;
 }
+
 .line-box {
     display: inline;
     width: 60%;
     float: left;
 }
+
 .btn-box {
     display: inline;
     width: 35%;
     float: right;
 }
+
 .flex {
     /* width: 100% !important; */
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
+
 .qrcode-box-inner {
     width: 200px;
     height: 200px;
 }
+
 .center {
     margin: 0 auto;
 }
+
 .downbtn {
     width: 50%;
     margin: auto;
