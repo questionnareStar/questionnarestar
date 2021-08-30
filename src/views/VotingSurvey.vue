@@ -21,7 +21,7 @@
             <blank-question
               v-if="item.itemType == 1"
               @getAnswer="updateAnswer"
-              :id="item.id"
+              :id="item.topicId"
               :serial="serial"
               :sequence="item.sequence"
               :question="item.question"
