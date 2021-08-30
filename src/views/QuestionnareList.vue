@@ -569,6 +569,8 @@ export default {
             }
         },
         copyQu(index) {
+              let value_2 = ""
+            let state = ""
             let showendTime = false
             list.copy(this.tableData[index]['ID']).then((res) => {
                 console.log(res);
@@ -585,6 +587,15 @@ export default {
 
                     list.getlist(listinit).then((res) => {
                         console.log(res);
+                           for (let item of res.data.data.records) {
+                            if (item.isReleased == 1) {
+                                value_2 = "关闭问卷"
+                                state = "·已发布"
+                            } else {
+                                value_2 = "发布问卷"
+                                state = "·未发布"
+                            }
+                           }
                         for (let item of res.data.data.records) {
                                showendTime = true
                         if (item.endTime == "4785667200000") {
@@ -599,6 +610,8 @@ export default {
                                 title: item.head,
                                 value: item.isReleased == 1,
                                 code: item.code,
+                                  value_2: value_2,
+                                state: state,
                                 stamp: item.stamp,
                                 showendTime: showendTime
                             });
