@@ -305,13 +305,13 @@ export default {
         goBack() {
             this.$router.push("/list");
         },
-        changeSelect1() {
-            this.message1 = this.options1[this.option1.substring(2, 3) - "0" - 1]
+          changeSelect1() {
+            this.message1 = this.options1[this.option1.substring(2, 3) - this.options1[0].value]
             console.log("message1")
             console.log(this.message1)
         },
         changeSelect2() {
-            this.message2 = this.options2[this.option2.substring(2, 3) - "0" - 1]
+            this.message2 = this.options2[this.option2.substring(2, 3) - this.options2[0].value]
             console.log("message2")
             console.log(this.message2)
         },
